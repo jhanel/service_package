@@ -1,9 +1,5 @@
 library service_package; //
 
-class Calculator { // calculator class
-  int addOne(int value) => value + 1; // akes an integer parameter value and returns the value incremented by one, => is shorthand
-}
-
 // Annabel's code
  class ServiceData{ // service data class
     double? rate; // ? means null property
