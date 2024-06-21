@@ -25,7 +25,7 @@ library service_package; //
   }
 
 
-//code from service.dart
+
 
 /*class ServicesScreen extends StatefulWidget {
   const ServicesScreen({
