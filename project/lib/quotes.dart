@@ -6,7 +6,7 @@ class QuotePage extends StatelessWidget {
   final String rate;
   final String type;
 
-  const QuotePage({
+  const QuotePage({super.key, 
     required this.process,
     required this.units,
     required this.rate,

@@ -4,7 +4,7 @@ import 'quotes.dart';
 class ProcessPage extends StatelessWidget {
   final String process;
 
-  ProcessPage({required this.process});
+  ProcessPage({super.key, required this.process});
 
   final TextEditingController unitsController = TextEditingController();
   final TextEditingController rateController = TextEditingController();
