@@ -60,15 +60,16 @@ class CreateOrderPage extends StatefulWidget {
   const CreateOrderPage({super.key});
 
   @override
-  _CreateOrderPageState createState() => _CreateOrderPageState();
+  CreateOrderPageState createState() => CreateOrderPageState();
 }
 
-class _CreateOrderPageState extends State<CreateOrderPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Key for form validation
+class CreateOrderPageState extends State<CreateOrderPage> {
+  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Key for form validation
   String _selectedProcess = 'Thermoforming'; // Default selected process
   String _selectedUnit = 'mm'; // Default selected unit
   String _selectedType = 'Aluminum'; // Default selected type
   double _rate = 0.0; // Rate value initialized to 0.0
+  final double _volume = 100.0; // Volume placeholder
   int _quantity = 1; // Default quantity
   List<MaterialRate> rates = [];
 
@@ -196,10 +197,10 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   Text('Process: $_selectedProcess'), // Display selected process
                   Text('Unit: $_selectedUnit'), // Display selected unit
                   Text('Type: $_selectedType'), // Display selected type
-                  Text('Quantity: $_quantity'), // Display entered quantity
+                  Text('Quantity: $_quantity'), // Display entered quantity 
                   Text('Rate: $_rate per cubic unit'), // Display calculated rate
-                  Text('Estimated Price: \$${(_rate * _quantity).toStringAsFixed(2)}'), // Calculate and display the estimated price
-                  const Text('Estimated Delivery: 5 days'), // Estimated delivery placeholder
+                  Text('Estimated Price: \$${(_volume *_rate * _quantity).toStringAsFixed(2)}'), // Calculate and display the estimated price // multiply random volume
+                  const Text('Estimated Delivery:'), // Estimated delivery placeholder
                 ],
               ),
             ),
