@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'data.dart'; // Import the data file
+import 'data.dart';
+import 'new_order_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,13 +65,13 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class CreateOrderPageState extends State<CreateOrderPage> {
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Key for form validation
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Key for form validation
   String _selectedProcess = 'Thermoforming'; // Default selected process
   String _selectedUnit = 'mm'; // Default selected unit
   String _selectedType = 'Aluminum'; // Default selected type
   double _rate = 0.0; // Rate value initialized to 0.0
-  final double _volume = 100.0; // Volume placeholder
   int _quantity = 1; // Default quantity
+  final double _volume = 100.0; // Volume placeholder
   List<MaterialRate> rates = [];
 
   void _loadRates() { // Load rates from data.json
@@ -102,6 +103,25 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     }
   }
 
+  void _submitOrder() async { // Method to submit the order
+    if (_formKey.currentState!.validate()) { // Validate the form
+      final newOrder = NewOrder(
+        process: _selectedProcess,
+        unit: _selectedUnit,
+        type: _selectedType,
+        quantity: _quantity,
+        rate: _rate,
+        estimatedPrice: _volume * _rate * _quantity,
+      );
+
+      await submitNewOrder(newOrder); // Submit the order
+      if (!mounted) return; // Checks if widget is still mounted
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Order submitted successfully!')),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,71 +141,86 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           children: [
             Expanded(
               flex: 1, // Take half of the available width
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
-                children: [
-                  DropdownButtonFormField<String>( // Dropdown for selecting the process
-                    value: _selectedProcess, // Current selected value
-                    decoration: const InputDecoration(labelText: 'Select Process'), // Input label
-                    items: ['Thermoforming', '3D Printing', 'Milling']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedProcess = newValue!;
-                        _calculateRate(); // Recalculate rate when value changes
-                      });
-                    },
-                  ),
-                  DropdownButtonFormField<String>( // Dropdown for selecting the unit
-                    value: _selectedUnit, // Current selected value
-                    decoration: const InputDecoration(labelText: 'Select Unit'), // Input label
-                    items: ['mm', 'cm', 'inches'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedUnit = newValue!;
-                        _calculateRate(); // Recalculate rate when value changes
-                      });
-                    },
-                  ),
-                  DropdownButtonFormField<String>( // Dropdown for selecting the type
-                    value: _selectedType, // Current selected value
-                    decoration: const InputDecoration(labelText: 'Select Type'), // Input label
-                    items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedType = newValue!;
-                        _calculateRate(); // Recalculate rate when value changes
-                      });
-                    },
-                  ),
-                  TextFormField( // TextField for entering the quantity
-                    decoration: const InputDecoration(labelText: 'Enter Quantity'), // Input label
-                    keyboardType: TextInputType.number, // Number keyboard
-                    initialValue: '1', // Default value
-                    onChanged: (value) {
-                      setState(() {
-                        _quantity = int.tryParse(value) ?? 1; // Update quantity
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20), // Space between input fields and rate display
-                  Text('Rate: $_rate per cubic unit'), // Display the calculated rate
-                ],
+              child: Form(
+                key: _formKey, // Form key for validation
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+                  children: [
+                    DropdownButtonFormField<String>( // Dropdown for selecting the process
+                      value: _selectedProcess, // Current selected value
+                      decoration: const InputDecoration(labelText: 'Select Process'), // Input label
+                      items: ['Thermoforming', '3D Printing', 'Milling', 'Lathe']
+                          .map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedProcess = newValue!;
+                        });
+                      },
+                    ),
+                    DropdownButtonFormField<String>( // Dropdown for selecting the unit
+                      value: _selectedUnit, // Current selected value
+                      decoration: const InputDecoration(labelText: 'Select Unit'), // Input label
+                      items: ['mm', 'cm', 'inches'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedUnit = newValue!;
+                          _calculateRate(); // Recalculate rate when value changes
+                        });
+                      },
+                    ),
+                    DropdownButtonFormField<String>( // Dropdown for selecting the type
+                      value: _selectedType, // Current selected value
+                      decoration: const InputDecoration(labelText: 'Select Type'), // Input label
+                      items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedType = newValue!;
+                          _calculateRate(); // Recalculate rate when value changes
+                        });
+                      },
+                    ),
+                    TextFormField( // TextField for entering the quantity
+                      decoration: const InputDecoration(labelText: 'Enter Quantity'), // Input label
+                      keyboardType: TextInputType.number, // Number keyboard
+                      initialValue: '1', // Default value
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a quantity';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _quantity = int.tryParse(value) ?? 1; // Update quantity
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20), // Space between input fields and rate display
+                    Text('Rate: $_rate per unit'), // Display the calculated rate
+                    ElevatedButton(
+                      onPressed: _submitOrder,
+                      child: const Text('Submit Order'), // Button to submit the order
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 20), // Space between columns
@@ -197,10 +232,10 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                   Text('Process: $_selectedProcess'), // Display selected process
                   Text('Unit: $_selectedUnit'), // Display selected unit
                   Text('Type: $_selectedType'), // Display selected type
-                  Text('Quantity: $_quantity'), // Display entered quantity 
-                  Text('Rate: $_rate per cubic unit'), // Display calculated rate
-                  Text('Estimated Price: \$${(_volume *_rate * _quantity).toStringAsFixed(2)}'), // Calculate and display the estimated price // multiply random volume
-                  const Text('Estimated Delivery:'), // Estimated delivery placeholder
+                  Text('Quantity: $_quantity'), // Display entered quantity
+                  Text('Rate: $_rate per unit'), // Display calculated rate
+                  Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}'), // Calculate and display the estimated price
+                  const Text('Estimated Delivery: TBD'), // Estimated delivery placeholder
                 ],
               ),
             ),

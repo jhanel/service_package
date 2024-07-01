@@ -16,13 +16,13 @@ class QuotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // simulate quote calculation
-    const double estimatedPrice = 100.0;  // placeholder
+    const double estimatedPrice = 0.0;  // placeholder
     const String estimatedDelivery = '5 days';  // placeholder
 
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text('Quote for $process'),
-      ),
+      )*/
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -35,14 +35,14 @@ class QuotePage extends StatelessWidget {
             Text('Estimated Price: \$${estimatedPrice.toStringAsFixed(2)}'),
             const Text('Estimated Delivery: $estimatedDelivery'),
             const SizedBox(height: 20),
-            Center(
+            /*Center(
               child: ElevatedButton(
                 onPressed: () {
                   // request order data will be sent here
                 },
                 child: const Text('Request Order'),
               ),
-            ),
+            ),*/
           ],
         ),
       ),
