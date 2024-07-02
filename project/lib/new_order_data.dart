@@ -1,11 +1,6 @@
-// Notes from 6/28 meeting
-// convert new class to json and send it to json
-// create new order data . dart
-// make a new order object that will be sent to json
-
 import 'dart:convert';
 import 'dart:io';
-import 'dart:developer' as developer; // Import Dart's built-in logging library
+import 'dart:developer' as developer;
 
 class NewOrder {
   final String process;
@@ -39,22 +34,17 @@ class NewOrder {
 Future<void> submitNewOrder(NewOrder order) async {
   const String filePath = 'data.json'; // Path to your JSON file
 
-  // File instance to interact with the JSON file
-  File file = File(filePath);
+  File file = File(filePath); // Read the existing JSON file
   List<dynamic> orders = [];
-
-  // Check if the file exists and read its contents
+  
   if (await file.exists()) {
     String contents = await file.readAsString();
     orders = jsonDecode(contents);
   }
 
-  // Append the new order to the list of orders
-  orders.add(order.toJson());
+  orders.add(order.toJson()); // Append the new order
 
-  // Write the updated list of orders back to the JSON file
-  await file.writeAsString(jsonEncode(orders));
+  await file.writeAsString(jsonEncode(orders)); // Write the updated list back to the file
 
-  // Log the order submission
   developer.log('Order submitted!');
 }

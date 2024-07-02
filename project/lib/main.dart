@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data.dart';
 import 'new_order_data.dart';
+import 'view_orders.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,6 +43,16 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('Create an Order'), // Button to create an order
+            ),
+            const SizedBox(height: 20), // Spacing between buttons
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const  ViewOrdersPage()), // Navigate to ViewOrdersPage
+                );
+              },
+              child: const Text('View Orders'), // Button to view orders
             ),
             const SizedBox(height: 20), // Spacing between buttons
             ElevatedButton(
