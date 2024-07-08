@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'data.dart';
 import 'new_order_data.dart';
 import 'view_orders.dart';
+import 'track_order.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,7 +58,10 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20), // Spacing between buttons
             ElevatedButton(
               onPressed: () {
-                // Track order code will be added later
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TrackOrderPage())
+                );
               },
               child: const Text('Track an Order'), // Button to track an order
             ),
