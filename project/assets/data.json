@@ -1,47 +1,53 @@
 [
-    {
-        "rate": 2.4,
-        "unit": "mm",
-        "mtl": "Aluminum"
-   },
-    {
-        "rate": 2.4,
-        "unit": "cm",
-        "mtl": "Aluminum"
-   },
-    {
-        "rate": 2.4,
-        "unit": "inches",
-        "mtl": "Aluminum"
-   },
-   {
-        "rate": 1.2,
-        "unit": "mm",
-        "mtl": "Steel"
-   },
-    {
-        "rate": 1.2,
-        "unit": "cm",
-        "mtl": "Steel"
-   },
-    {
-        "rate": 1.2,
-        "unit": "inches",
-        "mtl": "Steel"
-   },
-    {
-        "rate": 4.7,
-        "unit": "mm",
-        "mtl": "Brass"
-   },
-    {
-        "rate": 4.7,
-        "unit": "cm",
-        "mtl": "Brass"
-   },
-    {
-        "rate": 4.7,
-        "unit": "inches",
-        "mtl": "Brass"
-   }
-]
+     {
+         "rate": 2.4,
+         "unit": "mm",
+         "mtl": "Aluminum"
+     },
+     {
+         "rate": 2.4,
+         "unit": "cm",
+         "mtl": "Aluminum"
+     },
+     {
+         "rate": 2.4,
+         "unit": "inches",
+         "mtl": "Aluminum"
+     },
+     {
+         "rate": 1.2,
+         "unit": "mm",
+         "mtl": "Steel"
+     },
+     {
+         "rate": 1.2,
+         "unit": "cm",
+         "mtl": "Steel"
+     },
+     {
+         "rate": 1.2,
+         "unit": "inches",
+         "mtl": "Steel"
+     },
+     {
+         "rate": 4.7,
+         "unit": "mm",
+         "mtl": "Brass"
+     },
+     {
+         "rate": 4.7,
+         "unit": "cm",
+         "mtl": "Brass"
+     },
+     {
+         "rate": 4.7,
+         "unit": "inches",
+         "mtl": "Brass"
+     },
+     {
+         "rate": 3.5,
+         "unit": "mm",
+         "mtl": "Copper"
+     }
+ ]
+ 

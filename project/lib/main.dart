@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'data.dart';
-import 'new_order_data.dart';
-import 'view_orders.dart';
-import 'track_order.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:service_package/web_save_file.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'dart:developer' as developer;
+import 'dart:typed_data';
 
 void main() {
   runApp(const MyApp());
@@ -14,17 +16,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Services',
+      title: 'Limbitless Services',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,42 +36,91 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Center the buttons vertically
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CreateOrderPage()), // Navigate to CreateOrderPage
+                  MaterialPageRoute(builder: (context) => const CreateOrderPage()),
                 );
               },
-              child: const Text('Create an Order'), // Button to create an order
+              child: const Text('Create Order'),
             ),
-            const SizedBox(height: 20), // Spacing between buttons
+            /*ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ViewOrdersPage()),
+                );
+              },
+              child: const Text('View Orders'),
+            ),*/
+            const SizedBox(height: 16.0), // Add spacing between buttons
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const  ViewOrdersPage()), // Navigate to ViewOrdersPage
+                  MaterialPageRoute(builder: (context) => const TrackOrderPage()),
                 );
               },
-              child: const Text('View Orders'), // Button to view orders
-            ),
-            const SizedBox(height: 20), // Spacing between buttons
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TrackOrderPage())
-                );
-              },
-              child: const Text('Track an Order'), // Button to track an order
+              child: const Text('Track Order'),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class NewOrder {
+  final String process;
+  final String unit;
+  final String type;
+  final int quantity;
+  final double rate;
+  final double estimatedPrice;
+  final String filePath; // Add a new field for the file path
+
+  NewOrder({
+    required this.process,
+    required this.unit,
+    required this.type,
+    required this.quantity,
+    required this.rate,
+    required this.estimatedPrice,
+    required this.filePath,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'process': process,
+      'unit': unit,
+      'type': type,
+      'quantity': quantity,
+      'rate': rate,
+      'estimatedPrice': estimatedPrice,
+      'filePath': filePath, // Include file path in JSON
+    };
+  }
+}
+
+Future<void> submitNewOrder(NewOrder order) async {
+  const String filePath = 'data.json'; // Path to your JSON file
+
+  File file = File(filePath); // Read the existing JSON file
+  List<dynamic> orders = [];
+  
+  if (await file.exists()) {
+    String contents = await file.readAsString();
+    orders = jsonDecode(contents);
+  }
+
+  orders.add(order.toJson()); // Append the new order
+
+  await file.writeAsString(jsonEncode(orders)); // Write the updated list back to the file
+
+  developer.log('Order submitted!');
 }
 
 class CreateOrderPage extends StatefulWidget {
@@ -80,16 +131,23 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class CreateOrderPageState extends State<CreateOrderPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Key for form validation
-  String _selectedProcess = 'Thermoforming'; // Default selected process
-  String _selectedUnit = 'mm'; // Default selected unit
-  String _selectedType = 'Aluminum'; // Default selected type
-  double _rate = 0.0; // Rate value initialized to 0.0
-  int _quantity = 1; // Default quantity
-  final double _volume = 100.0; // Volume placeholder
-  List<MaterialRate> rates = [];
+  static const List<List<String>> acceptedExt = [
+    ['f3d', 'obj', 'stl', 'stp', 'step'],
+    ['f3d', 'stp', 'step']
+  ];
 
-  void _loadRates() { // Load rates from data.json
+  String? _filePath;
+  Uint8List? _fileBytes;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _selectedProcess = 'Thermoforming';
+  String _selectedUnit = 'mm';
+  String _selectedType = 'Aluminum';
+  double _rate = 0.0;
+  final double _volume = 100.0;
+  int _quantity = 1;
+  List<dynamic> rates = [];
+
+  void _loadRates() {
     String jsonString = '''
     [
         {"rate": 2.4, "unit": "mm", "mtl": "Aluminum"},
@@ -104,36 +162,17 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     ]
     ''';
 
-    rates = parseRates(jsonString);
+    rates = jsonDecode(jsonString);
   }
 
-  void _calculateRate() { // Method to calculate the rate based on selected unit and type
-    for (var rate in rates) { // Iterate through the list of rates
-      if (rate.unit == _selectedUnit && rate.material == _selectedType) { // Check if the unit and material match the selected values
-        setState(() { // Update the state
-          _rate = rate.rate; // Set the rate to the matched rate value
+  void _calculateRate() {
+    for (var rate in rates) {
+      if (rate['unit'] == _selectedUnit && rate['mtl'] == _selectedType) {
+        setState(() {
+          _rate = rate['rate'];
         });
-        return; // Exit the method once a match is found
+        return;
       }
-    }
-  }
-
-  void _submitOrder() async { // Method to submit the order
-    if (_formKey.currentState!.validate()) { // Validate the form
-      final newOrder = NewOrder(
-        process: _selectedProcess,
-        unit: _selectedUnit,
-        type: _selectedType,
-        quantity: _quantity,
-        rate: _rate,
-        estimatedPrice: _volume * _rate * _quantity,
-      );
-
-      await submitNewOrder(newOrder); // Submit the order
-      if (!mounted) return; // Checks if widget is still mounted
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Order submitted successfully!')),
-      );
     }
   }
 
@@ -141,121 +180,214 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   void initState() {
     super.initState();
     _loadRates();
-    _calculateRate(); // Calculate initial rate when the page is loaded
+    _calculateRate();
+  }
+
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: acceptedExt.expand((x) => x).toList(),
+    );
+
+    if (result != null) {
+      setState(() {
+        _filePath = result.files.single.path;
+        _fileBytes = result.files.single.bytes;
+      });
+    }
+  }
+
+  void _submitOrder() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      double estimatedPrice = _volume * _rate * _quantity;
+      NewOrder newOrder = NewOrder(
+        process: _selectedProcess,
+        unit: _selectedUnit,
+        type: _selectedType,
+        quantity: _quantity,
+        rate: _rate,
+        estimatedPrice: estimatedPrice,
+        filePath: _filePath ?? '',
+      );
+
+      if (_filePath != null && _fileBytes != null) {
+        await SaveFile.saveBytes(
+          printName: 'order_file',
+          fileType: _filePath!.split('.').last,
+          bytes: _fileBytes!,
+        );
+      }
+
+      submitNewOrder(newOrder);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Order submitted!')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create an Order'), // Title in the app bar
+        title: const Text('Create an Order'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // Padding around the content
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1, // Take half of the available width
-              child: Form(
-                key: _formKey, // Form key for validation
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: _pickFile,
+                child: const Text('Pick a File'),
+              ),
+              if (_filePath != null) Text('Selected file: $_filePath'),
+              const SizedBox(height: 16.0),
+              Expanded(
+                child: Row(
                   children: [
-                    DropdownButtonFormField<String>( // Dropdown for selecting the process
-                      value: _selectedProcess, // Current selected value
-                      decoration: const InputDecoration(labelText: 'Select Process'), // Input label
-                      items: ['Thermoforming', '3D Printing', 'Milling', 'Lathe']
-                          .map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedProcess = newValue!;
-                        });
-                      },
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownButtonFormField<String>(
+                            value: _selectedProcess,
+                            decoration: const InputDecoration(labelText: 'Select Process'),
+                            items: ['Thermoforming', '3D Printing', 'Milling']
+                                .map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedProcess = newValue!;
+                                _calculateRate();
+                              });
+                            },
+                          ),
+                          DropdownButtonFormField<String>(
+                            value: _selectedUnit,
+                            decoration: const InputDecoration(labelText: 'Select Unit'),
+                            items: ['mm', 'cm', 'inches'].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedUnit = newValue!;
+                                _calculateRate();
+                              });
+                            },
+                          ),
+                          DropdownButtonFormField<String>(
+                            value: _selectedType,
+                            decoration: const InputDecoration(labelText: 'Select Type'),
+                            items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedType = newValue!;
+                                _calculateRate();
+                              });
+                            },
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(labelText: 'Enter Quantity'),
+                            keyboardType: TextInputType.number,
+                            initialValue: '1',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a quantity';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                _quantity = int.tryParse(value) ?? 1;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          Text('Rate: $_rate per cubic unit'),
+                        ],
+                      ),
                     ),
-                    DropdownButtonFormField<String>( // Dropdown for selecting the unit
-                      value: _selectedUnit, // Current selected value
-                      decoration: const InputDecoration(labelText: 'Select Unit'), // Input label
-                      items: ['mm', 'cm', 'inches'].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedUnit = newValue!;
-                          _calculateRate(); // Recalculate rate when value changes
-                        });
-                      },
-                    ),
-                    DropdownButtonFormField<String>( // Dropdown for selecting the type
-                      value: _selectedType, // Current selected value
-                      decoration: const InputDecoration(labelText: 'Select Type'), // Input label
-                      items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedType = newValue!;
-                          _calculateRate(); // Recalculate rate when value changes
-                        });
-                      },
-                    ),
-                    TextFormField( // TextField for entering the quantity
-                      decoration: const InputDecoration(labelText: 'Enter Quantity'), // Input label
-                      keyboardType: TextInputType.number, // Number keyboard
-                      initialValue: '1', // Default value
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a quantity';
-                        }
-                        if (int.tryParse(value) == null) {
-                          return 'Please enter a valid number';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          _quantity = int.tryParse(value) ?? 1; // Update quantity
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 20), // Space between input fields and rate display
-                    Text('Rate: $_rate per unit'), // Display the calculated rate
-                    ElevatedButton(
-                      onPressed: _submitOrder,
-                      child: const Text('Submit Order'), // Button to submit the order
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Process: $_selectedProcess'),
+                          Text('Unit: $_selectedUnit'),
+                          Text('Type: $_selectedType'),
+                          Text('Quantity: $_quantity'),
+                          Text('Rate: $_rate per cubic unit'),
+                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}'),
+                          const Text('Estimated Delivery:'),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(width: 20), // Space between columns
-            Expanded(
-              flex: 1, // Take half of the available width
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
-                children: [
-                  Text('Process: $_selectedProcess'), // Display selected process
-                  Text('Unit: $_selectedUnit'), // Display selected unit
-                  Text('Type: $_selectedType'), // Display selected type
-                  Text('Quantity: $_quantity'), // Display entered quantity
-                  Text('Rate: $_rate per unit'), // Display calculated rate
-                  Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}'), // Calculate and display the estimated price
-                  const Text('Estimated Delivery: TBD'), // Estimated delivery placeholder
-                ],
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitOrder,
+                  child: const Text('Submit Order'),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+/*class ViewOrdersPage extends StatefulWidget {
+  const ViewOrdersPage({super.key});
+
+  @override
+  ViewOrdersPageState createState() => ViewOrdersPageState();
+}
+
+class ViewOrdersPageState extends State<ViewOrdersPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('View Orders'),
+      ),
+      body: const Center(
+        child: Text('View Orders Page'),
+      ),
+    );
+  }
+}*/
+
+class TrackOrderPage extends StatelessWidget {
+  const TrackOrderPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Track Order'),
+      ),
+      body: const Center(
+        child: Text('Track Order Page'),
       ),
     );
   }
