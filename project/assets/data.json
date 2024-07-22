@@ -43,11 +43,6 @@
          "rate": 4.7,
          "unit": "inches",
          "mtl": "Brass"
-     },
-     {
-         "rate": 3.5,
-         "unit": "mm",
-         "mtl": "Copper"
      }
  ]
  

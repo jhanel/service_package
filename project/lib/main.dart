@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:typed_data';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'dart:math';
 
 void main() {
   runApp(const MyApp());
@@ -211,9 +212,16 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       }
 
       submitNewOrder(newOrder);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Order submitted!')),
-      );
+
+
+      // Generate a random 3-digit order number
+    Random random = Random();
+    int orderNumber = 100 + random.nextInt(900);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
+    );
+    
     }
   }
 
