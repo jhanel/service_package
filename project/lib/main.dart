@@ -139,6 +139,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   final double _volume = 100.0;
   int _quantity = 1;
   List<dynamic> rates = [];
+  final TextEditingController _nameController = TextEditingController();
 
   void _loadRates() {
     String jsonString = '''
@@ -238,6 +239,17 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Enter Your Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _pickFile,
                 child: const Text('Pick a File'),
@@ -366,6 +378,7 @@ class TrackOrderPage extends StatefulWidget {
 class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
   String _orderStatus = '';
+  
 
   void _trackOrder() {
     // Simulate an order tracking process
