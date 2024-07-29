@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:typed_data';
-import 'package:timeline_tile/timeline_tile.dart';
 import 'dart:math';
 
 void main() {
@@ -192,39 +191,47 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   }
 
   void _submitOrder() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      double estimatedPrice = _volume * _rate * _quantity;
-      NewOrder newOrder = NewOrder(
-        process: _selectedProcess,
-        unit: _selectedUnit,
-        type: _selectedType,
-        quantity: _quantity,
-        rate: _rate,
-        estimatedPrice: estimatedPrice,
-        filePath: _filePath ?? '',
-      );
-
-      if (_filePath != null && _fileBytes != null) {
-        await SaveFile.saveBytes(
-          printName: 'order_file',
-          fileType: _filePath!.split('.').last,
-          bytes: _fileBytes!,
-        );
-      }
-
-      submitNewOrder(newOrder);
-
-
-      // Generate a random 3-digit order number
+  if (_formKey.currentState?.validate() ?? false) {
+    // Generate a random 3-digit order number
     Random random = Random();
     int orderNumber = 100 + random.nextInt(900);
+
+    double estimatedPrice = _volume * _rate * _quantity;
+    NewOrder newOrder = NewOrder(
+      process: _selectedProcess,
+      unit: _selectedUnit,
+      type: _selectedType,
+      quantity: _quantity,
+      rate: _rate,
+      estimatedPrice: estimatedPrice,
+      filePath: _filePath ?? '',
+    );
+
+    if (_filePath != null && _fileBytes != null) {
+      await SaveFile.saveBytes(
+        printName: 'order_file',
+        fileType: _filePath!.split('.').last,
+        bytes: _fileBytes!,
+      );
+    }
+
+    submitNewOrder(newOrder);
+
+    // Store order details in the global variable
+    globalOrderDetails = OrderDetails()
+      ..orderNumber = orderNumber.toString()  // Use the generated order number
+      ..userName = _nameController.text
+      ..rate = _rate
+      ..type = _selectedType
+      ..quantity = _quantity
+      ..process = _selectedProcess
+      ..unit = _selectedUnit;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
     );
-    
-    }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -378,7 +385,7 @@ class TrackOrderPage extends StatefulWidget {
 class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
   String _orderStatus = '';
-  
+  final double _volume = 100.0;
 
   void _trackOrder() {
     // Simulate an order tracking process
@@ -416,11 +423,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             ),
             const SizedBox(height: 16.0),
             if (_orderStatus.isNotEmpty) ...[
-              _buildTimelineTile('Order Received', Icons.shopping_cart, true),
-              _buildTimelineTile('Order Reviewed', Icons.local_shipping, false),
-              _buildTimelineTile('Order Shipped', Icons.local_shipping, false),
-              _buildTimelineTile('Out for Delivery', Icons.directions_bike, false),
-              _buildTimelineTile('Delivered', Icons.home, false),
+              _buildOrderDetails(),
+              const SizedBox(height: 16.0),
+              _buildOrderStatus(),
             ],
           ],
         ),
@@ -428,33 +433,86 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildTimelineTile(String title, IconData icon, bool isCompleted) {
-    return TimelineTile(
-      alignment: TimelineAlign.start,
-      indicatorStyle: IndicatorStyle(
-        width: 40,
-        height: 40,
-        indicator: Container(
-          decoration: BoxDecoration(
-            color: isCompleted ? Colors.green : Colors.grey,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white),
-        ),
+  Widget _buildOrderDetails() {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 2),
+        borderRadius: BorderRadius.circular(10),
       ),
-      endChild: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(title, style: const TextStyle(fontSize: 18.0)),
-      ),
-      beforeLineStyle: LineStyle(
-        color: isCompleted ? Colors.green : Colors.grey,
-        thickness: 4,
-      ),
-      afterLineStyle: LineStyle(
-        color: isCompleted ? Colors.green : Colors.grey,
-        thickness: 4,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Order Number: ${globalOrderDetails.orderNumber}'),
+          Text('User Name: ${globalOrderDetails.userName}'),
+          Text('Process: ${globalOrderDetails.process}'),
+          Text('Unit: ${globalOrderDetails.unit}'),
+          Text('Type: ${globalOrderDetails.type}'),
+          Text('Quantity: ${globalOrderDetails.quantity}'),
+          Text('Rate: ${globalOrderDetails.rate} per cubic unit'),
+          Text('Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}'),
+        ],
       ),
     );
   }
+
+  Widget _buildOrderStatus() {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildStatusContainer('Order Received', true),
+          _buildDivider(),
+          _buildStatusContainer('Order Reviewed', false),
+          _buildDivider(),
+          _buildStatusContainer('Order Shipped', false),
+          _buildDivider(),
+          _buildStatusContainer('Out for Delivery', false),
+          _buildDivider(),
+          _buildStatusContainer('Delivered', false),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusContainer(String title, bool isCompleted) {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: isCompleted ? Colors.green : Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontSize: 14.0),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      height: 2,
+      width: 20,
+      color: Colors.green,
+    );
+  }
 }
+
+
+// Global variable to store order details
+class OrderDetails {
+  String orderNumber = '';
+  String userName = '';
+  double rate = 0.0;
+  String type = '';
+  int quantity = 0;
+  String process = '';
+  String unit = '';
+}
+
+OrderDetails globalOrderDetails = OrderDetails();
