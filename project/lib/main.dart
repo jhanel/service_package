@@ -387,35 +387,36 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   String _orderStatus = '';
   final double _volume = 100.0;
 
+    bool _isTracking = false;
+
   void _trackOrder() {
-    // Simulate an order tracking process
     setState(() {
       _orderStatus = 'Results for Order #${_orderIdController.text}:';
+      _isTracking = true; // Hide the input field and button
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Track Your Order'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: _orderIdController,
-              decoration: const InputDecoration(
-                labelText: 'Enter Order ID',
-                border: OutlineInputBorder(),
+            if (!_isTracking) ...[
+              TextField(
+                controller: _orderIdController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter Order ID',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _trackOrder,
-              child: const Text('Track Order'),
-            ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _trackOrder,
+                child: const Text('Track Order'),
+              ),
+            ],
             const SizedBox(height: 16.0),
             Text(
               _orderStatus,
@@ -433,13 +434,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildOrderDetails() {
+    Widget _buildOrderDetails() {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 2),
-        borderRadius: BorderRadius.circular(10),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -459,10 +456,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   Widget _buildOrderStatus() {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.green, width: 2),
-        borderRadius: BorderRadius.circular(10),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
