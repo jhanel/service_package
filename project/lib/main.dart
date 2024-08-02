@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(),
+      debugShowCheckedModeBanner: false, // Removes the debug label
     );
   }
 }
@@ -33,37 +34,52 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Services'),
+        title: Text('Services:', style: TextStyle(color: Colors.blue.shade900)),
+        backgroundColor: Colors.white,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CreateOrderPage()),
-                );
-              },
-              child: const Text('Create Order'),
-            ),
-            const SizedBox(height: 16.0), // Add spacing between buttons
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TrackOrderPage()),
-                );
-              },
-              child: const Text('Track Order'),
-            ),
-          ],
+      body: Container(
+        color: Colors.blueGrey.shade100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CreateOrderPage()),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.white), // Button background color
+                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                ),
+                child: const Text('Create Order', style: TextStyle(color: Colors.blue)),
+              ),
+              const SizedBox(height: 16.0), // Add spacing between buttons
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TrackOrderPage()),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.white), // Button background color
+                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                ),
+                child: const Text('Track Order', style: TextStyle(color: Colors.blue)),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
 
 class NewOrder {
   final String process;
@@ -227,6 +243,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       ..process = _selectedProcess
       ..unit = _selectedUnit;
 
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
     );
@@ -237,9 +254,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create an Order'),
+        title: const Text('Create an Order', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blueGrey.shade100,
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.blueGrey.shade100,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -248,7 +267,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Enter Your Name'),
+                decoration: const InputDecoration(
+                  labelText: 'Enter Your Name',
+                  labelStyle: TextStyle(color: Colors.black),
+                ),
+                style: const TextStyle(color: Colors.black),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -259,9 +282,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _pickFile,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.white),
+                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                ),
                 child: const Text('Pick a File'),
               ),
-              if (_filePath != null) Text('Selected file: $_filePath'),
+              if (_filePath != null) Text('Selected file: $_filePath', style: const TextStyle(color: Colors.black)),
               const SizedBox(height: 16.0),
               Expanded(
                 child: Row(
@@ -273,7 +301,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                         children: [
                           DropdownButtonFormField<String>(
                             value: _selectedProcess,
-                            decoration: const InputDecoration(labelText: 'Select Process'),
+                            decoration: const InputDecoration(
+                              labelText: 'Select Process',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            style: const TextStyle(color: Colors.black),
                             items: ['Thermoforming', '3D Printing', 'Milling']
                                 .map((String value) {
                               return DropdownMenuItem<String>(
@@ -290,7 +322,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           DropdownButtonFormField<String>(
                             value: _selectedUnit,
-                            decoration: const InputDecoration(labelText: 'Select Unit'),
+                            decoration: const InputDecoration(
+                              labelText: 'Select Unit',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            style: const TextStyle(color: Colors.black),
                             items: ['mm', 'cm', 'inches'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -306,7 +342,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           DropdownButtonFormField<String>(
                             value: _selectedType,
-                            decoration: const InputDecoration(labelText: 'Select Type'),
+                            decoration: const InputDecoration(
+                              labelText: 'Select Type',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
+                            style: const TextStyle(color: Colors.black),
                             items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -321,9 +361,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             },
                           ),
                           TextFormField(
-                            decoration: const InputDecoration(labelText: 'Enter Quantity'),
+                            decoration: const InputDecoration(
+                              labelText: 'Enter Quantity',
+                              labelStyle: TextStyle(color: Colors.black),
+                            ),
                             keyboardType: TextInputType.number,
                             initialValue: '1',
+                            style: const TextStyle(color: Colors.black),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a quantity';
@@ -337,7 +381,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text('Rate: $_rate per cubic unit'),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Colors.black)),
                         ],
                       ),
                     ),
@@ -347,13 +391,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Process: $_selectedProcess'),
-                          Text('Unit: $_selectedUnit'),
-                          Text('Type: $_selectedType'),
-                          Text('Quantity: $_quantity'),
-                          Text('Rate: $_rate per cubic unit'),
-                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}'),
-                          const Text('Estimated Delivery:'),
+                          Text('Process: $_selectedProcess', style: const TextStyle(color: Colors.black)),
+                          Text('Unit: $_selectedUnit', style: const TextStyle(color: Colors.black)),
+                          Text('Type: $_selectedType', style: const TextStyle(color: Colors.black)),
+                          Text('Quantity: $_quantity', style: const TextStyle(color: Colors.black)),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Colors.black)),
+                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(color: Colors.black)),
+                          const Text('Estimated Delivery:', style: TextStyle(color: Colors.black)),
                         ],
                       ),
                     ),
@@ -364,6 +408,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: _submitOrder,
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.white),
+                    foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
+                    side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                  ),
                   child: const Text('Submit Order'),
                 ),
               ),
@@ -387,7 +436,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   String _orderStatus = '';
   final double _volume = 100.0;
 
-    bool _isTracking = false;
+  bool _isTracking = false;
 
   void _trackOrder() {
     setState(() {
@@ -399,40 +448,60 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      appBar: AppBar(
+        title: const Text('Track Your Order', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blueGrey.shade100,
+      ),
+      body: Container(
+        color: Colors.blueGrey.shade100,
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            if (_orderStatus.isNotEmpty)
+              Text(
+                _orderStatus,
+                style: const TextStyle(fontSize: 18.0, color: Colors.black),
+              ),
+            const SizedBox(height: 16.0),
             if (!_isTracking) ...[
               TextField(
                 controller: _orderIdController,
                 decoration: const InputDecoration(
                   labelText: 'Enter Order ID',
                   border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Colors.black),
                 ),
+                style: const TextStyle(color: Colors.black),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _trackOrder,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.white),
+                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                ),
                 child: const Text('Track Order'),
               ),
-            ],
-            const SizedBox(height: 16.0),
-            Text(
-              _orderStatus,
-              style: const TextStyle(fontSize: 18.0),
-            ),
-            const SizedBox(height: 16.0),
-            if (_orderStatus.isNotEmpty) ...[
-              _buildOrderDetails(),
               const SizedBox(height: 16.0),
-              _buildOrderStatus(),
             ],
+            if (_orderStatus.isNotEmpty) 
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildOrderDetails(),
+                  const SizedBox(height: 16.0),
+                  _buildOrderStatus(),
+                ],
+              ),
           ],
         ),
       ),
     );
   }
+
+
 
     Widget _buildOrderDetails() {
     return Container(
@@ -477,7 +546,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isCompleted ? Colors.green : Colors.grey,
+        color: isCompleted ? Colors.blue : Colors.grey,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
@@ -491,7 +560,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     return Container(
       height: 2,
       width: 20,
-      color: Colors.green,
+      color: Colors.blue,
     );
   }
 }
