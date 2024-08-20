@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Limbitless Services',
+      title: 'Limbitless Team Services',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -34,11 +34,11 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Services:', style: TextStyle(color: Colors.blue.shade900)),
-        backgroundColor: Colors.white,
+        title: const Text('Services:', style: TextStyle(color: Color(0xFF2A94D4))),
+        backgroundColor: const Color(0xFFFFFFFF),
       ),
       body: Container(
-        color: Colors.blueGrey.shade100,
+        color: const Color(0xFFBBBBBB),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -51,11 +51,11 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.white), // Button background color
-                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
+                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Create Order', style: TextStyle(color: Colors.blue)),
+                child: const Text('Create Order', style: TextStyle(color: Color(0xFF2A94D4))),
               ),
               const SizedBox(height: 16.0), // Add spacing between buttons
               ElevatedButton(
@@ -66,11 +66,11 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.white), // Button background color
-                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
+                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Track Order', style: TextStyle(color: Colors.blue)),
+                child: const Text('Track Order', style: TextStyle(color: Color(0xFF2A94D4))),
               ),
             ],
           ),
@@ -254,11 +254,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create an Order', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.blueGrey.shade100,
+        title: const Text('Create an Order', style: TextStyle(color: Color(0xFF000000))),
+        backgroundColor: const Color(0xFFBBBBBB),
       ),
       body: Container(
-        color: Colors.blueGrey.shade100,
+        color: const Color(0xFFBBBBBB),
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -269,9 +269,9 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Enter Your Name',
-                  labelStyle: TextStyle(color: Colors.black),
+                  labelStyle: TextStyle(color: Color(0xFF000000)),
                 ),
-                style: const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Color(0xFF000000)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your name';
@@ -283,13 +283,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               ElevatedButton(
                 onPressed: _pickFile,
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.white),
-                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text('Pick a File'),
               ),
-              if (_filePath != null) Text('Selected file: $_filePath', style: const TextStyle(color: Colors.black)),
+              if (_filePath != null) Text('Selected file: $_filePath', style: const TextStyle(color: Color(0xFF000000))),
               const SizedBox(height: 16.0),
               Expanded(
                 child: Row(
@@ -303,9 +303,9 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedProcess,
                             decoration: const InputDecoration(
                               labelText: 'Select Process',
-                              labelStyle: TextStyle(color: Colors.black),
+                              labelStyle: TextStyle(color: Color(0xFF000000)),
                             ),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Color(0xFF000000)),
                             items: ['Thermoforming', '3D Printing', 'Milling']
                                 .map((String value) {
                               return DropdownMenuItem<String>(
@@ -324,9 +324,9 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedUnit,
                             decoration: const InputDecoration(
                               labelText: 'Select Unit',
-                              labelStyle: TextStyle(color: Colors.black),
+                              labelStyle: TextStyle(color: Color(0xFF000000)),
                             ),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Color(0xFF000000)),
                             items: ['mm', 'cm', 'inches'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -344,9 +344,9 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedType,
                             decoration: const InputDecoration(
                               labelText: 'Select Type',
-                              labelStyle: TextStyle(color: Colors.black),
+                              labelStyle: TextStyle(color: Color(0xFF000000)),
                             ),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Color(0xFF000000)),
                             items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -363,11 +363,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Enter Quantity',
-                              labelStyle: TextStyle(color: Colors.black),
+                              labelStyle: TextStyle(color: Color(0xFF000000)),
                             ),
                             keyboardType: TextInputType.number,
                             initialValue: '1',
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Color(0xFF000000)),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a quantity';
@@ -381,7 +381,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Colors.black)),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Color(0xFF000000))),
                         ],
                       ),
                     ),
@@ -391,13 +391,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Process: $_selectedProcess', style: const TextStyle(color: Colors.black)),
-                          Text('Unit: $_selectedUnit', style: const TextStyle(color: Colors.black)),
-                          Text('Type: $_selectedType', style: const TextStyle(color: Colors.black)),
-                          Text('Quantity: $_quantity', style: const TextStyle(color: Colors.black)),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Colors.black)),
+                          Text('Process: $_selectedProcess', style: const TextStyle(color: Color(0xFF000000))),
+                          Text('Unit: $_selectedUnit', style: const TextStyle(color: Color(0xFF000000))),
+                          Text('Type: $_selectedType', style: const TextStyle(color: Color(0xFF000000))),
+                          Text('Quantity: $_quantity', style: const TextStyle(color: Color(0xFF000000))),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Color(0xFF000000))),
                           Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(color: Colors.black)),
-                          const Text('Estimated Delivery:', style: TextStyle(color: Colors.black)),
+                          const Text('Estimated Delivery:', style: TextStyle(color: Color(0xFF000000))),
                         ],
                       ),
                     ),
@@ -409,9 +409,9 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 child: ElevatedButton(
                   onPressed: _submitOrder,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.white),
-                    foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
-                    side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                    backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                    foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                    side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                   ),
                   child: const Text('Submit Order'),
                 ),
@@ -449,11 +449,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Track Your Order', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.blueGrey.shade100,
+        title: const Text('Track Your Order', style: TextStyle(color: Color(0xFF000000))),
+        backgroundColor: const Color(0xFFBBBBBB),
       ),
       body: Container(
-        color: Colors.blueGrey.shade100,
+        color: const Color(0xFFBBBBBB),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +461,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             if (_orderStatus.isNotEmpty)
               Text(
                 _orderStatus,
-                style: const TextStyle(fontSize: 18.0, color: Colors.black),
+                style: const TextStyle(fontSize: 18.0, color: Color(0xFF000000)),
               ),
             const SizedBox(height: 16.0),
             if (!_isTracking) ...[
@@ -470,17 +470,17 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 decoration: const InputDecoration(
                   labelText: 'Enter Order ID',
                   border: OutlineInputBorder(),
-                  labelStyle: TextStyle(color: Colors.black),
+                  labelStyle: TextStyle(color: Color(0xFF000000)),
                 ),
-                style: const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Color(0xFF000000)),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _trackOrder,
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.white),
-                  foregroundColor: WidgetStateProperty.all(Colors.blue), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Colors.blue)), // Button border color
+                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text('Track Order'),
               ),
@@ -546,12 +546,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: isCompleted ? Colors.blue : Colors.grey,
+        color: isCompleted ? const Color(0xFF2A94D4) : const Color(0xFFBBBBBB),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontSize: 14.0),
+        style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 14.0),
       ),
     );
   }
@@ -560,7 +560,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     return Container(
       height: 2,
       width: 20,
-      color: Colors.blue,
+      color: const Color(0xFF2A94D4),
     );
   }
 }
