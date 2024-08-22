@@ -1,3 +1,8 @@
+// Design
+//  Button texts and Headings are Klavika Bold
+//  All other texts are Klavika Regular (normal)
+
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:service_package/web_save_file.dart';
@@ -34,7 +39,14 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Services:', style: TextStyle(color: Color(0xFF2A94D4))),
+        title: const Text(
+          'Services:',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2A94D4),
+          ),
+        ),
         backgroundColor: const Color(0xFFFFFFFF),
       ),
       body: Container(
@@ -55,7 +67,11 @@ class MyHomePage extends StatelessWidget {
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
                   side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Create Order', style: TextStyle(color: Color(0xFF2A94D4))),
+                child: const Text('Create Order', style: TextStyle(
+                  color: Color(0xFF2A94D4),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.bold,
+                  )),
               ),
               const SizedBox(height: 16.0), // Add spacing between buttons
               ElevatedButton(
@@ -70,7 +86,11 @@ class MyHomePage extends StatelessWidget {
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
                   side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Track Order', style: TextStyle(color: Color(0xFF2A94D4))),
+                child: const Text('Track Order', style: TextStyle(
+                  color: Color(0xFF2A94D4),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.bold,
+                  )),
               ),
             ],
           ),
@@ -254,9 +274,17 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create an Order', style: TextStyle(color: Color(0xFF000000))),
-        backgroundColor: const Color(0xFFBBBBBB),
+        title: const Text(
+          'Create an Order',
+          style: TextStyle(
+          color: Color(0xFF2A94D4),
+          fontFamily: 'Klavika',
+          fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color(0xFFFFFFFF),
       ),
+
       body: Container(
         color: const Color(0xFFBBBBBB),
         padding: const EdgeInsets.all(16.0),
@@ -269,12 +297,16 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Enter Your Name',
-                  labelStyle: TextStyle(color: Color(0xFF000000)),
+                  labelStyle: TextStyle(
+                    color: Color(0xFF000000),
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                    ),
                 ),
                 style: const TextStyle(color: Color(0xFF000000)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please fill out the name field!';
                   }
                   return null;
                 },
@@ -287,7 +319,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
                   side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Pick a File'),
+                child: const Text(
+                  'Pick a File',
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               if (_filePath != null) Text('Selected file: $_filePath', style: const TextStyle(color: Color(0xFF000000))),
               const SizedBox(height: 16.0),
@@ -303,9 +341,16 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedProcess,
                             decoration: const InputDecoration(
                               labelText: 'Select Process',
-                              labelStyle: TextStyle(color: Color(0xFF000000)),
+                              labelStyle: TextStyle(
+                                color: Color(0xFF000000),
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
-                            style: const TextStyle(color: Color(0xFF000000)),
+                            style: const TextStyle(
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            ),
                             items: ['Thermoforming', '3D Printing', 'Milling']
                                 .map((String value) {
                               return DropdownMenuItem<String>(
@@ -324,9 +369,17 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedUnit,
                             decoration: const InputDecoration(
                               labelText: 'Select Unit',
-                              labelStyle: TextStyle(color: Color(0xFF000000)),
+                              labelStyle: TextStyle(
+                                color: Color(0xFF000000),
+                                fontFamily: 'Klavika', 
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
-                            style: const TextStyle(color: Color(0xFF000000)),
+                            style: const TextStyle(
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika', 
+                              fontWeight: FontWeight.normal,
+                            ),
                             items: ['mm', 'cm', 'inches'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -344,9 +397,17 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             value: _selectedType,
                             decoration: const InputDecoration(
                               labelText: 'Select Type',
-                              labelStyle: TextStyle(color: Color(0xFF000000)),
+                              labelStyle: TextStyle(
+                                color: Color(0xFF000000),
+                                fontFamily: 'Klavika', 
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
-                            style: const TextStyle(color: Color(0xFF000000)),
+                            style: const TextStyle(
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika', 
+                              fontWeight: FontWeight.normal,
+                            ),
                             items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -363,7 +424,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: 'Enter Quantity',
-                              labelStyle: TextStyle(color: Color(0xFF000000)),
+                              labelStyle: TextStyle(
+                                color: Color(0xFF000000),
+                                fontFamily: 'Klavika', 
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
                             keyboardType: TextInputType.number,
                             initialValue: '1',
@@ -381,7 +446,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Color(0xFF000000))),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', 
+                            fontWeight: FontWeight.normal,
+                          )),
                         ],
                       ),
                     ),
@@ -391,13 +460,34 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Process: $_selectedProcess', style: const TextStyle(color: Color(0xFF000000))),
-                          Text('Unit: $_selectedUnit', style: const TextStyle(color: Color(0xFF000000))),
-                          Text('Type: $_selectedType', style: const TextStyle(color: Color(0xFF000000))),
-                          Text('Quantity: $_quantity', style: const TextStyle(color: Color(0xFF000000))),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(color: Color(0xFF000000))),
-                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(color: Colors.black)),
-                          const Text('Estimated Delivery:', style: TextStyle(color: Color(0xFF000000))),
+                          Text('Process: $_selectedProcess', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          Text('Unit: $_selectedUnit', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          Text('Type: $_selectedType', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          Text('Quantity: $_quantity', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          Text('Rate: $_rate per cubic unit', style: const TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
+                          const Text('Estimated Delivery:', style: TextStyle(
+                            color: Color(0xFF000000),
+                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                          )),
                         ],
                       ),
                     ),
@@ -413,7 +503,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                     foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
                     side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                   ),
-                  child: const Text('Submit Order'),
+                  child: const Text(
+                    'Submit Order',
+                    style: TextStyle(
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -449,9 +545,17 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Track Your Order', style: TextStyle(color: Color(0xFF000000))),
-        backgroundColor: const Color(0xFFBBBBBB),
+        title: const Text(
+          'Track Your Order',
+          style: TextStyle(
+            color: Color(0xFF2A94D4),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: const Color(0xFFFFFFFF),
       ),
+
       body: Container(
         color: const Color(0xFFBBBBBB),
         padding: const EdgeInsets.all(16.0),
@@ -461,7 +565,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             if (_orderStatus.isNotEmpty)
               Text(
                 _orderStatus,
-                style: const TextStyle(fontSize: 18.0, color: Color(0xFF000000)),
+                style: const TextStyle(
+                  fontSize: 18.0, color: Color(0xFF000000),
+                  fontFamily: 'Klavika', fontWeight: FontWeight.bold,
+                ),
               ),
             const SizedBox(height: 16.0),
             if (!_isTracking) ...[
@@ -470,7 +577,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 decoration: const InputDecoration(
                   labelText: 'Enter Order ID',
                   border: OutlineInputBorder(),
-                  labelStyle: TextStyle(color: Color(0xFF000000)),
+                  labelStyle: TextStyle(
+                    color: Color(0xFF000000),
+                    fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                  ),
                 ),
                 style: const TextStyle(color: Color(0xFF000000)),
               ),
@@ -482,7 +592,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
                   side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
                 ),
-                child: const Text('Track Order'),
+                child: const Text('Track Order',
+                  style: TextStyle(
+                    fontFamily: 'Klavika', fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               const SizedBox(height: 16.0),
             ],
@@ -509,14 +623,54 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Order Number: ${globalOrderDetails.orderNumber}'),
-          Text('User Name: ${globalOrderDetails.userName}'),
-          Text('Process: ${globalOrderDetails.process}'),
-          Text('Unit: ${globalOrderDetails.unit}'),
-          Text('Type: ${globalOrderDetails.type}'),
-          Text('Quantity: ${globalOrderDetails.quantity}'),
-          Text('Rate: ${globalOrderDetails.rate} per cubic unit'),
-          Text('Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}'),
+          Text(
+            'Order Number: ${globalOrderDetails.orderNumber}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'User Name: ${globalOrderDetails.userName}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Process: ${globalOrderDetails.process}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Unit: ${globalOrderDetails.unit}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Type: ${globalOrderDetails.type}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Quantity: ${globalOrderDetails.quantity}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Rate: ${globalOrderDetails.rate} per cubic unit',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
+            style: const TextStyle(
+              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+            ),
+          ),
         ],
       ),
     );
@@ -551,7 +705,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       ),
       child: Text(
         title,
-        style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 14.0),
+        style: const TextStyle(
+          color: Color(0xFFFFFFFF), fontSize: 14.0,
+          fontFamily: 'Klavika', fontWeight: FontWeight.normal,           
+        ),
       ),
     );
   }
