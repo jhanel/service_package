@@ -271,69 +271,84 @@ class CreateOrderPageState extends State<CreateOrderPage> {
 }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Create an Order',
-          style: TextStyle(
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Create an Order',
+        style: TextStyle(
           color: Color(0xFF2A94D4),
           fontFamily: 'Klavika',
           fontWeight: FontWeight.bold,
-          ),
         ),
-        backgroundColor: const Color(0xFFFFFFFF),
       ),
+      backgroundColor: const Color(0xFFFFFFFF),
+    ),
+    body: Container(
+      color: const Color(0xFFBBBBBB),
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // "Enter Your Name" Section
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Enter Your Name',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please fill out the name field!';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16.0),
 
-      body: Container(
-        color: const Color(0xFFBBBBBB),
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter Your Name',
-                  labelStyle: TextStyle(
-                    color: Color(0xFF000000),
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.normal,
-                    ),
+            // "Pick a File" Section
+            ElevatedButton(
+              onPressed: _pickFile,
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+              ),
+              child: const Text(
+                'Pick a File',
+                style: TextStyle(
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+            ),
+            if (_filePath != null)
+              Text(
+                'Selected file: $_filePath',
                 style: const TextStyle(color: Color(0xFF000000)),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please fill out the name field!';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _pickFile,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
-                ),
-                child: const Text(
-                  'Pick a File',
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              if (_filePath != null) Text('Selected file: $_filePath', style: const TextStyle(color: Color(0xFF000000))),
-              const SizedBox(height: 16.0),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
+            const SizedBox(height: 16.0),
+
+            Expanded(
+              child: Row(
+                children: [
+                  // First Column with Design Changes
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: const Color(0xFF2A94D4)),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -342,14 +357,15 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             decoration: const InputDecoration(
                               labelText: 'Select Process',
                               labelStyle: TextStyle(
-                                color: Color(0xFF000000),
+                                color: Color(0xFF024273),
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF000000),
-                              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                              color: Color(0xFF024273),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
                             ),
                             items: ['Thermoforming', '3D Printing', 'Milling']
                                 .map((String value) {
@@ -370,14 +386,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             decoration: const InputDecoration(
                               labelText: 'Select Unit',
                               labelStyle: TextStyle(
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika', 
+                                color: Color(0xFF024273),
+                                fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF000000),
-                              fontFamily: 'Klavika', 
+                              color: Color(0xFF024273),
+                              fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                             ),
                             items: ['mm', 'cm', 'inches'].map((String value) {
@@ -398,14 +414,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             decoration: const InputDecoration(
                               labelText: 'Select Type',
                               labelStyle: TextStyle(
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika', 
+                                color: Color(0xFF024273),
+                                fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF000000),
-                              fontFamily: 'Klavika', 
+                              color: Color(0xFF024273),
+                              fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                             ),
                             items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
@@ -425,14 +441,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             decoration: const InputDecoration(
                               labelText: 'Enter Quantity',
                               labelStyle: TextStyle(
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika', 
+                                color: Color(0xFF024273),
+                                fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             keyboardType: TextInputType.number,
                             initialValue: '1',
-                            style: const TextStyle(color: Color(0xFF000000)),
+                            style: const TextStyle(color: Color(0xFF024273)),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a quantity';
@@ -447,78 +463,101 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           const SizedBox(height: 20),
                           Text('Rate: $_rate per cubic unit', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', 
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
                             fontWeight: FontWeight.normal,
                           )),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      flex: 1,
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  // Second Column with Design Changes
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: const Color(0xFF2A94D4)),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Process: $_selectedProcess', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           Text('Unit: $_selectedUnit', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           Text('Type: $_selectedType', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           Text('Quantity: $_quantity', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           Text('Rate: $_rate per cubic unit', style: const TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                           const Text('Estimated Delivery:', style: TextStyle(
-                            color: Color(0xFF000000),
-                            fontFamily: 'Klavika', fontWeight: FontWeight.normal,
+                            color: Color(0xFF024273),
+                            fontFamily: 'Klavika',
+                            fontWeight: FontWeight.normal,
                           )),
                         ],
                       ),
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            
+            Center(
+              child: ElevatedButton(
+                onPressed: _submitOrder,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                ),
+                child: const Text(
+                  'Submit Order',
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _submitOrder,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                    foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                    side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
-                  ),
-                  child: const Text(
-                    'Submit Order',
-                    style: TextStyle(
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }
+}
+
 
 class TrackOrderPage extends StatefulWidget {
   const TrackOrderPage({super.key});
