@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: const Color(0xFFFFFFFF),
       ),
       body: Container(
-        color: const Color(0xFFBBBBBB),
+        color: const Color(0xFFEEEEEE),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -65,7 +65,7 @@ class MyHomePage extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text('Create Order', style: TextStyle(
                   color: Color(0xFF2A94D4),
@@ -84,7 +84,7 @@ class MyHomePage extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text('Track Order', style: TextStyle(
                   color: Color(0xFF2A94D4),
@@ -285,7 +285,7 @@ Widget build(BuildContext context) {
       backgroundColor: const Color(0xFFFFFFFF),
     ),
     body: Container(
-      color: const Color(0xFFBBBBBB),
+      color: const Color(0xFFEEEEEE),
       padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
@@ -319,7 +319,7 @@ Widget build(BuildContext context) {
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
                 foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
               ),
               child: const Text(
                 'Pick a File',
@@ -339,7 +339,6 @@ Widget build(BuildContext context) {
             Expanded(
               child: Row(
                 children: [
-                  // First Column with Design Changes
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -347,7 +346,14 @@ Widget build(BuildContext context) {
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(color: const Color(0xFF2A94D4)),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xFF707070),
+                            spreadRadius: 1,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,13 +363,15 @@ Widget build(BuildContext context) {
                             decoration: const InputDecoration(
                               labelText: 'Select Process',
                               labelStyle: TextStyle(
-                                color: Color(0xFF024273),
+                                fontSize: 16.0,  // Increased font size
+                                color: Color(0xFF000000),
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF024273),
+                              fontSize: 16.0,  // Increased font size
+                              color: Color(0xFF000000),
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                             ),
@@ -386,13 +394,15 @@ Widget build(BuildContext context) {
                             decoration: const InputDecoration(
                               labelText: 'Select Unit',
                               labelStyle: TextStyle(
-                                color: Color(0xFF024273),
+                                fontSize: 16.0,  // Increased font size
+                                color: Color(0xFF000000),
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF024273),
+                              fontSize: 16.0,  // Increased font size
+                              color: Color(0xFF000000),
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                             ),
@@ -414,13 +424,15 @@ Widget build(BuildContext context) {
                             decoration: const InputDecoration(
                               labelText: 'Select Type',
                               labelStyle: TextStyle(
-                                color: Color(0xFF024273),
+                                fontSize: 16.0,  // Increased font size
+                                color: Color(0xFF000000),
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             style: const TextStyle(
-                              color: Color(0xFF024273),
+                              fontSize: 16.0,  // Increased font size
+                              color: Color(0xFF000000),
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                             ),
@@ -441,14 +453,18 @@ Widget build(BuildContext context) {
                             decoration: const InputDecoration(
                               labelText: 'Enter Quantity',
                               labelStyle: TextStyle(
-                                color: Color(0xFF024273),
+                                fontSize: 16.0,  // Increased font size
+                                color: Color(0xFF000000),
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
                             keyboardType: TextInputType.number,
                             initialValue: '1',
-                            style: const TextStyle(color: Color(0xFF024273)),
+                            style: const TextStyle(
+                              fontSize: 16.0,  // Increased font size
+                              color: Color(0xFF000000),
+                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a quantity';
@@ -462,11 +478,15 @@ Widget build(BuildContext context) {
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
+                          Text(
+                            'Rate: $_rate per cubic unit',
+                            style: const TextStyle(
+                              fontSize: 16.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -474,7 +494,6 @@ Widget build(BuildContext context) {
 
                   const SizedBox(width: 20),
 
-                  // Second Column with Design Changes
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -482,46 +501,81 @@ Widget build(BuildContext context) {
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(color: const Color(0xFF2A94D4)),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xFF707070),
+                            spreadRadius: 1,
+                            blurRadius: 6,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Process: $_selectedProcess', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          Text('Unit: $_selectedUnit', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          Text('Type: $_selectedType', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          Text('Quantity: $_quantity', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          Text('Rate: $_rate per cubic unit', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          Text('Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}', style: const TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
-                          const Text('Estimated Delivery:', style: TextStyle(
-                            color: Color(0xFF024273),
-                            fontFamily: 'Klavika',
-                            fontWeight: FontWeight.normal,
-                          )),
+                          Text(
+                            'Process: $_selectedProcess',
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'Unit: $_selectedUnit',
+                            style: const TextStyle(
+                              fontSize: 20.0, 
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'Type: $_selectedType',
+                            style: const TextStyle(
+                              fontSize: 20.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'Quantity: $_quantity',
+                            style: const TextStyle(
+                              fontSize: 20.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'Rate: $_rate per cubic unit',
+                            style: const TextStyle(
+                              fontSize: 20.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          Text(
+                            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 20.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          const Text(
+                            'Estimated Delivery:',
+                            style: TextStyle(
+                              fontSize: 20.0,  // Increased font size
+                              color: Color(0xFF000000),
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -539,7 +593,7 @@ Widget build(BuildContext context) {
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text(
                   'Submit Order',
@@ -573,13 +627,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
   bool _isTracking = false;
 
-  void _trackOrder() {
-    setState(() {
-      _orderStatus = 'Results for Order #${_orderIdController.text}:';
-      _isTracking = true; // Hide the input field and button
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -596,19 +643,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       ),
 
       body: Container(
-        color: const Color(0xFFBBBBBB),
+        color: const Color(0xFFEEEEEE),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            if (_orderStatus.isNotEmpty)
-              Text(
-                _orderStatus,
-                style: const TextStyle(
-                  fontSize: 18.0, color: Color(0xFF000000),
-                  fontFamily: 'Klavika', fontWeight: FontWeight.bold,
-                ),
-              ),
             const SizedBox(height: 16.0),
             if (!_isTracking) ...[
               TextField(
@@ -629,7 +668,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
                   foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(color: Color(0xFF2A94D4))), // Button border color
+                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
                 ),
                 child: const Text('Track Order',
                   style: TextStyle(
@@ -657,63 +696,109 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
     Widget _buildOrderDetails() {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Order Number: ${globalOrderDetails.orderNumber}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+  return Container(
+    padding: const EdgeInsets.all(8.0),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFFFFFF),
+      borderRadius: BorderRadius.circular(8.0),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0xFF707070),
+          spreadRadius: 1,
+          blurRadius: 6,
+          offset: Offset(0,3),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Results for Order #${_orderIdController.text}:',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'User Name: ${globalOrderDetails.userName}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          'Order Number: ${globalOrderDetails.orderNumber}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Process: ${globalOrderDetails.process}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'User Name: ${globalOrderDetails.userName}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Unit: ${globalOrderDetails.unit}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'Process: ${globalOrderDetails.process}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Type: ${globalOrderDetails.type}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'Unit: ${globalOrderDetails.unit}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Quantity: ${globalOrderDetails.quantity}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'Type: ${globalOrderDetails.type}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Rate: ${globalOrderDetails.rate} per cubic unit',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'Quantity: ${globalOrderDetails.quantity}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-          Text(
-            'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-            ),
+        ),
+        Text(
+          'Rate: ${globalOrderDetails.rate} per cubic unit',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        Text(
+          'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
+          style: const TextStyle(
+            color: Color(0xFF024273),
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+void _trackOrder() {
+  setState(() {
+    _orderStatus = 'Results for Order #${_orderIdController.text}:';
+    _isTracking = true; // Hide the input field and button
+  });
+}
+
+
 
   Widget _buildOrderStatus() {
     return Container(
