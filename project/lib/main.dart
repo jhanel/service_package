@@ -175,6 +175,8 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   int _quantity = 1;
   List<dynamic> rates = [];
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _journalNumController = TextEditingController();
+  final TextEditingController _departmentController = TextEditingController();
 
   void _loadRates() {
     String jsonString = '''
@@ -311,6 +313,50 @@ Widget build(BuildContext context) {
                 return null;
               },
             ),
+            const SizedBox(height: 16.0),
+
+            // Department section
+            TextFormField(
+              controller: _journalNumController,
+              decoration: const InputDecoration(
+                labelText: 'Journal Transfer Number',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if(value == null || value.isEmpty) {
+                  return 'Please enter the journal transfer number';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 16.0),
+
+            // Department section
+            TextFormField(
+              controller: _departmentController,
+              decoration: const InputDecoration(
+                labelText: 'Department',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if(value == null || value.isEmpty) {
+                  return 'Please enter the department';
+                }
+                return null;
+              },
+            ),
+
             const SizedBox(height: 16.0),
 
             // "Pick a File" Section
