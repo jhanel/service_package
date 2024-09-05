@@ -1004,98 +1004,108 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
     Widget _buildOrderDetails() {
-  return Container(
-    padding: const EdgeInsets.all(8.0),
-    decoration: BoxDecoration(
-      color: const Color(0xFFFFFFFF),
-      borderRadius: BorderRadius.circular(8.0),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0xFF707070),
-          spreadRadius: 1,
-          blurRadius: 6,
-          offset: Offset(0,3),
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      bool isMobile = constraints.maxWidth < 600.0;
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0xFF707070),
+              spreadRadius: 1,
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Results for Order #${_orderIdController.text}:',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
+        constraints: isMobile
+            ? const BoxConstraints(maxHeight: 200) // Fixed height for mobile view
+            : const BoxConstraints(), // No fixed height for non-mobile view
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Results for Order #${_orderIdController.text}:',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                'Order Number: ${globalOrderDetails.orderNumber}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'User Name: ${globalOrderDetails.userName}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Process: ${globalOrderDetails.process}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Unit: ${globalOrderDetails.unit}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Type: ${globalOrderDetails.type}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Quantity: ${globalOrderDetails.quantity}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Rate: ${globalOrderDetails.rate} per cubic unit',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
+                style: const TextStyle(
+                  color: Color(0xFF024273),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 8.0),
-        Text(
-          'Order Number: ${globalOrderDetails.orderNumber}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'User Name: ${globalOrderDetails.userName}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Process: ${globalOrderDetails.process}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Unit: ${globalOrderDetails.unit}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Type: ${globalOrderDetails.type}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Quantity: ${globalOrderDetails.quantity}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Rate: ${globalOrderDetails.rate} per cubic unit',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        Text(
-          'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
-          style: const TextStyle(
-            color: Color(0xFF024273),
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-      ],
-    ),
+      );
+    },
   );
 }
 
@@ -1114,24 +1124,24 @@ Widget _buildOrderStatus() {
       bool isMobile = constraints.maxWidth < 600.0;
       return Container(
         padding: const EdgeInsets.all(8.0),
-          child: isMobile
-            ? Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildStatusContainer('Order Received', true),
-                      _buildStatusDivider(),
-                      _buildStatusContainer('Order Reviewed', false),
-                      _buildStatusDivider(),
-                      _buildStatusContainer('Order Shipped', false),
-                      _buildStatusDivider(),
-                      _buildStatusContainer('Out for Delivery', false),
-                      _buildStatusDivider(),
-                      _buildStatusContainer('Delivered', false),
-                    ],
-                  ),
+        constraints: isMobile
+            ? const BoxConstraints(maxHeight: 150) // Fixed height for mobile view
+            : const BoxConstraints(), // No fixed height for non-mobile view
+        child: isMobile
+            ? SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildStatusContainer('Order Received', true),
+                    _buildStatusDivider(),
+                    _buildStatusContainer('Order Reviewed', false),
+                    _buildStatusDivider(),
+                    _buildStatusContainer('Order Shipped', false),
+                    _buildStatusDivider(),
+                    _buildStatusContainer('Out for Delivery', false),
+                    _buildStatusDivider(),
+                    _buildStatusContainer('Delivered', false),
+                  ],
                 ),
               )
             : Row(
@@ -1148,11 +1158,10 @@ Widget _buildOrderStatus() {
                   _buildStatusContainer('Delivered', false),
                 ],
               ),
-        );
-         
-      }
-    );
-  }
+      );
+    },
+  );
+}
 
   Widget _buildStatusContainer(String title, bool isCompleted) {
     return Container(
