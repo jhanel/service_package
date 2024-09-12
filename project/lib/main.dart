@@ -1075,12 +1075,36 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                                 ],
                                               ),
                                             ),
+                                            const SizedBox(height: 20 ),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
+                            const SizedBox( height: 20),
+                            Center
+                            (
+                              child: ElevatedButton
+                              (
+                                onPressed: _submitOrder,
+                                style: ButtonStyle
+                                (
+                                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+                                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
+                                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
+                                ),
+                                child: const Text
+                                (
+                                  'Submit Order',
+                                  style: TextStyle
+                                  (
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         );
                       },
