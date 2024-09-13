@@ -337,9 +337,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
         backgroundColor: const Color(0xFFFFFFFF),
       ),
 
-      body: SingleChildScrollView(
-        child: Container
-        (
+      body: Container
+      (
           color: const Color(0xFFEEEEEE),
           padding: const EdgeInsets.all(16.0),
           child: Form
@@ -357,7 +356,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   children: 
                   [
                     if (isMobile)
-                      Column
+                    SingleChildScrollView
+                    (
+                      child: Column
                       (
                         children: 
                         [
@@ -437,7 +438,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
                             },
                           ),
                         ],
-                      )
+                      ),
+                    )
                     else
                       Row
                       (
@@ -571,7 +573,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
                         return Column(
                           children: [
                             if(isMobile)
-                              Column(
+                              SingleChildScrollView
+                              (
+                                child: Column(
                                 children: [
                                   Container(
                                     width: double.infinity,
@@ -834,12 +838,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
                                   const SizedBox( height: 20.0 ),
                                 ],
-                              )
+                              ),
+                            )
                             else
-                              Row
-                              (
+                              Row(
                                 children: 
                                 [
+                                  // First Expanded container (left)
                                   Expanded
                                   (
                                     flex: 1,
@@ -849,8 +854,10 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFFFFFFF),
                                         borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const [
-                                          BoxShadow(
+                                        boxShadow: const 
+                                        [
+                                          BoxShadow
+                                          (
                                             color: Color(0xFF707070),
                                             spreadRadius: 1,
                                             blurRadius: 6,
@@ -866,37 +873,40 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                           DropdownButtonFormField<String>
                                           (
                                             value: _selectedProcess,
-                                            decoration: const InputDecoration(
+                                            decoration: const InputDecoration
+                                            (
                                               labelText: 'Select Process',
-                                              labelStyle: TextStyle(
+                                              labelStyle: TextStyle
+                                              (
                                                 fontSize: 16.0,
                                                 color: Color(0xFF000000),
                                                 fontFamily: 'Klavika',
                                                 fontWeight: FontWeight.normal,
                                               ),
                                             ),
-                                            style: const TextStyle(
+                                            style: const TextStyle
+                                            (
                                               fontSize: 16.0,
                                               color: Color(0xFF000000),
                                               fontFamily: 'Klavika',
                                               fontWeight: FontWeight.normal,
                                             ),
-                                            items: ['Thermoforming', '3D Printing', 'Milling']
-                                                .map((String value) {
+                                            items: ['Thermoforming', '3D Printing', 'Milling'].map((String value) {
                                               return DropdownMenuItem<String>(
                                                 value: value,
                                                 child: Text(value),
                                               );
                                             }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
+                                            onChanged: (newValue) 
+                                            {
+                                              setState(() 
+                                              {
                                                 _selectedProcess = newValue!;
                                                 _calculateRate();
                                               });
                                             },
                                           ),
-                                          DropdownButtonFormField<String>
-                                          (
+                                          DropdownButtonFormField<String>(
                                             value: _selectedUnit,
                                             decoration: const InputDecoration(
                                               labelText: 'Select Unit',
@@ -926,8 +936,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                               });
                                             },
                                           ),
-                                          DropdownButtonFormField<String>
-                                          (
+                                          DropdownButtonFormField<String>(
                                             value: _selectedType,
                                             decoration: const InputDecoration(
                                               labelText: 'Select Type',
@@ -957,8 +966,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                               });
                                             },
                                           ),
-                                          TextFormField
-                                          (
+                                          TextFormField(
                                             decoration: const InputDecoration(
                                               labelText: 'Enter Quantity',
                                               labelStyle: TextStyle(
@@ -986,102 +994,104 @@ class CreateOrderPageState extends State<CreateOrderPage>
                                               });
                                             },
                                           ),
+                                          const SizedBox(height: 20),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
 
-                                          const SizedBox( height: 20 ),
+                                  const SizedBox(width: 20), // Add spacing between the two containers
 
-                                            Container
-                                            (
-                                              padding: const EdgeInsets.all(16.0),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFFFFFFF),
-                                                borderRadius: BorderRadius.circular(8.0),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Color(0xFF707070),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 6,
-                                                    offset: Offset(0, 3),
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Column
-                                              (
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: 
-                                                [
-                                                   Text(
-                                                    'Process: $_selectedProcess',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Unit: $_selectedUnit',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Type: $_selectedType',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Quantity: $_quantity',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Rate: $_rate per cubic unit',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-                                                    style: const TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                  const Text(
-                                                    'Estimated Delivery:',
-                                                    style: TextStyle(
-                                                      fontSize: 20.0,
-                                                      color: Color(0xFF000000),
-                                                      fontFamily: 'Klavika',
-                                                      fontWeight: FontWeight.normal,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                  // Second Expanded container (right)
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16.0),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Color(0xFF707070),
+                                            spreadRadius: 1,
+                                            blurRadius: 6,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Process: $_selectedProcess',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
                                             ),
-                                            const SizedBox(height: 20 ),
+                                          ),
+                                          Text(
+                                            'Unit: $_selectedUnit',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Type: $_selectedType',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Quantity: $_quantity',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Rate: $_rate per cubic unit',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
+                                          const Text(
+                                            'Estimated Delivery:',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Color(0xFF000000),
+                                              fontFamily: 'Klavika',
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
+
                             const SizedBox( height: 20),
                             Center
                             (
@@ -1115,7 +1125,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
             ),
           ),
         ),
-      ),
     );
   }
 }
