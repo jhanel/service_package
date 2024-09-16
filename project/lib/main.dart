@@ -317,18 +317,448 @@ class CreateOrderPageState extends State<CreateOrderPage>
     }
   }
 
-  @override
-  Widget build(BuildContext context) 
-  {
-    return Scaffold
-    (
-      appBar: AppBar
+  // HELPER FUNCTIONS
+  
+  // function for form fields
+  Widget _buildForm(bool isMobile) {
+  return isMobile
+      ? Column( // Display fields in a column for mobile view
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Enter Your Name',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please fill out the name field!';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16.0),
+            TextFormField(
+              controller: _journalNumController,
+              decoration: const InputDecoration(
+                labelText: 'Journal Transfer Number',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the journal transfer number';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16.0),
+            TextFormField(
+              controller: _departmentController,
+              decoration: const InputDecoration(
+                labelText: 'Department',
+                labelStyle: TextStyle(
+                  color: Color(0xFF000000),
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: const TextStyle(color: Color(0xFF000000)),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the department';
+                }
+                return null;
+              },
+            ),
+          ],
+        )
+      : Row( // Display fields in a row for desktop view
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter Your Name',
+                  labelStyle: TextStyle(
+                    color: Color(0xFF000000),
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                style: const TextStyle(color: Color(0xFF000000)),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please fill out the name field!';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: TextFormField(
+                controller: _journalNumController,
+                decoration: const InputDecoration(
+                  labelText: 'Journal Transfer Number',
+                  labelStyle: TextStyle(
+                    color: Color(0xFF000000),
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                style: const TextStyle(color: Color(0xFF000000)),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the journal transfer number';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: TextFormField(
+                controller: _departmentController,
+                decoration: const InputDecoration(
+                  labelText: 'Department',
+                  labelStyle: TextStyle(
+                    color: Color(0xFF000000),
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                style: const TextStyle(color: Color(0xFF000000)),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the department';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        );
+  }
+
+
+  // function for file picker
+  Widget _buildFilePicker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ElevatedButton(
+          onPressed: _pickFile,
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
+            backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+            foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)),
+            side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))),
+            minimumSize: WidgetStateProperty.all(const Size(100, 36)),
+          ),
+          child: const Text(
+            'Pick a File',
+            style: TextStyle(
+              fontSize: 14.0,
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        if (_filePath != null)
+          Text(
+            'Selected file: $_filePath',
+            style: const TextStyle(color: Color(0xFF000000)),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildSelection() {
+  return Container
+  (
+    width: double.infinity,
+    padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFFFFFF),
+      borderRadius: BorderRadius.circular(8.0),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0xFF707070),
+          spreadRadius: 1,
+          blurRadius: 6,
+          offset: Offset(0, 3),
+        ),
+      ],
+    ),
+      child: 
+      Column
       (
-        title: const Text
-        (
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButtonFormField<String>(
+            value: _selectedProcess,
+            decoration: const InputDecoration(
+              labelText: 'Select Process',
+              labelStyle: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF000000),
+                fontFamily: 'Klavika',
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+            items: ['Thermoforming', '3D Printing', 'Milling'].map(
+              (String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              },
+            ).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                _selectedProcess = newValue!;
+                _calculateRate();
+              });
+            },
+          ),
+          DropdownButtonFormField<String>(
+            value: _selectedUnit,
+            decoration: const InputDecoration(
+              labelText: 'Select Unit',
+              labelStyle: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF000000),
+                fontFamily: 'Klavika',
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+            items: ['mm', 'cm', 'inches'].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                _selectedUnit = newValue!;
+                _calculateRate();
+              });
+            },
+          ),
+          DropdownButtonFormField<String>(
+            value: _selectedType,
+            decoration: const InputDecoration(
+              labelText: 'Select Type',
+              labelStyle: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF000000),
+                fontFamily: 'Klavika',
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+            items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                _selectedType = newValue!;
+                _calculateRate();
+              });
+            },
+          ),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Enter Quantity',
+              labelStyle: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF000000),
+                fontFamily: 'Klavika',
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            keyboardType: TextInputType.number,
+            initialValue: '1',
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF000000),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a quantity';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              setState(() {
+                _quantity = int.tryParse(value) ?? 1;
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'Rate: $_rate per cubic unit',
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuote() {
+    return 
+    Container
+    (
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFF707070),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: 
+      Column
+      (
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Process: $_selectedProcess',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Unit: $_selectedUnit',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Type: $_selectedType',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Quantity: $_quantity',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Rate: $_rate per cubic unit',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Text(
+            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
+            style: const TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          const Text(
+            'Estimated Delivery:',
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Color(0xFF000000),
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper function for the submit order button
+  Widget _buildSubmitOrder() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: _submitOrder,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
+          foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)),
+          side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))),
+        ),
+        child: const Text(
+          'Submit Order',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
           'Create an Order',
-          style: TextStyle
-          (
+          style: TextStyle(
             color: Color(0xFF2A94D4),
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
@@ -336,1457 +766,65 @@ class CreateOrderPageState extends State<CreateOrderPage>
         ),
         backgroundColor: const Color(0xFFFFFFFF),
       ),
-
-      body: Container
-      (
-          color: const Color(0xFFEEEEEE),
-          padding: const EdgeInsets.all(16.0),
-          child: Form
-          (
-            key: _formKey,
-            child: LayoutBuilder
-            (
-              builder: (context, constraints) 
-              {
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height, // Ensures minimum height is the screen height
+          ),
+          child: Container(
+            color: const Color(0xFFEEEEEE),
+            padding: const EdgeInsets.all(16.0),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
                 bool isMobile = constraints.maxWidth < 600;
-                
-                return Column
-                (
+
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: 
-                  [
+                  children: [
+                    // FORM
+                    _buildForm(isMobile),
+
+                    const SizedBox(height: 30.0),
+
+                    // FILE PICKER
+                    _buildFilePicker(),
+
+                    const SizedBox(height: 30.0),
+
+                    // SELECTION AND QUOTE CONTAINERS
                     if (isMobile)
-                    SingleChildScrollView
-                    (
-                      child: Column
-                      (
-                        children: 
-                        [
-                          TextFormField // NAME field
-                          (
-                            controller: _nameController,
-                            decoration: const InputDecoration
-                            (
-                              labelText: 'Enter Your Name',
-                              labelStyle: TextStyle
-                              (
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            style: const TextStyle(color: Color(0xFF000000)),
-                            validator: (value) 
-                            {
-                              if (value == null || value.isEmpty) 
-                              {
-                                return 'Please fill out the name field!';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 16.0), // space between fields
-
-                          TextFormField // JOURNAL field
-                          (
-                            controller: _journalNumController,
-                            decoration: const InputDecoration
-                            (
-                              labelText: 'Journal Transfer Number',
-                              labelStyle: TextStyle
-                              (
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            style: const TextStyle(color: Color(0xFF000000)),
-                            validator: (value) 
-                            {
-                              if (value == null || value.isEmpty) 
-                              {
-                                return 'Please enter the journal transfer number';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 16.0),
-
-                          TextFormField // DEPARTMENT field
-                          (
-                            controller: _departmentController,
-                            decoration: const InputDecoration
-                            (
-                              labelText: 'Department',
-                              labelStyle: TextStyle
-                              (
-                                color: Color(0xFF000000),
-                                fontFamily: 'Klavika',
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            style: const TextStyle(color: Color(0xFF000000)),
-                            validator: (value) 
-                            {
-                              if (value == null || value.isEmpty) 
-                              {
-                                return 'Please enter the department';
-                              }
-                              return null;
-                            },
-                          ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildSelection(),
+                          const SizedBox(height: 30.0),
+                          _buildQuote(),
                         ],
-                      ),
-                    )
+                      )
                     else
-                      Row
-                      (
-                        children: 
-                        [
-                          Expanded
-                          (
-                            child: TextFormField
-                            (
-                              controller: _nameController,
-                              decoration: const InputDecoration
-                              (
-                                labelText: 'Enter Your Name',
-                                labelStyle: TextStyle
-                                (
-                                  color: Color(0xFF000000),
-                                  fontFamily: 'Klavika',
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              style: const TextStyle(color: Color(0xFF000000)),
-                              validator: (value) 
-                              {
-                                if (value == null || value.isEmpty) 
-                                {
-                                  return 'Please fill out the name field!';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(width: 16.0),
-
-                          Expanded
-                          (
-                            child: TextFormField
-                            (
-                              controller: _journalNumController,
-                              decoration: const InputDecoration
-                              (
-                                labelText: 'Journal Transfer Number',
-                                labelStyle: TextStyle
-                                (
-                                  color: Color(0xFF000000),
-                                  fontFamily: 'Klavika',
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              style: const TextStyle(color: Color(0xFF000000)),
-                              validator: (value) 
-                              {
-                                if (value == null || value.isEmpty) 
-                                {
-                                  return 'Please enter the journal transfer number';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(width: 16.0),
-
-                          Expanded
-                          (
-                            child: TextFormField
-                            (
-                              controller: _departmentController,
-                              decoration: const InputDecoration
-                              (
-                                labelText: 'Department',
-                                labelStyle: TextStyle
-                                (
-                                  color: Color(0xFF000000),
-                                  fontFamily: 'Klavika',
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              style: const TextStyle(color: Color(0xFF000000)),
-                              validator: (value) 
-                              {
-                                if (value == null || value.isEmpty) 
-                                {
-                                  return 'Please enter the department';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _buildSelection()),
+                          const SizedBox(width: 20.0), // Spacing between containers
+                          Expanded(child: _buildQuote()),
                         ],
                       ),
 
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 60.0),
 
-                    // FILE section
-                    ElevatedButton
-                    (
-                      onPressed: _pickFile, // Add your file picker function here
-                      style: ButtonStyle
-                      (
-                        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
-                        backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                        foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)),
-                        side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))),
-                        minimumSize: WidgetStateProperty.all(const Size(100, 36)),
-                      ),
-                      child: const Text
-                      (
-                        'Pick a File',
-                        style: TextStyle
-                        (
-                          fontSize: 14.0,
-                          fontFamily: 'Klavika',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    if (_filePath != null)
-                      Text
-                      (
-                        'Selected file: $_filePath',
-                        style: const TextStyle(color: Color(0xFF000000)),
-                      ),
-
-                    const SizedBox(height: 12.0),
-
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        bool isMobile = constraints.maxWidth < 600;
-
-                        return Column(
-                          children: [
-                            if(isMobile)
-                              SingleChildScrollView
-                              (
-                                child: Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0xFF707070),
-                                          spreadRadius: 1,
-                                          blurRadius: 6,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedProcess,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Process',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['Thermoforming', '3D Printing', 'Milling'].map(
-                                            (String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            },
-                                          ).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedProcess = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedUnit,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Unit',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['mm', 'cm', 'inches'].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedUnit = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedType,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Type',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedType = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        TextFormField(
-                                          decoration: const InputDecoration(
-                                            labelText: 'Enter Quantity',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          initialValue: '1',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter a quantity';
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _quantity = int.tryParse(value) ?? 1;
-                                            });
-                                          },
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          'Rate: $_rate per cubic unit',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 20.0),
-
-                                  Container
-                                  (
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all( 16.0 ),
-                                    decoration: BoxDecoration
-                                    (
-                                      color: const Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const 
-                                        [
-                                          BoxShadow
-                                          (
-                                            color: Color(0xFF707070),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                    ),
-                                    child: Column
-                                    (
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: 
-                                      [
-                                        Text
-                                        (
-                                          'Process: $_selectedProcess',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text
-                                        (
-                                          'Unit: $_selectedUnit',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text
-                                        (
-                                          'Type: $_selectedType',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text
-                                        (
-                                          'Quantity: $_quantity',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text
-                                        (
-                                          'Rate: $_rate per cubic unit',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text
-                                        (
-                                          'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-                                          style: const TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      const Text
-                                        (
-                                          'Estimated Delivery:',
-                                          style: TextStyle
-                                          (
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  const SizedBox( height: 20.0 ),
-                                ],
-                              ),
-                            )
-                            else
-                              Row(
-                                children: 
-                                [
-                                  // First Expanded container (left)
-                                  Expanded
-                                  (
-                                    flex: 1,
-                                    child: Container
-                                    (
-                                      padding: const EdgeInsets.all(16.0),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const 
-                                        [
-                                          BoxShadow
-                                          (
-                                            color: Color(0xFF707070),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column
-                                      (
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: 
-                                        [
-                                          DropdownButtonFormField<String>
-                                          (
-                                            value: _selectedProcess,
-                                            decoration: const InputDecoration
-                                            (
-                                              labelText: 'Select Process',
-                                              labelStyle: TextStyle
-                                              (
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle
-                                            (
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['Thermoforming', '3D Printing', 'Milling'].map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) 
-                                            {
-                                              setState(() 
-                                              {
-                                                _selectedProcess = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          DropdownButtonFormField<String>(
-                                            value: _selectedUnit,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Select Unit',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['mm', 'cm', 'inches'].map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                _selectedUnit = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          DropdownButtonFormField<String>(
-                                            value: _selectedType,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Select Type',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                _selectedType = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          TextFormField(
-                                            decoration: const InputDecoration(
-                                              labelText: 'Enter Quantity',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            initialValue: '1',
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                            ),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter a quantity';
-                                              }
-                                              return null;
-                                            },
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _quantity = int.tryParse(value) ?? 1;
-                                              });
-                                            },
-                                          ),
-                                          const SizedBox(height: 20),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 20), // Add spacing between the two containers
-
-                                  // Second Expanded container (right)
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16.0),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color(0xFF707070),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Process: $_selectedProcess',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Unit: $_selectedUnit',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Type: $_selectedType',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Quantity: $_quantity',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Rate: $_rate per cubic unit',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'Estimated Delivery:',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            const SizedBox( height: 20),
-                            Center
-                            (
-                              child: ElevatedButton
-                              (
-                                onPressed: _submitOrder,
-                                style: ButtonStyle
-                                (
-                                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
-                                ),
-                                child: const Text
-                                (
-                                  'Submit Order',
-                                  style: TextStyle
-                                  (
-                                    fontFamily: 'Klavika',
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                   ],
+                    // SUBMIT BUTTON
+                    _buildSubmitOrder(),
+                  ],
                 );
               },
             ),
           ),
         ),
-    );
-  }
-}
-
-      /*body: Container
-      (
-        color: const Color(0xFFEEEEEE),
-        padding: const EdgeInsets.all(16.0),
-        child: Form
-        (
-          key: _formKey,
-          child: Column
-          (
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: 
-            [            
-              Row
-              (
-                children: 
-                [
-                  // "Enter Your Name" Section
-                  Expanded
-                  (
-                    child: TextFormField
-                    (
-                      controller: _nameController,
-                      decoration: const InputDecoration
-                      (
-                        labelText: 'Enter Your Name',
-                        labelStyle: TextStyle
-                        (
-                          color: Color(0xFF000000),
-                          fontFamily: 'Klavika',
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      style: const TextStyle(color: Color(0xFF000000)),
-                      validator: (value) 
-                      {
-                        if (value == null || value.isEmpty) 
-                        {
-                          return 'Please fill out the name field!';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 16.0), // Spacing between fields
-
-                  // "Journal Transfer Number" Section
-                  Expanded
-                  (
-                    child: TextFormField
-                    (
-                      controller: _journalNumController,
-                      decoration: const InputDecoration
-                      (
-                        labelText: 'Journal Transfer Number',
-                        labelStyle: TextStyle
-                        (
-                          color: Color(0xFF000000),
-                          fontFamily: 'Klavika',
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      style: const TextStyle(color: Color(0xFF000000)),
-                      validator: (value) 
-                      {
-                        if (value == null || value.isEmpty) 
-                        {
-                          return 'Please enter the journal transfer number';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 16.0), // Spacing between fields
-
-                  // "Department" Section
-                  Expanded
-                  (
-                    child: TextFormField
-                    (
-                      controller: _departmentController,
-                      decoration: const InputDecoration
-                      (
-                        labelText: 'Department',
-                        labelStyle: TextStyle
-                        (
-                          color: Color(0xFF000000),
-                          fontFamily: 'Klavika',
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      style: const TextStyle(color: Color(0xFF000000)),
-                      validator: (value) 
-                      {
-                        if (value == null || value.isEmpty) 
-                        {
-                          return 'Please enter the department';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16.0),
-
-              // "Pick a File" Section
-              ElevatedButton(
-                onPressed: _pickFile,
-                style: ButtonStyle(
-                  padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)), // Reduced padding
-                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
-                  minimumSize: WidgetStateProperty.all(const Size(100, 36)), // Minimum size for smaller button
-                ),
-                child: const Text(
-                  'Pick a File',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              if (_filePath != null)
-                Text(
-                  'Selected file: $_filePath',
-                  style: const TextStyle(color: Color(0xFF000000)),
-                ),
-              const SizedBox(height: 12.0),
-
-              Expanded(
-                child: SingleChildScrollView(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // Check if the screen width is less than a certain value (e.g., 600 pixels)
-                        bool isMobile = constraints.maxWidth < 600;
-
-                        return Column(
-                          children: [
-                            if (isMobile)
-                              // Mobile view: Stack containers vertically
-                              Column(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0xFF707070),
-                                          spreadRadius: 1,
-                                          blurRadius: 6,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedProcess,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Process',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['Thermoforming', '3D Printing', 'Milling']
-                                              .map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedProcess = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedUnit,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Unit',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['mm', 'cm', 'inches'].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedUnit = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        DropdownButtonFormField<String>(
-                                          value: _selectedType,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Select Type',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              _selectedType = newValue!;
-                                              _calculateRate();
-                                            });
-                                          },
-                                        ),
-                                        TextFormField(
-                                          decoration: const InputDecoration(
-                                            labelText: 'Enter Quantity',
-                                            labelStyle: TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          initialValue: '1',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Please enter a quantity';
-                                            }
-                                            return null;
-                                          },
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _quantity = int.tryParse(value) ?? 1;
-                                            });
-                                          },
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          'Rate: $_rate per cubic unit',
-                                          style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFFFFF),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0xFF707070),
-                                          spreadRadius: 1,
-                                          blurRadius: 6,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Process: $_selectedProcess',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Unit: $_selectedUnit',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Type: $_selectedType',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Quantity: $_quantity',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Rate: $_rate per cubic unit',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                        const Text(
-                                          'Estimated Delivery:',
-                                          style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Color(0xFF000000),
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                ],
-                              )
-                            else
-                              // Desktop view: Stack containers side by side
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16.0),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color(0xFF707070),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          DropdownButtonFormField<String>(
-                                            value: _selectedProcess,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Select Process',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['Thermoforming', '3D Printing', 'Milling']
-                                                .map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                _selectedProcess = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          DropdownButtonFormField<String>(
-                                            value: _selectedUnit,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Select Unit',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['mm', 'cm', 'inches'].map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                _selectedUnit = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          DropdownButtonFormField<String>(
-                                            value: _selectedType,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Select Type',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                _selectedType = newValue!;
-                                                _calculateRate();
-                                              });
-                                            },
-                                          ),
-                                          TextFormField(
-                                            decoration: const InputDecoration(
-                                              labelText: 'Enter Quantity',
-                                              labelStyle: TextStyle(
-                                                fontSize: 16.0,
-                                                color: Color(0xFF000000),
-                                                fontFamily: 'Klavika',
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            keyboardType: TextInputType.number,
-                                            initialValue: '1',
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                            ),
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Please enter a quantity';
-                                              }
-                                              return null;
-                                            },
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _quantity = int.tryParse(value) ?? 1;
-                                              });
-                                            },
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Text(
-                                            'Rate: $_rate per cubic unit',
-                                            style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16.0),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color(0xFF707070),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Process: $_selectedProcess',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Unit: $_selectedUnit',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Type: $_selectedType',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Quantity: $_quantity',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Rate: $_rate per cubic unit',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'Estimated Delivery:',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Color(0xFF000000),
-                                              fontFamily: 'Klavika',
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            const SizedBox(height: 20),
-                            Center(
-                              child: ElevatedButton(
-                                onPressed: _submitOrder,
-                                style: ButtonStyle(
-                                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
-                                ),
-                                child: const Text(
-                                  'Submit Order',
-                                  style: TextStyle(
-                                    fontFamily: 'Klavika',
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                ),               
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
-}*/
+}
 
 
 class TrackOrderPage extends StatefulWidget {
@@ -1854,15 +892,37 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ),
               const SizedBox(height: 16.0),
             ],
+            // Main widget layout method
             if (_orderStatus.isNotEmpty) 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Greeting Message
+                  Text(
+                    'Hi, ${globalOrderDetails.userName}',
+                    style: const TextStyle(
+                      color: Color(0xFF2A94D4),
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24.0, // Adjust the size as needed
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+
+                  // Order Details Section
                   _buildOrderDetails(),
+
                   const SizedBox(height: 16.0),
-                  _buildOrderStatus(),
+
+                  // Order Status Section
+                  Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width, // Ensure the container does not exceed screen width
+                    ),
+                    child: _buildOrderStatus(),
+                  ),
                 ],
-              ),
+              )
           ],
         ),
       ),
@@ -1871,7 +931,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
 
-    Widget _buildOrderDetails() {
+  Widget _buildOrderDetails() {
   return LayoutBuilder(
     builder: (context, constraints) {
       bool isMobile = constraints.maxWidth < 600.0;
@@ -1986,54 +1046,45 @@ void _trackOrder() {
 
 
 
-Widget _buildOrderStatus() {
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      bool isMobile = constraints.maxWidth < 600.0;
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        constraints: isMobile
-            ? const BoxConstraints(maxHeight: 150) // Fixed height for mobile view
-            : const BoxConstraints(), // No fixed height for non-mobile view
-        child: isMobile
+ Widget _buildOrderStatus() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isMobile = constraints.maxWidth < 600.0;
+
+        return isMobile
             ? SingleChildScrollView(
+                scrollDirection: Axis.vertical, // Enable vertical scrolling
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildStatusContainer('Order Received', true),
+                    _buildStatusContainer('Received', true),
                     _buildStatusDivider(),
-                    _buildStatusContainer('Order Reviewed', false),
+                    _buildStatusContainer('Preparing', false),
                     _buildStatusDivider(),
-                    _buildStatusContainer('Order Shipped', false),
-                    _buildStatusDivider(),
-                    _buildStatusContainer('Out for Delivery', false),
-                    _buildStatusDivider(),
-                    _buildStatusContainer('Delivered', false),
+                    _buildStatusContainer('Completed', false),
                   ],
                 ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildStatusContainer('Order Received', true),
+                  _buildStatusContainer('Received', true),
                   _buildDivider(),
-                  _buildStatusContainer('Order Reviewed', false),
+                  _buildStatusContainer('Preparing', false),
                   _buildDivider(),
-                  _buildStatusContainer('Order Shipped', false),
-                  _buildDivider(),
-                  _buildStatusContainer('Out for Delivery', false),
-                  _buildDivider(),
-                  _buildStatusContainer('Delivered', false),
+                  _buildStatusContainer('Completed', false),
                 ],
-              ),
-      );
-    },
-  );
-}
+              );
+      },
+    );
+  }
 
   Widget _buildStatusContainer(String title, bool isCompleted) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      constraints: const BoxConstraints(
+        maxWidth: 200, // Limit width to fit within mobile view
+      ),
       decoration: BoxDecoration(
         color: isCompleted ? const Color(0xFF2A94D4) : const Color(0xFFBBBBBB),
         borderRadius: BorderRadius.circular(10),
@@ -2041,8 +1092,10 @@ Widget _buildOrderStatus() {
       child: Text(
         title,
         style: const TextStyle(
-          color: Color(0xFFFFFFFF), fontSize: 14.0,
-          fontFamily: 'Klavika', fontWeight: FontWeight.normal,           
+          color: Color(0xFFFFFFFF),
+          fontSize: 14.0,
+          fontFamily: 'Klavika',
+          fontWeight: FontWeight.normal,
         ),
       ),
     );
