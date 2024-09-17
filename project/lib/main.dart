@@ -2,120 +2,109 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:service_package/web_save_file.dart';
+import 'package:universal_html/js.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:typed_data';
 import 'dart:math';
+import 'css.dart';
 
-void main() 
-{
+void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget 
-{
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) 
-  {
-    return MaterialApp
-    (
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  // Set the default theme to light
+  ThemeData currentTheme = CSS.lightTheme;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'Limbitless Team Services',
-      theme: ThemeData
-      (
-        primarySwatch: Colors.blue,
-      ),
+      theme: currentTheme,  // Apply the current theme
       home: const MyHomePage(),
-      debugShowCheckedModeBanner: false, // Removes the debug label
+      debugShowCheckedModeBanner: false,  // Removes the debug label
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) 
-  {
-    return Scaffold
-    (
-      appBar: AppBar
-      (
-        title: const Text
-        (
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
           'Services:',
-          style: TextStyle
-          (
+          style: TextStyle(
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
-            color: Color(0xFF2A94D4),
+            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
           ),
         ),
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: CSS.lightTheme.primaryColorLight
       ),
-      body: Container
-      (
-        color: const Color(0xFFEEEEEE),
-        child: Center
-        (
-          child: Column
-          (
+      body: Container(
+        color: Theme.of(context).canvasColor,
+        child: Center(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>
-            [
-              ElevatedButton
-              (
-                onPressed: () 
-                {
-                  Navigator.push
-                  (
+            children: <Widget>[
+              // Elevated buttons for creating and tracking orders
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const CreateOrderPage()),
                   );
                 },
-                style: ButtonStyle
-                (
-                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
-                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                )),
                 ),
-                child: const Text
-                ('Create Order', 
-                  style: TextStyle
-                  (
-                    color: Color(0xFF2A94D4),
+                child: Text(
+                  'CREATE ORDER',
+                  style: TextStyle(
+                    color: CSS.lightTheme.primaryColorLight,
                     fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  )
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
-              const SizedBox(height: 16.0), // Add spacing between buttons
-              ElevatedButton
-              (
-                onPressed: () 
-                {
-                  Navigator.push
-                  (
+              const SizedBox(height: 16.0),  // Spacing between buttons
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const TrackOrderPage()),
                   );
                 },
-                style: ButtonStyle
-                (
-                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)), // Button background color
-                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
+                  )),
                 ),
-                child: const Text
-                ('Track Order', 
-                  style: TextStyle
-                  (
-                    color: Color(0xFF2A94D4),
+                child: Text(
+                  'TRACK ORDER',
+                  style: TextStyle(
+                    color: CSS.lightTheme.primaryColorLight,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.bold,
-                  )
+                  ),
                 ),
               ),
             ],
@@ -267,7 +256,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
     }
   }
 
-  void _submitOrder() async 
+  void _submitOrder(BuildContext context) async 
   {
     if (_formKey.currentState?.validate() ?? false) 
     {
@@ -327,12 +316,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Enter Your Name',
                 labelStyle: TextStyle(
-                  color: Color(0xFF000000),
+                  color: CSS.lightTheme.shadowColor,
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
                 ),
               ),
               style: const TextStyle(color: Color(0xFF000000)),
@@ -346,12 +336,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
             const SizedBox(height: 16.0),
             TextFormField(
               controller: _journalNumController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Journal Transfer Number',
                 labelStyle: TextStyle(
-                  color: Color(0xFF000000),
+                  color: CSS.lightTheme.shadowColor,
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
                 ),
               ),
               style: const TextStyle(color: Color(0xFF000000)),
@@ -365,12 +356,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
             const SizedBox(height: 16.0),
             TextFormField(
               controller: _departmentController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Department',
                 labelStyle: TextStyle(
-                  color: Color(0xFF000000),
+                  color: CSS.lightTheme.shadowColor,
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
                 ),
               ),
               style: const TextStyle(color: Color(0xFF000000)),
@@ -388,12 +380,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
             Expanded(
               child: TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Enter Your Name',
                   labelStyle: TextStyle(
-                    color: Color(0xFF000000),
+                    color: CSS.lightTheme.shadowColor,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.normal,
+                    fontSize: 14.0
                   ),
                 ),
                 style: const TextStyle(color: Color(0xFF000000)),
@@ -409,12 +402,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
             Expanded(
               child: TextFormField(
                 controller: _journalNumController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Journal Transfer Number',
                   labelStyle: TextStyle(
-                    color: Color(0xFF000000),
+                    color: CSS.lightTheme.shadowColor,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.normal,
+                    fontSize: 14.0,
                   ),
                 ),
                 style: const TextStyle(color: Color(0xFF000000)),
@@ -430,12 +424,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
             Expanded(
               child: TextFormField(
                 controller: _departmentController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Department',
                   labelStyle: TextStyle(
-                    color: Color(0xFF000000),
+                    color: CSS.lightTheme.shadowColor,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.normal,
+                    fontSize: 14.0,
                   ),
                 ),
                 style: const TextStyle(color: Color(0xFF000000)),
@@ -461,17 +456,24 @@ class CreateOrderPageState extends State<CreateOrderPage>
           onPressed: _pickFile,
           style: ButtonStyle(
             padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
-            backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-            foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)),
-            side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))),
+            backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+            side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
             minimumSize: WidgetStateProperty.all(const Size(100, 36)),
+            shape: WidgetStateProperty.all
+            (
+              RoundedRectangleBorder
+                (
+                  borderRadius: BorderRadius.circular(8.0),
+                )
+            )
           ),
-          child: const Text(
-            'Pick a File',
+          child: Text(
+            'PICK A FILE',
             style: TextStyle(
               fontSize: 14.0,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.bold,
+              color: CSS.lightTheme.primaryColorLight
             ),
           ),
         ),
@@ -735,17 +737,24 @@ class CreateOrderPageState extends State<CreateOrderPage>
   Widget _buildSubmitOrder() {
     return Center(
       child: ElevatedButton(
-        onPressed: _submitOrder,
+        onPressed: () {_submitOrder(context as BuildContext);},
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-          foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)),
-          side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))),
+          backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+          side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+          shape: WidgetStateProperty.all
+            (
+              RoundedRectangleBorder
+                (
+                  borderRadius: BorderRadius.circular(8.0),
+                )
+            )
         ),
-        child: const Text(
-          'Submit Order',
+        child: Text(
+          'SUBMIT ORDER',
           style: TextStyle(
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
+            color: CSS.lightTheme.primaryColorLight
           ),
         ),
       ),
@@ -756,15 +765,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Create an Order',
           style: TextStyle(
-            color: Color(0xFF2A94D4),
+            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: CSS.lightTheme.primaryColorLight
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
