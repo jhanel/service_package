@@ -21,16 +21,16 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  // Set the default theme to light
-  ThemeData currentTheme = CSS.lightTheme;
+  
+  ThemeData currentTheme = CSS.lightTheme; // default light theme from css.dart
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Limbitless Team Services',
-      theme: currentTheme,  // Apply the current theme
+      theme: currentTheme,
       home: const MyHomePage(),
-      debugShowCheckedModeBanner: false,  // Removes the debug label
+      debugShowCheckedModeBanner: false,  
     );
   }
 }
@@ -58,7 +58,9 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Elevated buttons for creating and tracking orders
+
+              // buttons for creating and tracking orders
+
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -82,7 +84,9 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),  // Spacing between buttons
+
+              const SizedBox(height: 16.0),  // spacing between buttons
+
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -94,7 +98,7 @@ class MyHomePage extends StatelessWidget {
                   backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
                   side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
+                  borderRadius: BorderRadius.circular(8.0),
                   )),
                 ),
                 child: Text(
@@ -165,7 +169,7 @@ Future<void> submitNewOrder(NewOrder order) async
     orders = jsonDecode(contents);
   }
 
-  orders.add(order.toJson()); // append the new order
+  orders.add(order.toJson()); // append new order
 
   await file.writeAsString(jsonEncode(orders)); // write updated list back to the file
 
@@ -258,7 +262,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
   void _submitOrder(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
 
-      // Generate a random 3-digit order number
+      // generate random 3-digit number
+
       Random random = Random();
       int orderNumber = 100 + random.nextInt(900);
 
@@ -281,10 +286,10 @@ class CreateOrderPageState extends State<CreateOrderPage>
         );
       }
 
-      // Submitting the new order
-      submitNewOrder(newOrder);
+      submitNewOrder(newOrder); // submit new order
 
-      // Store order details in the global variable
+      // store order details in global variable
+
       globalOrderDetails = OrderDetails()
         ..orderNumber = orderNumber.toString()
         ..userName = _nameController.text
@@ -294,8 +299,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
         ..process = _selectedProcess
         ..unit = _selectedUnit;
 
-      // Update the SnackBar to show the order number
-      ScaffoldMessenger.of(context).hideCurrentSnackBar(); // Clear previous SnackBar
+      // display snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
       );
@@ -305,10 +309,10 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
   // HELPER FUNCTIONS
   
-  // function for form fields
+  // form fields (name, journal, department)
   Widget _buildForm(bool isMobile) {
     return Form(
-      key: _formKey,  // Attach the form key
+      key: _formKey,  // attach the form key
       child: isMobile
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,7 +452,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
 
 
-  // function for file picker
+  // file picker
   Widget _buildFilePicker() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,6 +491,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
+  // selection form
   Widget _buildSelection() {
   return Container
   (
@@ -644,6 +649,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
+  // generate quote
   Widget _buildQuote() {
     return 
     Container
@@ -734,15 +740,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
-  // Helper function for the submit order button
+  // Helper function for the submitting order
   Widget _buildSubmitOrder() {
   return Center(
     child: ElevatedButton(
       onPressed: () {
-        _submitOrder(context); // Pass context directly
+        _submitOrder(context); // pass context directly
       },
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor), // Fixed wrong usage of WidgetStateProperty
+        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
         side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
@@ -780,7 +786,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height, // Ensures minimum height is the screen height
+            minHeight: MediaQuery.of(context).size.height, // minimum height is screen height
           ),
           child: Container(
             color: const Color(0xFFEEEEEE),
@@ -817,7 +823,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: _buildSelection()),
-                          const SizedBox(width: 20.0), // Spacing between containers
+                          const SizedBox(width: 20.0), // spacing between containers
                           Expanded(child: _buildQuote()),
                         ],
                       ),
@@ -847,7 +853,7 @@ class TrackOrderPage extends StatefulWidget {
 
 class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
-  String _orderStatus = '';
+  String _orderStatus = ''; // *** COME BACK TO THIS
   final double _volume = 100.0;
 
   bool _isTracking = false;
@@ -856,19 +862,19 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Track Your Order',
           style: TextStyle(
-            color: Color(0xFF2A94D4),
+            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: CSS.lightTheme.primaryColorLight,
       ),
 
       body: Container(
-        color: const Color(0xFFEEEEEE),
+        color: CSS.lightTheme.hoverColor,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -879,7 +885,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 controller: _orderIdController,
                 decoration: InputDecoration(
                   labelText: 'Enter Order ID',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelStyle: TextStyle(
                     color: CSS.lightTheme.shadowColor,
                     fontFamily: 'Klavika', fontWeight: FontWeight.normal,
@@ -894,8 +900,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
                   side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
-                  )), // Button border color
+                  borderRadius: BorderRadius.circular(8.0), 
+                  )),
                 ),
                 child: Text('TRACK',
                   style: TextStyle(
@@ -906,16 +912,17 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ),
               const SizedBox(height: 16.0),
             ]
+
             // Main widget layout method
               else ...[
-              // Display greeting message and order details container when tracking
+              // display greeting message and order details container when tracking
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hi, ',
+                    'Hi, ${globalOrderDetails.userName}',
                     style: TextStyle(
-                      color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!,
+                      color: CSS.lightTheme.primaryColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.bold,
                       fontSize: 24.0,
@@ -923,7 +930,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   ),
                   const SizedBox(width: 16.0),
                   Expanded(
-                    child: _buildOrderDetails(), // Displaying the order details container
+                    child: _buildOrderDetails(), // order deets
                   ),
                 ],
               ),
@@ -942,7 +949,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       color: Color(0xFF2A94D4),
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.bold,
-                      fontSize: 24.0, // Adjust the size as needed
+                      fontSize: 24.0, 
                     ),
                   ),
                   const SizedBox(height: 20.0),
@@ -955,7 +962,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   // Order Status Section
                   Container(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width, // Ensure the container does not exceed screen width
+                      maxWidth: MediaQuery.of(context).size.width, 
                     ),
                     child: _buildOrderStatus(),
                   ),
@@ -974,9 +981,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       builder: (context, constraints) {
         bool isMobile = constraints.maxWidth < 600.0;
         return Container(
+          margin: const EdgeInsets.only(top: 16.0),
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: CSS.lightTheme.primaryColorLight, // White background for the container
+            color: CSS.lightTheme.primaryColorLight, 
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: const [
               BoxShadow(
@@ -987,28 +995,33 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ),
             ],
           ),
-          constraints: isMobile
-              ? const BoxConstraints(maxHeight: 200) // Fixed height for mobile view
-              : const BoxConstraints(), // No fixed height for non-mobile view
+
+          width: constraints.maxWidth,  // this takes up full width
+          height: isMobile ? null : 400, // adjusts height based on screen size
+          
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title
+              // title
               Text(
-                'Order Details',
+                'ORDER DETAILS',
                 style: TextStyle(
-                  color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                  color: CSS.lightTheme.primaryColor, 
                   fontFamily: 'Klavika',
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                   fontSize: 18.0,
                 ),
               ),
               const SizedBox(height: 16.0),
 
-              // Details section
+              // details 
               Container(
                 padding: const EdgeInsets.all(8.0),
-                color: CSS.lightTheme.hoverColor, // Gray background for the details section
+                decoration: BoxDecoration
+                (
+                  color: CSS.lightTheme.splashColor, 
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1020,7 +1033,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Order Number:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1030,8 +1043,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.orderNumber,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1049,7 +1062,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Name:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1059,8 +1072,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.userName,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1078,7 +1091,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Process:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1088,8 +1101,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.process,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1107,7 +1120,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Unit:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1117,8 +1130,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.unit,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1136,7 +1149,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Type:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1146,8 +1159,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.type,
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1165,7 +1178,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Quantity:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1175,8 +1188,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               globalOrderDetails.quantity.toString(),
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1194,7 +1207,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Rate:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1204,8 +1217,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               '${globalOrderDetails.rate} per cubic unit',
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1223,7 +1236,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Estimated Price:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              color: CSS.lightTheme.primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1233,8 +1246,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Text(
                               '\$${(_volume * (globalOrderDetails.rate) * (globalOrderDetails.quantity)).toStringAsFixed(2)}',
                               textAlign: TextAlign.right,
-                              style: const TextStyle(
-                                color: Colors.black, // Default text color
+                              style: TextStyle(
+                                color: CSS.lightTheme.primaryColorDark,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1258,7 +1271,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 void _trackOrder() {
   setState(() {
     _orderStatus = 'Results for Order #${_orderIdController.text}:';
-    _isTracking = true; // Hide the input field and button
+    _isTracking = true; // hides input field and button
   });
 }
 
@@ -1271,7 +1284,7 @@ void _trackOrder() {
 
         return isMobile
             ? SingleChildScrollView(
-                scrollDirection: Axis.vertical, // Enable vertical scrolling
+                scrollDirection: Axis.vertical, // enables vertical scrolling
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1301,7 +1314,7 @@ void _trackOrder() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       constraints: const BoxConstraints(
-        maxWidth: 200, // Limit width to fit within mobile view
+        maxWidth: 200, // limits width to fit within mobile view
       ),
       decoration: BoxDecoration(
         color: isCompleted ? const Color(0xFF2A94D4) : const Color(0xFFBBBBBB),
@@ -1337,7 +1350,7 @@ void _trackOrder() {
 }
 
 
-// Global variable to store order details
+// global variable to store order details
 class OrderDetails {
   String orderNumber = '';
   String userName = '';
