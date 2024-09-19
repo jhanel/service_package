@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:service_package/web_save_file.dart';
-import 'package:universal_html/js.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
@@ -256,17 +255,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
     }
   }
 
-  void _submitOrder(BuildContext context) async 
-  {
-    if (_formKey.currentState?.validate() ?? false) 
-    {
+  void _submitOrder(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+
       // Generate a random 3-digit order number
       Random random = Random();
       int orderNumber = 100 + random.nextInt(900);
 
       double estimatedPrice = _volume * _rate * _quantity;
-      NewOrder newOrder = NewOrder
-      (
+      NewOrder newOrder = NewOrder(
         process: _selectedProcess,
         unit: _selectedUnit,
         type: _selectedType,
@@ -276,21 +273,20 @@ class CreateOrderPageState extends State<CreateOrderPage>
         filePath: _filePath ?? '',
       );
 
-      if (_filePath != null && _fileBytes != null) 
-      {
-        await SaveFile.saveBytes
-        (
+      if (_filePath != null && _fileBytes != null) {
+        await SaveFile.saveBytes(
           printName: 'order_file',
           fileType: _filePath!.split('.').last,
           bytes: _fileBytes!,
         );
       }
 
+      // Submitting the new order
       submitNewOrder(newOrder);
 
       // Store order details in the global variable
       globalOrderDetails = OrderDetails()
-        ..orderNumber = orderNumber.toString()  // Use the generated order number
+        ..orderNumber = orderNumber.toString()
         ..userName = _nameController.text
         ..rate = _rate
         ..type = _selectedType
@@ -298,153 +294,158 @@ class CreateOrderPageState extends State<CreateOrderPage>
         ..process = _selectedProcess
         ..unit = _selectedUnit;
 
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar
-      (
-        SnackBar( content: Text( 'Order submitted! Your Order ID is $orderNumber' ) ),
+      // Update the SnackBar to show the order number
+      ScaffoldMessenger.of(context).hideCurrentSnackBar(); // Clear previous SnackBar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
       );
     }
   }
+
 
   // HELPER FUNCTIONS
   
   // function for form fields
   Widget _buildForm(bool isMobile) {
-  return isMobile
-      ? Column( // Display fields in a column for mobile view
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Enter Your Name',
-                labelStyle: TextStyle(
-                  color: CSS.lightTheme.shadowColor,
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12.0,
+    return Form(
+      key: _formKey,  // Attach the form key
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Your Name',
+                    labelStyle: TextStyle(
+                      color: CSS.lightTheme.shadowColor,
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  style: const TextStyle(color: Color(0xFF000000)),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please fill out the name field!';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              style: const TextStyle(color: Color(0xFF000000)),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please fill out the name field!';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              controller: _journalNumController,
-              decoration: InputDecoration(
-                labelText: 'Journal Transfer Number',
-                labelStyle: TextStyle(
-                  color: CSS.lightTheme.shadowColor,
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12.0,
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _journalNumController,
+                  decoration: InputDecoration(
+                    labelText: 'Journal Transfer Number',
+                    labelStyle: TextStyle(
+                      color: CSS.lightTheme.shadowColor,
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  style: const TextStyle(color: Color(0xFF000000)),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the journal transfer number';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              style: const TextStyle(color: Color(0xFF000000)),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter the journal transfer number';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              controller: _departmentController,
-              decoration: InputDecoration(
-                labelText: 'Department',
-                labelStyle: TextStyle(
-                  color: CSS.lightTheme.shadowColor,
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12.0,
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _departmentController,
+                  decoration: InputDecoration(
+                    labelText: 'Department',
+                    labelStyle: TextStyle(
+                      color: CSS.lightTheme.shadowColor,
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  style: const TextStyle(color: Color(0xFF000000)),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the department';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              style: const TextStyle(color: Color(0xFF000000)),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter the department';
-                }
-                return null;
-              },
-            ),
-          ],
-        )
-      : Row( // Display fields in a row for desktop view
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Enter Your Name',
-                  labelStyle: TextStyle(
-                    color: CSS.lightTheme.shadowColor,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter Your Name',
+                      labelStyle: TextStyle(
+                        color: CSS.lightTheme.shadowColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    style: const TextStyle(color: Color(0xFF000000)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please fill out the name field!';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                style: const TextStyle(color: Color(0xFF000000)),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please fill out the name field!';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(width: 16.0),
-            Expanded(
-              child: TextFormField(
-                controller: _journalNumController,
-                decoration: InputDecoration(
-                  labelText: 'Journal Transfer Number',
-                  labelStyle: TextStyle(
-                    color: CSS.lightTheme.shadowColor,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0,
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: _journalNumController,
+                    decoration: InputDecoration(
+                      labelText: 'Journal Transfer Number',
+                      labelStyle: TextStyle(
+                        color: CSS.lightTheme.shadowColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    style: const TextStyle(color: Color(0xFF000000)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the journal transfer number';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                style: const TextStyle(color: Color(0xFF000000)),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the journal transfer number';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(width: 16.0),
-            Expanded(
-              child: TextFormField(
-                controller: _departmentController,
-                decoration: InputDecoration(
-                  labelText: 'Department',
-                  labelStyle: TextStyle(
-                    color: CSS.lightTheme.shadowColor,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14.0,
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: TextFormField(
+                    controller: _departmentController,
+                    decoration: InputDecoration(
+                      labelText: 'Department',
+                      labelStyle: TextStyle(
+                        color: CSS.lightTheme.shadowColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    style: const TextStyle(color: Color(0xFF000000)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the department';
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                style: const TextStyle(color: Color(0xFF000000)),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the department';
-                  }
-                  return null;
-                },
-              ),
+              ],
             ),
-          ],
-        );
+    );
   }
+
 
 
   // function for file picker
@@ -735,31 +736,32 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
   // Helper function for the submit order button
   Widget _buildSubmitOrder() {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {_submitOrder(context as BuildContext);},
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-          side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
-          shape: WidgetStateProperty.all
-            (
-              RoundedRectangleBorder
-                (
-                  borderRadius: BorderRadius.circular(8.0),
-                )
-            )
-        ),
-        child: Text(
-          'SUBMIT ORDER',
-          style: TextStyle(
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.bold,
-            color: CSS.lightTheme.primaryColorLight
+  return Center(
+    child: ElevatedButton(
+      onPressed: () {
+        _submitOrder(context); // Pass context directly
+      },
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor), // Fixed wrong usage of WidgetStateProperty
+        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
       ),
-    );
-  }
+      child: Text(
+        'SUBMIT ORDER',
+        style: TextStyle(
+          fontFamily: 'Klavika',
+          fontWeight: FontWeight.bold,
+          color: CSS.lightTheme.primaryColorLight,
+        ),
+      ),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -875,11 +877,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             if (!_isTracking) ...[
               TextField(
                 controller: _orderIdController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Enter Order ID',
                   border: OutlineInputBorder(),
                   labelStyle: TextStyle(
-                    color: Color(0xFF000000),
+                    color: CSS.lightTheme.shadowColor,
                     fontFamily: 'Klavika', fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -889,20 +891,47 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ElevatedButton(
                 onPressed: _trackOrder,
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
-                  foregroundColor: WidgetStateProperty.all(const Color(0xFF2A94D4)), // Button text color
-                  side: WidgetStateProperty.all(const BorderSide(width: 2.0, color: Color(0xFF2A94D4))), // Button border color
+                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
+                  )), // Button border color
                 ),
-                child: const Text('Track Order',
+                child: Text('TRACK',
                   style: TextStyle(
+                    color: CSS.lightTheme.primaryColorLight,
                     fontFamily: 'Klavika', fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               const SizedBox(height: 16.0),
-            ],
+            ]
             // Main widget layout method
-            if (_orderStatus.isNotEmpty) 
+              else ...[
+              // Display greeting message and order details container when tracking
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hi, ',
+                    style: TextStyle(
+                      color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!,
+                      fontFamily: 'Klavika',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: _buildOrderDetails(), // Displaying the order details container
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 16.0),
+
+
+            /*if (_orderStatus.isNotEmpty) 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -931,7 +960,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     child: _buildOrderStatus(),
                   ),
                 ],
-              )
+              )*/
           ],
         ),
       ),
@@ -941,110 +970,290 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
   Widget _buildOrderDetails() {
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      bool isMobile = constraints.maxWidth < 600.0;
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xFF707070),
-              spreadRadius: 1,
-              blurRadius: 6,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        constraints: isMobile
-            ? const BoxConstraints(maxHeight: 200) // Fixed height for mobile view
-            : const BoxConstraints(), // No fixed height for non-mobile view
-        child: SingleChildScrollView(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isMobile = constraints.maxWidth < 600.0;
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: CSS.lightTheme.primaryColorLight, // White background for the container
+            borderRadius: BorderRadius.circular(8.0),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                spreadRadius: 1,
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          constraints: isMobile
+              ? const BoxConstraints(maxHeight: 200) // Fixed height for mobile view
+              : const BoxConstraints(), // No fixed height for non-mobile view
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Title
               Text(
-                'Results for Order #${_orderIdController.text}:',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
+                'Order Details',
+                style: TextStyle(
+                  color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
                   fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
                 ),
               ),
-              const SizedBox(height: 8.0),
-              Text(
-                'Order Number: ${globalOrderDetails.orderNumber}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'User Name: ${globalOrderDetails.userName}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Process: ${globalOrderDetails.process}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Unit: ${globalOrderDetails.unit}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Type: ${globalOrderDetails.type}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Quantity: ${globalOrderDetails.quantity}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Rate: ${globalOrderDetails.rate} per cubic unit',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              Text(
-                'Estimated Price: \$${(_volume * globalOrderDetails.rate * globalOrderDetails.quantity).toStringAsFixed(2)}',
-                style: const TextStyle(
-                  color: Color(0xFF024273),
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
+              const SizedBox(height: 16.0),
+
+              // Details section
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                color: CSS.lightTheme.hoverColor, // Gray background for the details section
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Order Number:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.orderNumber,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Name:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.userName,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Process:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.process,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Unit:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.unit,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Type:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.type,
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Quantity:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              globalOrderDetails.quantity.toString(),
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Rate:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '${globalOrderDetails.rate} per cubic unit',
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Estimated Price:',
+                            style: TextStyle(
+                              color: CSS.lightTheme.primaryTextTheme.displayLarge!.color!, // Dark blue color
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '\$${(_volume * (globalOrderDetails.rate) * (globalOrderDetails.quantity)).toStringAsFixed(2)}',
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(
+                                color: Colors.black, // Default text color
+                                fontFamily: 'Klavika',
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
+
 
 void _trackOrder() {
   setState(() {
