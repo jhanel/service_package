@@ -126,7 +126,7 @@ class NewOrder {
   final int quantity;
   final double rate;
   final double estimatedPrice;
-  final String filePath; // add a new field for the file path
+  String filePath; // add a new field for the file path
 
   NewOrder
   (
@@ -194,6 +194,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
   String? _filePath;
   Uint8List? _fileBytes;
+  String? _fileName;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedProcess = 'Thermoforming';
   String _selectedUnit = 'mm';
@@ -255,7 +256,12 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
     if (result != null) 
     {
-      setState(() { _filePath = result.files.single.path; _fileBytes = result.files.single.bytes; });
+      setState(() 
+      { 
+       // _filePath = result.files.single.path; // stores file path
+        _fileBytes = null; // resets file bytes
+        _fileName = null; // resets file name
+      }); 
     }
   }
 
@@ -275,15 +281,17 @@ class CreateOrderPageState extends State<CreateOrderPage>
         quantity: _quantity,
         rate: _rate,
         estimatedPrice: estimatedPrice,
-        filePath: _filePath ?? '',
+        filePath: '',
       );
 
       if (_filePath != null && _fileBytes != null) {
-        await SaveFile.saveBytes(
+        newOrder.filePath = _fileName!;
+        
+        /*await SaveFile.saveBytes(
           printName: 'order_file',
           fileType: _filePath!.split('.').last,
           bytes: _fileBytes!,
-        );
+        );*/
       }
 
       submitNewOrder(newOrder); // submit new order
@@ -454,23 +462,21 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
   // file picker
   Widget _buildFilePicker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: _pickFile,
           style: ButtonStyle(
             padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
             backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-            side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+            side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
             minimumSize: WidgetStateProperty.all(const Size(100, 36)),
-            shape: WidgetStateProperty.all
-            (
-              RoundedRectangleBorder
-                (
-                  borderRadius: BorderRadius.circular(8.0),
-                )
-            )
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
           ),
           child: Text(
             'PICK A FILE',
@@ -478,18 +484,28 @@ class CreateOrderPageState extends State<CreateOrderPage>
               fontSize: 14.0,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.bold,
-              color: CSS.lightTheme.primaryColorLight
+              color: CSS.lightTheme.primaryColorLight,
             ),
           ),
         ),
-        if (_filePath != null)
-          Text(
-            'Selected file: $_filePath',
-            style: const TextStyle(color: Color(0xFF000000)),
+
+        const SizedBox(width: 10), // Spacing between the button and file name
+
+        // Display the selected file name next to the button
+        if (_fileName != null)
+          Expanded(
+            child: Text(
+              _fileName!, // Display file name
+              style: const TextStyle(color: Color(0xFF000000), fontSize: 14.0),
+              overflow: TextOverflow.ellipsis, // Truncate if too long
+            ),
           ),
       ],
     );
   }
+
+
+
 
   // selection form
   Widget _buildSelection() {
@@ -922,7 +938,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   Text(
                     'Hi, ${globalOrderDetails.userName}',
                     style: TextStyle(
-                      color: CSS.lightTheme.primaryColor,
+                      color: CSS.lightTheme.primaryColorDark,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.bold,
                       fontSize: 24.0,
