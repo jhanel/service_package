@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-//import 'package:service_package/web_save_file.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
@@ -889,76 +888,78 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         backgroundColor: CSS.lightTheme.primaryColorLight,
       ),
 
-      body: Container(
-        color: CSS.lightTheme.hoverColor,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 16.0),
-            if (!_isTracking) ...[
-              TextField(
-                controller: _orderIdController,
-                decoration: InputDecoration(
-                  labelText: 'Enter Order ID',
-                  border: const OutlineInputBorder(),
-                  labelStyle: TextStyle(
-                    color: CSS.lightTheme.shadowColor,
-                    fontFamily: 'Klavika', fontWeight: FontWeight.normal,
-                  ),
-                ),
-                style: const TextStyle(color: Color(0xFF000000)),
-              ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _trackOrder,
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), 
-                  )),
-                ),
-                child: Text('TRACK',
-                  style: TextStyle(
-                    color: CSS.lightTheme.primaryColorLight,
-                    fontFamily: 'Klavika', fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-            ]
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isMobile = constraints.maxWidth < 600.0;
 
-            // Main widget layout method
-              else ...[
-              // display greeting message and order details container when tracking
-              Row(
+          return SingleChildScrollView(
+            child: Container(
+              height: isMobile ? null : MediaQuery.of(context).size.height, // Adjust for desktop view
+              padding: const EdgeInsets.all(16.0),
+              color: CSS.lightTheme.hoverColor,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Hi, ${globalOrderDetails.userName}',
-                    style: TextStyle(
-                      color: CSS.lightTheme.primaryColorDark,
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
+                mainAxisSize: MainAxisSize.min, // To prevent extra space
+                children: <Widget>[
+                  const SizedBox(height: 16.0),
+                  if (!_isTracking) ...[
+                    TextField(
+                      controller: _orderIdController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter Order ID',
+                        border: const OutlineInputBorder(),
+                        labelStyle: TextStyle(
+                          color: CSS.lightTheme.shadowColor,
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      style: const TextStyle(color: Color(0xFF000000)),
                     ),
-                  ),
-                  const SizedBox(width: 16.0),
-                  Expanded(
-                    child: _buildOrderDetails(), // order deets
-                  ),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _trackOrder,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                        side: WidgetStateProperty.all(
+                          BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor),
+                        ),
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'TRACK',
+                        style: TextStyle(
+                          color: CSS.lightTheme.primaryColorLight,
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ] else ...[
+                    Text(
+                      'Hi, ${globalOrderDetails.userName}',
+                      style: TextStyle(
+                        color: CSS.lightTheme.primaryColorDark,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    _buildOrderDetails(), // Order details container
+                  ],
                 ],
               ),
-            ],
-            const SizedBox(height: 16.0),
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }
-
-
 
   Widget _buildOrderDetails() {
     return LayoutBuilder(
