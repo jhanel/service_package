@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:service_package/web_save_file.dart';
+//import 'package:service_package/web_save_file.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:developer' as developer;
@@ -952,38 +952,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ),
             ],
             const SizedBox(height: 16.0),
-
-
-            /*if (_orderStatus.isNotEmpty) 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Greeting Message
-                  Text(
-                    'Hi, ${globalOrderDetails.userName}',
-                    style: const TextStyle(
-                      color: Color(0xFF2A94D4),
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0, 
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-
-                  // Order Details Section
-                  _buildOrderDetails(),
-
-                  const SizedBox(height: 16.0),
-
-                  // Order Status Section
-                  Container(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width, 
-                    ),
-                    child: _buildOrderStatus(),
-                  ),
-                ],
-              )*/
           ],
         ),
       ),
@@ -1286,7 +1254,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 void _trackOrder() {
   setState(() {
-    _orderStatus = 'Results for Order #${_orderIdController.text}:';
+    //_orderStatus = 'Results for Order #${_orderIdController.text}:';
     _isTracking = true; // hides input field and button
   });
 }
