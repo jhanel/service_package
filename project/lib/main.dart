@@ -94,7 +94,7 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
                   side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -868,7 +868,7 @@ class TrackOrderPage extends StatefulWidget {
 
 class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
-  String _orderStatus = ''; // *** COME BACK TO THIS
+  //final String _orderStatus = ''; 
   final double _volume = 100.0;
 
   bool _isTracking = false;
@@ -893,16 +893,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
           bool isMobile = constraints.maxWidth < 600.0;
 
           return SingleChildScrollView(
-            child: Container(
+            child: 
+            Container(
               height: isMobile ? null : MediaQuery.of(context).size.height, // Adjust for desktop view
               padding: const EdgeInsets.all(16.0),
               color: CSS.lightTheme.hoverColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // To prevent extra space
+                mainAxisSize: MainAxisSize.min, // Prevent extra space
                 children: <Widget>[
                   const SizedBox(height: 16.0),
                   if (!_isTracking) ...[
+                    // Order ID Input
                     TextField(
                       controller: _orderIdController,
                       decoration: InputDecoration(
@@ -917,6 +919,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       style: const TextStyle(color: Color(0xFF000000)),
                     ),
                     const SizedBox(height: 16.0),
+                    // Track Button
                     ElevatedButton(
                       onPressed: _trackOrder,
                       style: ButtonStyle(
@@ -940,6 +943,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       ),
                     ),
                   ] else ...[
+                    // Greeting and Stacked Containers
                     Text(
                       'Hi, ${globalOrderDetails.userName}',
                       style: TextStyle(
@@ -950,14 +954,54 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       ),
                     ),
                     const SizedBox(height: 16.0),
-                    _buildOrderDetails(), // Order details container
+
+                    // Responsive layout for desktop (side by side) and mobile (stacked)
+                    if (isMobile)
+                      Column(
+                        children: [
+                          // Order Details (1st Container) - Directly use _buildOrderDetails
+                          _buildOrderDetails(),
+                          const SizedBox(height: 16.0),
+                          // Order Status Container (2nd Container)
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: CSS.lightTheme.primaryColorLight,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: _buildOrderStatus(),
+                          ),
+                        ],
+                      )
+                    else
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Order Details (1st Container) - Directly use _buildOrderDetails
+                          Expanded(
+                            child: _buildOrderDetails(),
+                          ),
+                          const SizedBox(width: 16.0),
+                          // Order Status Container (2nd Container)
+                          Expanded(
+                            child: Container(
+                              height: 400, // Ensures matching height with the first container
+                              decoration: BoxDecoration(
+                                color: CSS.lightTheme.primaryColorLight,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: _buildOrderStatus(),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ],
               ),
             ),
           );
         },
-      ),
+      )
     );
   }
 
@@ -1245,12 +1289,84 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   ],
                 ),
               ),
+
+              const SizedBox( height: 18.0),
+              Align(
+              alignment: Alignment.bottomLeft,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Show confirmation dialog on button press
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Order Cancellation Request"),
+                        content: const Text("Are you sure you want to cancel your order?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: const Text("No"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close dialog
+                              _cancelOrder(context); // Execute cancellation logic
+                            },
+                            child: const Text("Yes"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  side: WidgetStateProperty.all(
+                    BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                child: Text(
+                  'REQUEST CANCELLATION',
+                  style: TextStyle(
+                    color: CSS.lightTheme.primaryColorLight,
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+
             ],
           ),
         );
       },
     );
   }
+
+  void _cancelOrder(BuildContext context) {
+  // Use the order number from globalOrderDetails
+  final String orderNumber = globalOrderDetails.orderNumber;
+
+  // Show a Snackbar with the cancellation message
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Order #$orderNumber is set for cancellation.'),
+      duration: const Duration(seconds: 3), // Show the Snackbar for 2 seconds
+    ),
+  );
+
+  // Redirect to the home page after the Snackbar is shown
+  Future.delayed(const Duration(seconds: 1), () {
+    Navigator.of(context).pushReplacementNamed('/home'); // Redirect to Home page
+  });
+}
 
 
 void _trackOrder() {
@@ -1262,68 +1378,98 @@ void _trackOrder() {
 
 
 
- Widget _buildOrderStatus() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        bool isMobile = constraints.maxWidth < 600.0;
 
-        return isMobile
-            ? SingleChildScrollView(
-                scrollDirection: Axis.vertical, // enables vertical scrolling
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildStatusContainer('Received', true),
-                    _buildStatusDivider(),
-                    _buildStatusContainer('Preparing', false),
-                    _buildStatusDivider(),
-                    _buildStatusContainer('Completed', false),
-                  ],
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildStatusContainer('Received', true),
-                  _buildDivider(),
-                  _buildStatusContainer('Preparing', false),
-                  _buildDivider(),
-                  _buildStatusContainer('Completed', false),
-                ],
-              );
-      },
+
+
+  Widget _buildOrderStatus() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: CSS.lightTheme.primaryColorLight,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3), // Shadow position
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Order Status Title with the same style as Order Details Title
+          Text(
+            'ORDER STATUS',
+            style: TextStyle(
+              color: CSS.lightTheme.primaryColor, // Same as Order Details title
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+              fontSize: 18.0,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+
+          // Larger gray inner container, matching the one in Order Details
+          Container(
+            width: double.infinity, // Takes up full width
+            padding: const EdgeInsets.all(16.0), // Slightly reduced padding to prevent overflow
+            decoration: BoxDecoration(
+              color: CSS.lightTheme.splashColor, // Same gray color as in Order Details
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+
+            // Vertically stacked order status bar for both mobile and desktop
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildStatusContainer('Received', true, isLarge: false),
+                _buildStatusDivider(), // Restoring dividers
+                _buildStatusContainer('In progress', false, isLarge: false),
+                _buildStatusDivider(),
+                _buildStatusContainer('Delivered', false, isLarge: false),
+                _buildStatusDivider(),
+                _buildStatusContainer('Completed', false, isLarge: false),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildStatusContainer(String title, bool isCompleted) {
+
+
+
+
+
+
+    Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       constraints: const BoxConstraints(
-        maxWidth: 200, // limits width to fit within mobile view
+        maxWidth: 220, // Reasonable width to prevent overflow
+        minHeight: 50.0, // Moderate height to prevent overflow
       ),
       decoration: BoxDecoration(
         color: isCompleted ? const Color(0xFF2A94D4) : const Color(0xFFBBBBBB),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFFFFFFFF),
-          fontSize: 14.0,
-          fontFamily: 'Klavika',
-          fontWeight: FontWeight.normal,
+      child: Center(
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: Color(0xFFFFFFFF),
+            fontSize: 16.0, // Slightly reduced font size to fit better
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDivider() {
-    return Container(
-      height: 2,
-      width: 20,
-      color: const Color(0xFF2A94D4),
-    );
-  }
 
   Widget _buildStatusDivider() {
     return Container(
