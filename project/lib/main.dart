@@ -56,10 +56,10 @@ class MyHomePage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryTextTheme.displayLarge!.color, 
+            color: Theme.of(context).secondaryHeaderColor,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColorLight,
+        backgroundColor: Theme.of(context).cardColor, // AppBar color
         actions: <Widget>[
           // Theme switcher dropdown in the AppBar
           Padding(
@@ -98,8 +98,8 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 )),
@@ -124,8 +124,8 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   )),
@@ -359,13 +359,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Enter Your Name',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).shadowColor,
+                      color: Theme.of(context).unselectedWidgetColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: const TextStyle(color: Color(0xFF000000)),
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please fill out the name field!';
@@ -377,15 +377,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 TextFormField(
                   controller: _journalNumController,
                   decoration: InputDecoration(
-                    labelText: 'Journal Transfer Number',
+                    labelText: 'Enter Journal Transfer Number',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).shadowColor,
+                      color: Theme.of(context).unselectedWidgetColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: const TextStyle(color: Color(0xFF000000)),
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the journal transfer number';
@@ -397,15 +397,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 TextFormField(
                   controller: _departmentController,
                   decoration: InputDecoration(
-                    labelText: 'Department',
+                    labelText: 'Enter Department',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).shadowColor,
+                      color: Theme.of(context).unselectedWidgetColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: const TextStyle(color: Color(0xFF000000)),
+                  style: TextStyle(color: Theme.of(context).primaryColorDark),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the department';
@@ -423,13 +423,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Enter Your Name',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).shadowColor,
+                        color: Theme.of(context).unselectedWidgetColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style: const TextStyle(color: Color(0xFF000000)),
+                    style: TextStyle(color: Theme.of(context).primaryColorDark),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please fill out the name field!';
@@ -445,13 +445,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Journal Transfer Number',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).shadowColor,
+                        color: Theme.of(context).unselectedWidgetColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style: const TextStyle(color: Color(0xFF000000)),
+                    style:  TextStyle(color: Theme.of(context).primaryColorDark),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the journal transfer number';
@@ -467,13 +467,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Department',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).shadowColor,
+                        color: Theme.of(context).unselectedWidgetColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style: const TextStyle(color: Color(0xFF000000)),
+                    style: TextStyle(color: Theme.of(context).primaryColorDark),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the department';
@@ -498,8 +498,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
           onPressed: _pickFile,
           style: ButtonStyle(
             padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
-            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-            side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
+            backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+            side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
             minimumSize: WidgetStateProperty.all(const Size(100, 36)),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
@@ -543,16 +543,16 @@ class CreateOrderPageState extends State<CreateOrderPage>
     width: double.infinity,
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
-      color: const Color(0xFFFFFFFF),
+      color: Theme.of(context).cardColor,
       borderRadius: BorderRadius.circular(8.0),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0xFF707070),
-          spreadRadius: 1,
-          blurRadius: 6,
-          offset: Offset(0, 3),
-        ),
-      ],
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor,
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(1, 1,),
+              ),
+            ],
     ),
       child: 
       Column
@@ -561,18 +561,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
         children: [
           DropdownButtonFormField<String>(
             value: _selectedProcess,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Select Process',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Color(0xFF000000),
+                color: Theme.of(context).shadowColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -593,18 +593,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
           ),
           DropdownButtonFormField<String>(
             value: _selectedUnit,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Select Unit',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Color(0xFF000000),
+                color: Theme.of(context).shadowColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -623,18 +623,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
           ),
           DropdownButtonFormField<String>(
             value: _selectedType,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Select Type',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Color(0xFF000000),
+                color: Theme.of(context).shadowColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -652,20 +652,20 @@ class CreateOrderPageState extends State<CreateOrderPage>
             },
           ),
           TextFormField(
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Enter Quantity',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Color(0xFF000000),
+                color: Theme.of(context).shadowColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
             ),
             keyboardType: TextInputType.number,
             initialValue: '1',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -682,9 +682,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
           const SizedBox(height: 20),
           Text(
             'Rate: $_rate per cubic unit',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -701,16 +701,16 @@ class CreateOrderPageState extends State<CreateOrderPage>
     (
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFF707070),
-            spreadRadius: 1,
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
-        ],
+        color: Theme.of(context).cardColor,
+      borderRadius: BorderRadius.circular(8.0),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor,
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(1, 1,),
+              ),
+            ],
       ),
       child: 
       Column
@@ -719,63 +719,63 @@ class CreateOrderPageState extends State<CreateOrderPage>
         children: [
           Text(
             'Process: $_selectedProcess',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
           Text(
             'Unit: $_selectedUnit',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
           Text(
             'Type: $_selectedType',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
           Text(
             'Quantity: $_quantity',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
           Text(
             'Rate: $_rate per cubic unit',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
           Text(
             'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
           ),
-          const Text(
+          Text(
             'Estimated Delivery:',
             style: TextStyle(
               fontSize: 20.0,
-              color: Color(0xFF000000),
+              color: Theme.of(context).shadowColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -793,8 +793,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
         _submitOrder(context); // pass context directly
       },
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
+        backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -821,12 +821,12 @@ class CreateOrderPageState extends State<CreateOrderPage>
         title: Text(
           'Create an Order',
           style: TextStyle(
-            color: Theme.of(context).primaryTextTheme.displayLarge!.color,
+            color: Theme.of(context).secondaryHeaderColor,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColorLight
+        backgroundColor: Theme.of(context).cardColor
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -834,7 +834,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             minHeight: MediaQuery.of(context).size.height, // minimum height is screen height
           ),
           child: Container(
-            color: const Color(0xFFEEEEEE),
+            color: Theme.of(context).canvasColor,
             padding: const EdgeInsets.all(16.0),
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -910,12 +910,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         title: Text(
           'Track Your Order',
           style: TextStyle(
-            color: Theme.of(context).primaryTextTheme.displayLarge!.color,
+            color: Theme.of(context).secondaryHeaderColor,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColorLight,
+        backgroundColor: Theme.of(context).cardColor,
       ),
 
       body: LayoutBuilder(
@@ -924,10 +924,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
           return Container(
             padding: const EdgeInsets.all(16.0),
-  color: Theme.of(context).hoverColor,
-  constraints: BoxConstraints(
-    minHeight: MediaQuery.of(context).size.height, // Ensure full screen height on larger screens
-  ),
+            color: Theme.of(context).canvasColor,
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height, // Ensure full screen height on larger screens
+            ),
             child: 
             SingleChildScrollView(
               child: Column(
@@ -943,21 +943,21 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         labelText: 'Enter Order ID',
                         border: const OutlineInputBorder(),
                         labelStyle: TextStyle(
-                          color: Theme.of(context).shadowColor,
+                          color: Theme.of(context).unselectedWidgetColor,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      style: const TextStyle(color: Color(0xFF000000)),
+                      style: TextStyle(color: Theme.of(context).unselectedWidgetColor),
                     ),
                     const SizedBox(height: 16.0),
                     // Track Button
                     ElevatedButton(
                       onPressed: _trackOrder,
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                        backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
                         side: WidgetStateProperty.all(
-                          BorderSide(width: 2.0, color: Theme.of(context).primaryColor),
+                          BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor),
                         ),
                         shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
@@ -979,7 +979,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     Text(
                       'Hi, ${globalOrderDetails.userName}',
                       style: TextStyle(
-                        color: Theme.of(context).primaryColorDark,
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.bold,
                         fontSize: 24.0,
@@ -1045,14 +1045,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
           margin: const EdgeInsets.only(top: 16.0),
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColorLight, 
+            color: Theme.of(context).splashColor, 
             borderRadius: BorderRadius.circular(8.0),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Colors.black26,
+                color: Theme.of(context).shadowColor,
                 spreadRadius: 1,
-                blurRadius: 6,
-                offset: Offset(0, 3),
+                blurRadius: 4,
+                offset: const Offset(1, 1,),
               ),
             ],
           ),
@@ -1067,7 +1067,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               Text(
                 'ORDER DETAILS',
                 style: TextStyle(
-                  color: Theme.of(context).primaryColor, 
+                  color: Theme.of(context).secondaryHeaderColor, 
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
                   fontSize: 18.0,
@@ -1080,7 +1080,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration
                 (
-                  color: Theme.of(context).splashColor, 
+                  color: Theme.of(context).cardColor, 
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -1094,7 +1094,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Order Number:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark, 
+                              color: Theme.of(context).shadowColor, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1105,7 +1105,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.orderNumber,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1123,7 +1123,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Name:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark, 
+                              color: Theme.of(context).shadowColor, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1134,7 +1134,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.userName,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1152,7 +1152,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Process:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark, 
+                              color: Theme.of(context).shadowColor, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1163,7 +1163,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.process,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1181,7 +1181,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Unit:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark,
+                              color: Theme.of(context).shadowColor,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1192,7 +1192,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.unit,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1210,7 +1210,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Type:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark,
+                              color: Theme.of(context).shadowColor,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1221,7 +1221,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.type,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1239,7 +1239,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Quantity:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark, 
+                              color: Theme.of(context).shadowColor, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1250,7 +1250,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.quantity.toString(),
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1268,7 +1268,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Rate:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark,
+                              color: Theme.of(context).shadowColor,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1279,7 +1279,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               '${globalOrderDetails.rate} per cubic unit',
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark, 
+                                color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1297,7 +1297,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Estimated Price:',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorDark,
+                              color: Theme.of(context).shadowColor,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1308,7 +1308,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               '\$${(_volume * (globalOrderDetails.rate) * (globalOrderDetails.quantity)).toStringAsFixed(2)}',
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Theme.of(context).primaryColorDark,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1354,9 +1354,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
                   side: WidgetStateProperty.all(
-                    BorderSide(width: 2.0, color: Theme.of(context).primaryColor),
+                    BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor),
                   ),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
@@ -1417,14 +1417,14 @@ void _trackOrder() {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight,
+        color: Theme.of(context).splashColor,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // Shadow position
+            color: Theme.of(context).shadowColor,
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(1, 1), // Shadow position
           ),
         ],
       ),
@@ -1435,7 +1435,7 @@ void _trackOrder() {
           Text(
             'ORDER STATUS',
             style: TextStyle(
-              color: Theme.of(context).primaryColor, // Same as Order Details title
+              color: Theme.of(context).secondaryHeaderColor, // Same as Order Details title
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
               fontSize: 18.0,
@@ -1448,7 +1448,7 @@ void _trackOrder() {
             width: double.infinity, // Takes up full width
             padding: const EdgeInsets.all(16.0), // Slightly reduced padding to prevent overflow
             decoration: BoxDecoration(
-              color: Theme.of(context).splashColor, // Same gray color as in Order Details
+              color: Theme.of(context).cardColor, 
               borderRadius: BorderRadius.circular(10.0),
             ),
 
@@ -1485,14 +1485,14 @@ void _trackOrder() {
         minHeight: 50.0, // Moderate height to prevent overflow
       ),
       decoration: BoxDecoration(
-        color: isCompleted ? const Color(0xFF2A94D4) : const Color(0xFFBBBBBB),
+        color: isCompleted ? Theme.of(context).secondaryHeaderColor: Theme.of(context).hoverColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Center(
         child: Text(
           title,
-          style: const TextStyle(
-            color: Color(0xFFFFFFFF),
+          style: TextStyle(
+            color: isCompleted ? Theme.of(context).primaryColorLight : Theme.of(context).indicatorColor,
             fontSize: 16.0, // Slightly reduced font size to fit better
             fontFamily: 'Klavika',
             fontWeight: FontWeight.normal,
@@ -1507,7 +1507,7 @@ void _trackOrder() {
     return Container(
       height: 10,
       width: 2,
-      color: const Color(0xFF2A94D4),
+      color: Theme.of(context).secondaryHeaderColor,
     );
   }
 }
