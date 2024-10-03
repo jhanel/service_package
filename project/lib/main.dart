@@ -892,12 +892,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         builder: (context, constraints) {
           bool isMobile = constraints.maxWidth < 600.0;
 
-          return SingleChildScrollView(
+          return Container(
+            padding: const EdgeInsets.all(16.0),
+  color: CSS.lightTheme.hoverColor,
+  constraints: BoxConstraints(
+    minHeight: MediaQuery.of(context).size.height, // Ensure full screen height on larger screens
+  ),
             child: 
-            Container(
-              height: isMobile ? null : MediaQuery.of(context).size.height, // Adjust for desktop view
-              padding: const EdgeInsets.all(16.0),
-              color: CSS.lightTheme.hoverColor,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min, // Prevent extra space
