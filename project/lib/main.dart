@@ -20,22 +20,32 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  
-  ThemeData currentTheme = CSS.lightTheme; // default light theme from css.dart
+  // Set the default theme to light
+  ThemeData currentTheme = CSS.lightTheme;
+
+  // Function to change the theme dynamically
+  void switchTheme(LsiThemes theme) {
+    setState(() {
+      currentTheme = CSS.changeTheme(theme);  // Update theme using the method in css.dart
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Limbitless Team Services',
-      theme: currentTheme,
-      home: const MyHomePage(),
-      debugShowCheckedModeBanner: false,  
+      theme: currentTheme,  // Apply the current theme
+      home: MyHomePage(onThemeChanged: switchTheme), // Pass the theme switch function
+      debugShowCheckedModeBanner: false,  // Removes the debug label
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+
+  final Function(LsiThemes) onThemeChanged;
+
+  const MyHomePage({Key? key, required this.onThemeChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +56,30 @@ class MyHomePage extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
-            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
+            color: Theme.of(context).primaryTextTheme.displayLarge!.color, 
           ),
         ),
-        backgroundColor: CSS.lightTheme.primaryColorLight
+        backgroundColor: Theme.of(context).primaryColorLight,
+        actions: <Widget>[
+          // Theme switcher dropdown in the AppBar
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DropdownButton<LsiThemes>(
+              value: LsiThemes.light,  // Default selection is Light Theme
+              items: LsiThemes.values.map((LsiThemes theme) {
+                return DropdownMenuItem<LsiThemes>(
+                  value: theme,
+                  child: Text(theme.name),
+                );
+              }).toList(),
+              onChanged: (LsiThemes? newTheme) {
+                if (newTheme != null) {
+                  onThemeChanged(newTheme);  // Call the function to change the theme
+                }
+              },
+            ),
+          ),
+        ],
       ),
       body: Container(
         color: Theme.of(context).canvasColor,
@@ -68,8 +98,8 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 )),
@@ -77,7 +107,7 @@ class MyHomePage extends StatelessWidget {
                 child: Text(
                   'CREATE ORDER',
                   style: TextStyle(
-                    color: CSS.lightTheme.primaryColorLight,
+                    color: Theme.of(context).primaryColorLight,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.bold
                   ),
@@ -95,7 +125,7 @@ class MyHomePage extends StatelessWidget {
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   )),
@@ -103,7 +133,7 @@ class MyHomePage extends StatelessWidget {
                 child: Text(
                   'TRACK ORDER',
                   style: TextStyle(
-                    color: CSS.lightTheme.primaryColorLight,
+                    color: Theme.of(context).primaryColorLight,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.bold,
                   ),
@@ -329,7 +359,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Enter Your Name',
                     labelStyle: TextStyle(
-                      color: CSS.lightTheme.shadowColor,
+                      color: Theme.of(context).shadowColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
@@ -349,7 +379,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Journal Transfer Number',
                     labelStyle: TextStyle(
-                      color: CSS.lightTheme.shadowColor,
+                      color: Theme.of(context).shadowColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
@@ -369,7 +399,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Department',
                     labelStyle: TextStyle(
-                      color: CSS.lightTheme.shadowColor,
+                      color: Theme.of(context).shadowColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
@@ -393,7 +423,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Enter Your Name',
                       labelStyle: TextStyle(
-                        color: CSS.lightTheme.shadowColor,
+                        color: Theme.of(context).shadowColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
@@ -415,7 +445,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Journal Transfer Number',
                       labelStyle: TextStyle(
-                        color: CSS.lightTheme.shadowColor,
+                        color: Theme.of(context).shadowColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
@@ -437,7 +467,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Department',
                       labelStyle: TextStyle(
-                        color: CSS.lightTheme.shadowColor,
+                        color: Theme.of(context).shadowColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
@@ -468,8 +498,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
           onPressed: _pickFile,
           style: ButtonStyle(
             padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
-            backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-            side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+            backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+            side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
             minimumSize: WidgetStateProperty.all(const Size(100, 36)),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
@@ -483,7 +513,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
               fontSize: 14.0,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.bold,
-              color: CSS.lightTheme.primaryColorLight,
+              color: Theme.of(context).primaryColorLight,
             ),
           ),
         ),
@@ -763,8 +793,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
         _submitOrder(context); // pass context directly
       },
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
-        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor)),
+        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
+        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).primaryColor)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -776,7 +806,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
         style: TextStyle(
           fontFamily: 'Klavika',
           fontWeight: FontWeight.bold,
-          color: CSS.lightTheme.primaryColorLight,
+          color: Theme.of(context).primaryColorLight,
         ),
       ),
     ),
@@ -791,12 +821,12 @@ class CreateOrderPageState extends State<CreateOrderPage>
         title: Text(
           'Create an Order',
           style: TextStyle(
-            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
+            color: Theme.of(context).primaryTextTheme.displayLarge!.color,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: CSS.lightTheme.primaryColorLight
+        backgroundColor: Theme.of(context).primaryColorLight
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
@@ -880,12 +910,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         title: Text(
           'Track Your Order',
           style: TextStyle(
-            color: CSS.lightTheme.primaryTextTheme.displayLarge!.color,
+            color: Theme.of(context).primaryTextTheme.displayLarge!.color,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: CSS.lightTheme.primaryColorLight,
+        backgroundColor: Theme.of(context).primaryColorLight,
       ),
 
       body: LayoutBuilder(
@@ -894,7 +924,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
           return Container(
             padding: const EdgeInsets.all(16.0),
-  color: CSS.lightTheme.hoverColor,
+  color: Theme.of(context).hoverColor,
   constraints: BoxConstraints(
     minHeight: MediaQuery.of(context).size.height, // Ensure full screen height on larger screens
   ),
@@ -913,7 +943,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         labelText: 'Enter Order ID',
                         border: const OutlineInputBorder(),
                         labelStyle: TextStyle(
-                          color: CSS.lightTheme.shadowColor,
+                          color: Theme.of(context).shadowColor,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                         ),
@@ -925,9 +955,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     ElevatedButton(
                       onPressed: _trackOrder,
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                        backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
                         side: WidgetStateProperty.all(
-                          BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor),
+                          BorderSide(width: 2.0, color: Theme.of(context).primaryColor),
                         ),
                         shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
@@ -938,7 +968,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       child: Text(
                         'TRACK',
                         style: TextStyle(
-                          color: CSS.lightTheme.primaryColorLight,
+                          color: Theme.of(context).primaryColorLight,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.bold,
                         ),
@@ -949,7 +979,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     Text(
                       'Hi, ${globalOrderDetails.userName}',
                       style: TextStyle(
-                        color: CSS.lightTheme.primaryColorDark,
+                        color: Theme.of(context).primaryColorDark,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.bold,
                         fontSize: 24.0,
@@ -968,7 +998,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: CSS.lightTheme.primaryColorLight,
+                              color: Theme.of(context).primaryColorLight,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: _buildOrderStatus(),
@@ -989,7 +1019,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                             child: Container(
                               height: 400, // Ensures matching height with the first container
                               decoration: BoxDecoration(
-                                color: CSS.lightTheme.primaryColorLight,
+                                color: Theme.of(context).primaryColorLight,
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               child: _buildOrderStatus(),
@@ -1015,7 +1045,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
           margin: const EdgeInsets.only(top: 16.0),
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: CSS.lightTheme.primaryColorLight, 
+            color: Theme.of(context).primaryColorLight, 
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: const [
               BoxShadow(
@@ -1037,7 +1067,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               Text(
                 'ORDER DETAILS',
                 style: TextStyle(
-                  color: CSS.lightTheme.primaryColor, 
+                  color: Theme.of(context).primaryColor, 
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
                   fontSize: 18.0,
@@ -1050,7 +1080,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration
                 (
-                  color: CSS.lightTheme.splashColor, 
+                  color: Theme.of(context).splashColor, 
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -1064,7 +1094,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Order Number:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark, 
+                              color: Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1075,7 +1105,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.orderNumber,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1093,7 +1123,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Name:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark, 
+                              color: Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1104,7 +1134,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.userName,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1122,7 +1152,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Process:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark, 
+                              color: Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1133,7 +1163,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.process,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1151,7 +1181,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Unit:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark,
+                              color: Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1162,7 +1192,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.unit,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1180,7 +1210,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Type:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark,
+                              color: Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1191,7 +1221,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.type,
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1209,7 +1239,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Quantity:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark, 
+                              color: Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1220,7 +1250,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               globalOrderDetails.quantity.toString(),
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark,
+                                color: Theme.of(context).primaryColorDark,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1238,7 +1268,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Rate:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark,
+                              color: Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1249,7 +1279,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               '${globalOrderDetails.rate} per cubic unit',
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark, 
+                                color: Theme.of(context).primaryColorDark, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1267,7 +1297,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Estimated Price:',
                             style: TextStyle(
-                              color: CSS.lightTheme.primaryColorDark,
+                              color: Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1278,7 +1308,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                               '\$${(_volume * (globalOrderDetails.rate) * (globalOrderDetails.quantity)).toStringAsFixed(2)}',
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: CSS.lightTheme.primaryColorDark,
+                                color: Theme.of(context).primaryColorDark,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16.0,
@@ -1324,9 +1354,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   );
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(CSS.lightTheme.primaryColor),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
                   side: WidgetStateProperty.all(
-                    BorderSide(width: 2.0, color: CSS.lightTheme.primaryColor),
+                    BorderSide(width: 2.0, color: Theme.of(context).primaryColor),
                   ),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
@@ -1337,7 +1367,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                 child: Text(
                   'REQUEST CANCELLATION',
                   style: TextStyle(
-                    color: CSS.lightTheme.primaryColorLight,
+                    color: Theme.of(context).primaryColorLight,
                     fontFamily: 'Klavika',
                     fontWeight: FontWeight.bold,
                   ),
@@ -1387,7 +1417,7 @@ void _trackOrder() {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: CSS.lightTheme.primaryColorLight,
+        color: Theme.of(context).primaryColorLight,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -1405,7 +1435,7 @@ void _trackOrder() {
           Text(
             'ORDER STATUS',
             style: TextStyle(
-              color: CSS.lightTheme.primaryColor, // Same as Order Details title
+              color: Theme.of(context).primaryColor, // Same as Order Details title
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
               fontSize: 18.0,
@@ -1418,7 +1448,7 @@ void _trackOrder() {
             width: double.infinity, // Takes up full width
             padding: const EdgeInsets.all(16.0), // Slightly reduced padding to prevent overflow
             decoration: BoxDecoration(
-              color: CSS.lightTheme.splashColor, // Same gray color as in Order Details
+              color: Theme.of(context).splashColor, // Same gray color as in Order Details
               borderRadius: BorderRadius.circular(10.0),
             ),
 
