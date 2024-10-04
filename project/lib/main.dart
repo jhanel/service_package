@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
 import 'css.dart';
+import 'admin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -137,13 +138,18 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // ADMIN
               ElevatedButton(
                 onPressed: () {
-                  // Navigate to the admin page when the button is pressed
-                  Navigator.pushNamed(context, '/admin');
+                  // Navigate to the AdminServices page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdminServices()),
+                  );
                 },
-                child: Text("Go to Admin Page"),
-              ),
+                child: const Text('ADMIN'),
+              )
             ],
           ),
         ),
@@ -161,6 +167,9 @@ class NewOrder {
   final double rate;
   final double estimatedPrice;
   String filePath; // add a new field for the file path
+  final String dateSubmitted; // New field for date submitted
+  final String journalTransferNumber; // New field for journal entry number
+  final String department; 
 
   NewOrder
   (
@@ -172,49 +181,11 @@ class NewOrder {
       required this.rate,
       required this.estimatedPrice,
       required this.filePath,
+      required this.dateSubmitted, // Initialize the new field
+      required this.journalTransferNumber, // Initialize the new field
+      required this.department,
     }
   );
-
-  Map<String, dynamic> toJson() 
-  {
-    return 
-    {
-      'process': process,
-      'unit': unit,
-      'type': type,
-      'quantity': quantity,
-      'rate': rate,
-      'estimatedPrice': estimatedPrice,
-      'filePath': filePath, // include file path in JSON
-    };
-  }
-}
-
-class AdminServices extends StatelessWidget {
-  const AdminServices({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Services Admin',
-          style: TextStyle(
-            fontFamily: 'Klavika', // Assuming you're using this font elsewhere
-            fontWeight: FontWeight.bold,
-            fontSize: 22.0, // Adjust as necessary for your design
-          ),
-        ),
-        backgroundColor: Colors.blueAccent, // You can modify this to your app's theme color
-      ),
-      body: const Center(
-        child: Text(
-          'Orders will be displayed here.', // Placeholder for content
-          style: TextStyle(fontSize: 18.0),
-        ),
-      ),
-    );
-  }
 }
 
 class CreateOrderPage extends StatefulWidget 
@@ -236,17 +207,20 @@ class CreateOrderPageState extends State<CreateOrderPage>
   String? _filePath;
   Uint8List? _fileBytes;
   String? _fileName;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _selectedProcess = 'Thermoforming';
   String _selectedUnit = 'mm';
   String _selectedType = 'Aluminum';
-  double _rate = 0.0;
-  final double _volume = 100.0;
-  int _quantity = 1;
-  List<dynamic> rates = [];
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _journalNumController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
+  final String _journalTransferNumber = '';
+  final String _department = '';
+  final String _dateSubmitted = '';
+  final double _volume = 100.0;
+  double _rate = 0.0;
+  int _quantity = 1;
+  List<dynamic> rates = [];
 
   void _loadRates() 
   {
@@ -323,16 +297,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
         rate: _rate,
         estimatedPrice: estimatedPrice,
         filePath: '',
+        dateSubmitted: _dateSubmitted,
+        journalTransferNumber: _journalTransferNumber,
+        department: _department
       );
 
       if (_filePath != null && _fileBytes != null) {
-        newOrder.filePath = _fileName!;
-        
-        /*await SaveFile.saveBytes(
-          printName: 'order_file',
-          fileType: _filePath!.split('.').last,
-          bytes: _fileBytes!,
-        );*/
+        newOrder.filePath = _fileName!;    
       }
 
       // store order details in global variable
