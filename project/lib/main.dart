@@ -1,9 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:io';
 import 'dart:convert';
-import 'dart:developer' as developer;
 import 'dart:typed_data';
 import 'dart:math';
 import 'css.dart';
@@ -139,6 +137,13 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to the admin page when the button is pressed
+                  Navigator.pushNamed(context, '/admin');
+                },
+                child: Text("Go to Admin Page"),
+              ),
             ],
           ),
         ),
@@ -185,24 +190,31 @@ class NewOrder {
   }
 }
 
-Future<void> submitNewOrder(NewOrder order) async 
-{
-  const String filePath = 'data.json'; // path to JSON file
+class AdminServices extends StatelessWidget {
+  const AdminServices({super.key});
 
-  File file = File(filePath); // read existing JSON file
-  List<dynamic> orders = [];
-  
-  if (await file.exists()) 
-  {
-    String contents = await file.readAsString();
-    orders = jsonDecode(contents);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Services Admin',
+          style: TextStyle(
+            fontFamily: 'Klavika', // Assuming you're using this font elsewhere
+            fontWeight: FontWeight.bold,
+            fontSize: 22.0, // Adjust as necessary for your design
+          ),
+        ),
+        backgroundColor: Colors.blueAccent, // You can modify this to your app's theme color
+      ),
+      body: const Center(
+        child: Text(
+          'Orders will be displayed here.', // Placeholder for content
+          style: TextStyle(fontSize: 18.0),
+        ),
+      ),
+    );
   }
-
-  orders.add(order.toJson()); // append new order
-
-  await file.writeAsString(jsonEncode(orders)); // write updated list back to the file
-
-  developer.log('Order submitted!');
 }
 
 class CreateOrderPage extends StatefulWidget 
@@ -323,8 +335,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
         );*/
       }
 
-      submitNewOrder(newOrder); // submit new order
-
       // store order details in global variable
 
       globalOrderDetails = OrderDetails()
@@ -359,13 +369,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Enter Your Name',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).unselectedWidgetColor,
+                      color:Theme.of(context).highlightColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).primaryColorDark),
+                  style: TextStyle(color: Theme.of(context).highlightColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please fill out the name field!';
@@ -379,13 +389,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Enter Journal Transfer Number',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).unselectedWidgetColor,
+                      color: Theme.of(context).highlightColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).primaryColorDark),
+                  style: TextStyle(color: Theme.of(context).highlightColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the journal transfer number';
@@ -399,13 +409,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   decoration: InputDecoration(
                     labelText: 'Enter Department',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).unselectedWidgetColor,
+                      color: Theme.of(context).highlightColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).primaryColorDark),
+                  style: TextStyle(color: Theme.of(context).highlightColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter the department';
@@ -423,13 +433,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Enter Your Name',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).unselectedWidgetColor,
+                        color: Theme.of(context).highlightColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style: TextStyle(color: Theme.of(context).primaryColorDark),
+                    style: TextStyle(color: Theme.of(context).highlightColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please fill out the name field!';
@@ -445,13 +455,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Journal Transfer Number',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).unselectedWidgetColor,
+                        color: Theme.of(context).highlightColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style:  TextStyle(color: Theme.of(context).primaryColorDark),
+                    style:  TextStyle(color: Theme.of(context).highlightColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the journal transfer number';
@@ -467,13 +477,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Department',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).unselectedWidgetColor,
+                        color: Theme.of(context).highlightColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
                         fontSize: 14.0,
                       ),
                     ),
-                    style: TextStyle(color: Theme.of(context).primaryColorDark),
+                    style: TextStyle(color: Theme.of(context).highlightColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the department';
@@ -525,7 +535,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
           Expanded(
             child: Text(
               _fileName!, // Display file name
-              style: const TextStyle(color: Color(0xFF000000), fontSize: 14.0),
+              style: TextStyle(color: Theme.of(context).highlightColor, fontSize: 14.0),
               overflow: TextOverflow.ellipsis, // Truncate if too long
             ),
           ),
@@ -565,7 +575,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Process',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).shadowColor,
+                color: Theme.of(context).highlightColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
@@ -597,7 +607,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Unit',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).shadowColor,
+                color: Theme.of(context).highlightColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
@@ -627,7 +637,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Type',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).shadowColor,
+                color: Theme.of(context).highlightColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
@@ -656,7 +666,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Enter Quantity',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).shadowColor,
+                color: Theme.of(context).highlightColor,
                 fontFamily: 'Klavika',
                 fontWeight: FontWeight.normal,
               ),
@@ -665,7 +675,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             initialValue: '1',
             style: TextStyle(
               fontSize: 16.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -684,7 +694,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Rate: $_rate per cubic unit',
             style: TextStyle(
               fontSize: 16.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -721,7 +731,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Process: $_selectedProcess',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -730,7 +740,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Unit: $_selectedUnit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -739,7 +749,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Type: $_selectedType',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -748,7 +758,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Quantity: $_quantity',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -757,7 +767,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Rate: $_rate per cubic unit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -766,7 +776,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -775,7 +785,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Delivery:',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).shadowColor,
+              color: Theme.of(context).highlightColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),

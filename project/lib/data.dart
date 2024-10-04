@@ -1,4 +1,4 @@
-import 'dart:convert'; // Import the Dart convert library for JSON handling
+/*import 'dart:convert'; // Import the Dart convert library for JSON handling
 
 class MaterialRate { // Define a class to represent the material rate
   final double rate; // Rate of the material
@@ -25,4 +25,4 @@ List<MaterialRate> parseRates(String jsonString) { // Function to parse a JSON s
 
   return parsed.map<MaterialRate>((json) => MaterialRate.fromJson(json)).toList(); // Map each JSON map to a MaterialRate object using the fromJson factory constructor
                                                                                    // Convert the Iterable to a List and return it
-}
+}*/
