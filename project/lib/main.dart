@@ -264,8 +264,8 @@ class CreateOrderPageState extends State<CreateOrderPage>
 
     if (result != null && result.files.isNotEmpty) {
       setState(() {
-        _fileBytes = result.files.first.bytes; // Store file bytes
-        _fileName = result.files.first.name;   // Store file name
+        _fileBytes = result.files.first.bytes; 
+        _fileName = result.files.first.name;   
       });
     }
   }
@@ -379,68 +379,95 @@ class CreateOrderPageState extends State<CreateOrderPage>
           : Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Name',
-                      labelStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
+                  child: Container(
+                    height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
-                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please fill enter a name!';
-                      }
-                      return null;
-                    },
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name!';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
-                  child: TextFormField(
-                    controller: _journalNumController,
-                    decoration: InputDecoration(
-                      labelText: 'Journal Transfer Number',
-                      labelStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
+                  child: Container(
+                    height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
-                    style:  TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a journal transfer number!';
-                      }
-                      return null;
-                    },
+                    child: TextFormField(
+                      controller: _journalNumController,
+                      decoration: InputDecoration(
+                        labelText: 'Journal Transfer Number',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      style:  TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a journal transfer number!';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
-                  child: TextFormField(
-                    controller: _departmentController,
-                    decoration: InputDecoration(
-                      labelText: 'Department',
-                      labelStyle: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
+                  child: Container(
+                    height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
-                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a department!';
-                      }
-                      return null;
-                    },
+                    child: TextFormField(
+                      controller: _departmentController,
+                      decoration: InputDecoration(
+                        labelText: 'Department',
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).secondaryHeaderColor,
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.normal,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a department!';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                 ),
               ],
