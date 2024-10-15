@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
 import 'css.dart';
-import 'admin.dart';
+//import 'admin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,14 +18,12 @@ class MyApp extends StatefulWidget {
   MyAppState createState() => MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
-  // Set the default theme to light
+class MyAppState extends State<MyApp> 
+{
   ThemeData currentTheme = CSS.lightTheme;
-
-  // Function to change the theme dynamically
   void switchTheme(LsiThemes theme) {
     setState(() {
-      currentTheme = CSS.changeTheme(theme);  // Update theme using the method in css.dart
+      currentTheme = CSS.changeTheme(theme);  
     });
   }
 
@@ -33,9 +31,9 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Limbitless Team Services',
-      theme: currentTheme,  // Apply the current theme
-      home: MyHomePage(onThemeChanged: switchTheme), // Pass the theme switch function
-      debugShowCheckedModeBanner: false,  // Removes the debug label
+      theme: currentTheme,  
+      home: MyHomePage(onThemeChanged: switchTheme), 
+      debugShowCheckedModeBanner: false,  
     );
   }
 }
@@ -58,13 +56,13 @@ class MyHomePage extends StatelessWidget {
             color: Theme.of(context).secondaryHeaderColor,
           ),
         ),
-        backgroundColor: Theme.of(context).cardColor, // AppBar color
+        backgroundColor: Theme.of(context).cardColor,
         actions: <Widget>[
           // Theme switcher dropdown in the AppBar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButton<LsiThemes>(
-              value: LsiThemes.light,  // Default selection is Light Theme
+              value: LsiThemes.light,  
               items: LsiThemes.values.map((LsiThemes theme) {
                 return DropdownMenuItem<LsiThemes>(
                   value: theme,
@@ -73,7 +71,7 @@ class MyHomePage extends StatelessWidget {
               }).toList(),
               onChanged: (LsiThemes? newTheme) {
                 if (newTheme != null) {
-                  onThemeChanged(newTheme);  // Call the function to change the theme
+                  onThemeChanged(newTheme);  
                 }
               },
             ),
@@ -86,9 +84,6 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-
-              // buttons for creating and tracking orders
-
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -113,7 +108,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 16.0),  // spacing between buttons
+              const SizedBox(height: 16.0), 
 
               ElevatedButton(
                 onPressed: () {
@@ -139,7 +134,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
 
-              // ADMIN
+              /*// ADMIN
               ElevatedButton(
                 onPressed: () {
                   // Navigate to the AdminServices page
@@ -149,7 +144,7 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
                 child: const Text('ADMIN'),
-              )
+              )*/
             ],
           ),
         ),
@@ -166,9 +161,9 @@ class NewOrder {
   final int quantity;
   final double rate;
   final double estimatedPrice;
-  String filePath; // add a new field for the file path
-  final String dateSubmitted; // New field for date submitted
-  final String journalTransferNumber; // New field for journal entry number
+  String filePath; 
+  final String dateSubmitted; 
+  final String journalTransferNumber; 
   final String department; 
 
   NewOrder
@@ -181,8 +176,8 @@ class NewOrder {
       required this.rate,
       required this.estimatedPrice,
       required this.filePath,
-      required this.dateSubmitted, // Initialize the new field
-      required this.journalTransferNumber, // Initialize the new field
+      required this.dateSubmitted, 
+      required this.journalTransferNumber, 
       required this.department,
     }
   );
@@ -261,30 +256,23 @@ class CreateOrderPageState extends State<CreateOrderPage>
     _calculateRate();
   }
 
-  Future<void> _pickFile() async 
-  {
-    FilePickerResult? result = await FilePicker.platform.pickFiles
-    (
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: acceptedExt.expand((x) => x).toList(),
     );
 
-    if (result != null) 
-    {
-      setState(() 
-      { 
-       // _filePath = result.files.single.path; // stores file path
-        _fileBytes = null; // resets file bytes
-        _fileName = null; // resets file name
-      }); 
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        _fileBytes = result.files.first.bytes; // Store file bytes
+        _fileName = result.files.first.name;   // Store file name
+      });
     }
   }
 
+
   void _submitOrder(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-
-      // generate random 3-digit number
-
       Random random = Random();
       int orderNumber = 100 + random.nextInt(900);
 
@@ -305,9 +293,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
       if (_filePath != null && _fileBytes != null) {
         newOrder.filePath = _fileName!;    
       }
-
-      // store order details in global variable
-
       globalOrderDetails = OrderDetails()
         ..orderNumber = orderNumber.toString()
         ..userName = _nameController.text
@@ -317,20 +302,15 @@ class CreateOrderPageState extends State<CreateOrderPage>
         ..process = _selectedProcess
         ..unit = _selectedUnit;
 
-      // display snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
       );
     }
   }
 
-
-  // HELPER FUNCTIONS
-  
-  // form fields (name, journal, department)
   Widget _buildForm(bool isMobile) {
     return Form(
-      key: _formKey,  // attach the form key
+      key: _formKey, 
       child: isMobile
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,18 +318,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: 'Enter Your Name',
+                    labelText: 'Name',
                     labelStyle: TextStyle(
-                      color:Theme.of(context).highlightColor,
+                      color:Theme.of(context).secondaryHeaderColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).highlightColor),
+                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please fill out the name field!';
+                      return 'Please enter a name field!';
                     }
                     return null;
                   },
@@ -358,18 +338,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 TextFormField(
                   controller: _journalNumController,
                   decoration: InputDecoration(
-                    labelText: 'Enter Journal Transfer Number',
+                    labelText: 'Journal Transfer Number',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).highlightColor,
+                      color: Theme.of(context).secondaryHeaderColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).highlightColor),
+                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the journal transfer number';
+                      return 'Please enter a journal transfer number';
                     }
                     return null;
                   },
@@ -378,18 +358,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 TextFormField(
                   controller: _departmentController,
                   decoration: InputDecoration(
-                    labelText: 'Enter Department',
+                    labelText: 'Department',
                     labelStyle: TextStyle(
-                      color: Theme.of(context).highlightColor,
+                      color: Theme.of(context).secondaryHeaderColor,
                       fontFamily: 'Klavika',
                       fontWeight: FontWeight.normal,
                       fontSize: 12.0,
                     ),
                   ),
-                  style: TextStyle(color: Theme.of(context).highlightColor),
+                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the department';
+                      return 'Please enter a department!';
                     }
                     return null;
                   },
@@ -402,18 +382,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                   child: TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'Enter Your Name',
+                      labelText: 'Name',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).highlightColor,
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
-                        fontSize: 14.0,
+                        fontSize: 12.0,
                       ),
                     ),
-                    style: TextStyle(color: Theme.of(context).highlightColor),
+                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please fill out the name field!';
+                        return 'Please fill enter a name!';
                       }
                       return null;
                     },
@@ -426,16 +406,16 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Journal Transfer Number',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).highlightColor,
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
-                        fontSize: 14.0,
+                        fontSize: 12.0,
                       ),
                     ),
-                    style:  TextStyle(color: Theme.of(context).highlightColor),
+                    style:  TextStyle(color: Theme.of(context).secondaryHeaderColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the journal transfer number';
+                        return 'Please enter a journal transfer number!';
                       }
                       return null;
                     },
@@ -448,16 +428,16 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     decoration: InputDecoration(
                       labelText: 'Department',
                       labelStyle: TextStyle(
-                        color: Theme.of(context).highlightColor,
+                        color: Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.normal,
-                        fontSize: 14.0,
+                        fontSize: 12.0,
                       ),
                     ),
-                    style: TextStyle(color: Theme.of(context).highlightColor),
+                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the department';
+                        return 'Please enter a department!';
                       }
                       return null;
                     },
@@ -468,9 +448,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
-
-
-  // file picker
   Widget _buildFilePicker() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -499,14 +476,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
           ),
         ),
 
-        const SizedBox(width: 10), // Spacing between the button and file name
+        const SizedBox(width: 10), 
 
-        // Display the selected file name next to the button
         if (_fileName != null)
           Expanded(
             child: Text(
-              _fileName!, // Display file name
-              style: TextStyle(color: Theme.of(context).highlightColor, fontSize: 14.0),
+              _fileName!, 
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor, fontSize: 12.0),
               overflow: TextOverflow.ellipsis, // Truncate if too long
             ),
           ),
@@ -514,10 +490,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
-
-
-
-  // selection form
   Widget _buildSelection() {
   return Container
   (
@@ -546,9 +518,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Process',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).highlightColor,
+                color: Theme.of(context).secondaryHeaderColor,
                 fontFamily: 'Klavika',
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
               ),
             ),
             style: TextStyle(
@@ -578,9 +550,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Unit',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).highlightColor,
+                color: Theme.of(context).secondaryHeaderColor,
                 fontFamily: 'Klavika',
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
               ),
             ),
             style: TextStyle(
@@ -608,9 +580,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Select Type',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).highlightColor,
+                color: Theme.of(context).secondaryHeaderColor,
                 fontFamily: 'Klavika',
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
               ),
             ),
             style: TextStyle(
@@ -637,16 +609,16 @@ class CreateOrderPageState extends State<CreateOrderPage>
               labelText: 'Enter Quantity',
               labelStyle: TextStyle(
                 fontSize: 16.0,
-                color: Theme.of(context).highlightColor,
+                color: Theme.of(context).secondaryHeaderColor,
                 fontFamily: 'Klavika',
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
               ),
             ),
             keyboardType: TextInputType.number,
             initialValue: '1',
             style: TextStyle(
               fontSize: 16.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -665,9 +637,9 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Rate: $_rate per cubic unit',
             style: TextStyle(
               fontSize: 16.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
@@ -675,7 +647,6 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
-  // generate quote
   Widget _buildQuote() {
     return 
     Container
@@ -702,7 +673,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Process: $_selectedProcess',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -711,7 +682,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Unit: $_selectedUnit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -720,7 +691,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Type: $_selectedType',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -729,7 +700,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Quantity: $_quantity',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -738,7 +709,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Rate: $_rate per cubic unit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -747,7 +718,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -756,7 +727,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Delivery:',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).highlightColor,
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -766,12 +737,11 @@ class CreateOrderPageState extends State<CreateOrderPage>
     );
   }
 
-  // Helper function for the submitting order
   Widget _buildSubmitOrder() {
   return Center(
     child: ElevatedButton(
       onPressed: () {
-        _submitOrder(context); // pass context directly
+        _submitOrder(context);
       },
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
@@ -812,7 +782,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height, // minimum height is screen height
+            minHeight: MediaQuery.of(context).size.height, 
           ),
           child: Container(
             color: Theme.of(context).canvasColor,
@@ -824,17 +794,14 @@ class CreateOrderPageState extends State<CreateOrderPage>
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // FORM
                     _buildForm(isMobile),
 
                     const SizedBox(height: 30.0),
 
-                    // FILE PICKER
                     _buildFilePicker(),
 
                     const SizedBox(height: 30.0),
 
-                    // SELECTION AND QUOTE CONTAINERS
                     if (isMobile)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -849,14 +816,13 @@ class CreateOrderPageState extends State<CreateOrderPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: _buildSelection()),
-                          const SizedBox(width: 20.0), // spacing between containers
+                          const SizedBox(width: 20.0),
                           Expanded(child: _buildQuote()),
                         ],
                       ),
 
                     const SizedBox(height: 60.0),
 
-                    // SUBMIT BUTTON
                     _buildSubmitOrder(),
                   ],
                 );
@@ -879,7 +845,6 @@ class TrackOrderPage extends StatefulWidget {
 
 class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
-  //final String _orderStatus = ''; 
   final double _volume = 100.0;
 
   bool _isTracking = false;
@@ -907,17 +872,16 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             padding: const EdgeInsets.all(16.0),
             color: Theme.of(context).canvasColor,
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height, // Ensure full screen height on larger screens
+              minHeight: MediaQuery.of(context).size.height,
             ),
             child: 
             SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // Prevent extra space
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const SizedBox(height: 16.0),
                   if (!_isTracking) ...[
-                    // Order ID Input
                     TextField(
                       controller: _orderIdController,
                       decoration: InputDecoration(
@@ -931,8 +895,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       ),
                       style: TextStyle(color: Theme.of(context).unselectedWidgetColor),
                     ),
+
                     const SizedBox(height: 16.0),
-                    // Track Button
+                    
                     ElevatedButton(
                       onPressed: _trackOrder,
                       style: ButtonStyle(
@@ -956,7 +921,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       ),
                     ),
                   ] else ...[
-                    // Greeting and Stacked Containers
                     Text(
                       'Hi, ${globalOrderDetails.userName}',
                       style: TextStyle(
@@ -966,16 +930,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         fontSize: 24.0,
                       ),
                     ),
+
                     const SizedBox(height: 16.0),
 
-                    // Responsive layout for desktop (side by side) and mobile (stacked)
                     if (isMobile)
                       Column(
                         children: [
-                          // Order Details (1st Container) - Directly use _buildOrderDetails
                           _buildOrderDetails(),
                           const SizedBox(height: 16.0),
-                          // Order Status Container (2nd Container)
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -990,15 +952,15 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Order Details (1st Container) - Directly use _buildOrderDetails
                           Expanded(
                             child: _buildOrderDetails(),
                           ),
+
                           const SizedBox(width: 16.0),
-                          // Order Status Container (2nd Container)
+            
                           Expanded(
                             child: Container(
-                              height: 400, // Ensures matching height with the first container
+                              height: 400,
                               decoration: BoxDecoration(
                                 color: Theme.of(context).primaryColorLight,
                                 borderRadius: BorderRadius.circular(10.0),
@@ -1023,7 +985,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       builder: (context, constraints) {
         bool isMobile = constraints.maxWidth < 600.0;
         return Container(
-          margin: const EdgeInsets.only(top: 16.0),
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).splashColor, 
@@ -1038,13 +999,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
             ],
           ),
 
-          width: constraints.maxWidth,  // this takes up full width
-          height: isMobile ? null : 400, // adjusts height based on screen size
+          width: constraints.maxWidth,  
+          height: isMobile ? null : 400, 
           
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // title
               Text(
                 'ORDER DETAILS',
                 style: TextStyle(
@@ -1054,9 +1014,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   fontSize: 18.0,
                 ),
               ),
+
               const SizedBox(height: 16.0),
 
-              // details 
               Container(
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration
@@ -1308,7 +1268,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               alignment: Alignment.bottomLeft,
               child: ElevatedButton(
                 onPressed: () {
-                  // Show confirmation dialog on button press
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -1318,14 +1277,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(); // Close the dialog
+                              Navigator.of(context).pop(); 
                             },
                             child: const Text("No"),
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop(); // Close dialog
-                              _cancelOrder(context); // Execute cancellation logic
+                              Navigator.of(context).pop(); 
+                              _cancelOrder(context); 
                             },
                             child: const Text("Yes"),
                           ),
@@ -1364,35 +1323,26 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   }
 
   void _cancelOrder(BuildContext context) {
-  // Use the order number from globalOrderDetails
   final String orderNumber = globalOrderDetails.orderNumber;
 
-  // Show a Snackbar with the cancellation message
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text('Order #$orderNumber is set for cancellation.'),
-      duration: const Duration(seconds: 3), // Show the Snackbar for 2 seconds
+      duration: const Duration(seconds: 3),
     ),
   );
-
-  // Redirect to the home page after the Snackbar is shown
   Future.delayed(const Duration(seconds: 1), () {
-    Navigator.of(context).pushReplacementNamed('/home'); // Redirect to Home page
+    Navigator.of(context).pushReplacementNamed('/home'); 
   });
 }
 
 
-void _trackOrder() {
-  setState(() {
-    //_orderStatus = 'Results for Order #${_orderIdController.text}:';
-    _isTracking = true; // hides input field and button
-  });
-}
-
-
-
-
-
+  void _trackOrder() {
+    setState(() {
+      //_orderStatus = 'Results for Order #${_orderIdController.text}:';
+      _isTracking = true;
+    });
+  }
 
   Widget _buildOrderStatus() {
     return Container(
@@ -1405,40 +1355,38 @@ void _trackOrder() {
             color: Theme.of(context).shadowColor,
             spreadRadius: 1,
             blurRadius: 4,
-            offset: const Offset(1, 1), // Shadow position
+            offset: const Offset(1, 1), 
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Order Status Title with the same style as Order Details Title
           Text(
             'ORDER STATUS',
             style: TextStyle(
-              color: Theme.of(context).secondaryHeaderColor, // Same as Order Details title
+              color: Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
               fontSize: 18.0,
             ),
           ),
+
           const SizedBox(height: 16.0),
 
-          // Larger gray inner container, matching the one in Order Details
           Container(
-            width: double.infinity, // Takes up full width
-            padding: const EdgeInsets.all(16.0), // Slightly reduced padding to prevent overflow
+            width: double.infinity,
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor, 
               borderRadius: BorderRadius.circular(10.0),
             ),
 
-            // Vertically stacked order status bar for both mobile and desktop
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildStatusContainer('Received', true, isLarge: false),
-                _buildStatusDivider(), // Restoring dividers
+                _buildStatusDivider(),
                 _buildStatusContainer('In progress', false, isLarge: false),
                 _buildStatusDivider(),
                 _buildStatusContainer('Delivered', false, isLarge: false),
@@ -1452,18 +1400,12 @@ void _trackOrder() {
     );
   }
 
-
-
-
-
-
-
     Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       constraints: const BoxConstraints(
-        maxWidth: 220, // Reasonable width to prevent overflow
-        minHeight: 50.0, // Moderate height to prevent overflow
+        maxWidth: 220, 
+        minHeight: 50.0, 
       ),
       decoration: BoxDecoration(
         color: isCompleted ? Theme.of(context).secondaryHeaderColor: Theme.of(context).hoverColor,
@@ -1474,7 +1416,7 @@ void _trackOrder() {
           title,
           style: TextStyle(
             color: isCompleted ? Theme.of(context).primaryColorLight : Theme.of(context).indicatorColor,
-            fontSize: 16.0, // Slightly reduced font size to fit better
+            fontSize: 16.0, 
             fontFamily: 'Klavika',
             fontWeight: FontWeight.normal,
           ),
@@ -1482,7 +1424,6 @@ void _trackOrder() {
       ),
     );
   }
-
 
   Widget _buildStatusDivider() {
     return Container(
@@ -1493,8 +1434,6 @@ void _trackOrder() {
   }
 }
 
-
-// global variable to store order details
 class OrderDetails {
   String orderNumber = '';
   String userName = '';

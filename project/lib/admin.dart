@@ -4,7 +4,7 @@ import 'main.dart';
 class AdminServices extends StatelessWidget {
    AdminServices({Key? key}) : super(key: key);
 
-  // Sample orders for demonstration purposes.
+  // Sample order
   final List<NewOrder> orders = [
     NewOrder(
       process: 'Onboarding',
@@ -18,7 +18,6 @@ class AdminServices extends StatelessWidget {
       journalTransferNumber: 'JEN456', // New field
       department: 'HR', // New field
     ),
-    // You can add more sample orders here as needed.
   ];
 
   @override
@@ -28,12 +27,12 @@ class AdminServices extends StatelessWidget {
         title: const Text(
           'Orders',
           style: TextStyle(
-            fontFamily: 'Klavika', // Assuming you're using this font elsewhere
+            fontFamily: 'Klavika',
             fontWeight: FontWeight.bold,
-            fontSize: 22.0, // Adjust as necessary for your design
+            fontSize: 22.0, 
           ),
         ),
-        backgroundColor: Colors.blueAccent, // You can modify this to your app's theme color
+        backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -84,7 +83,7 @@ class OrderContainer extends StatelessWidget {
           Text('Quantity: ${order.quantity}'),
           Text('Rate: \$${order.rate.toStringAsFixed(2)}'),
           Text('Estimated Price: \$${order.estimatedPrice.toStringAsFixed(2)}'),
-          Text('File Path: ${order.filePath}'), // You can format this as needed
+          Text('File Path: ${order.filePath}'),
         ],
       ),
     );
