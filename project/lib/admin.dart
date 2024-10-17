@@ -13,7 +13,7 @@ class AdminServices extends StatelessWidget {
       quantity: 10,
       rate: 15.00,
       estimatedPrice: 150.00,
-      filePath: '/path/to/file', // Example file path
+      filePath: '/path/to/file', //  file path
       dateSubmitted: '2024-10-01', // New field
       journalTransferNumber: 'JEN456', // New field
       department: 'HR', // New field
@@ -48,7 +48,7 @@ class AdminServices extends StatelessWidget {
   }
 }
 
-// New widget to display individual orders in a container
+// display individual orders in a container
 class OrderContainer extends StatelessWidget {
   final NewOrder order;
 
@@ -67,7 +67,7 @@ class OrderContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            order.process, // Use order.process or any unique identifier as a header
+            order.process, // header
             style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,

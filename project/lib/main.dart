@@ -317,64 +317,160 @@ class CreateOrderPageState extends State<CreateOrderPage>
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: TextStyle(
-                      color:Theme.of(context).secondaryHeaderColor,
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12.0,
+                Container(
+                  height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                    color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
+                    child: TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      labelStyle: TextStyle(
+                        color:
+                              currentTheme == CSS.hallowTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.darkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.mintTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.lsiTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.pinkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : Theme.of(context).highlightColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name field!';
+                      }
+                      return null;
+                    },
                   ),
-                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name field!';
-                    }
-                    return null;
-                  },
                 ),
+
                 const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _journalNumController,
-                  decoration: InputDecoration(
-                    labelText: 'Journal Transfer Number',
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12.0,
+                Container(
+                  height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                    color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
+                    child: TextFormField(
+                    controller: _journalNumController,
+                    decoration: InputDecoration(
+                      labelText: 'Journal Transfer Number',
+                      labelStyle: TextStyle(
+                        color:
+                              currentTheme == CSS.hallowTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.darkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.mintTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.lsiTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.pinkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : Theme.of(context).highlightColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a journal transfer number';
+                      }
+                      return null;
+                    },
                   ),
-                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a journal transfer number';
-                    }
-                    return null;
-                  },
                 ),
+
                 const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _departmentController,
-                  decoration: InputDecoration(
-                    labelText: 'Department',
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.normal,
-                      fontSize: 12.0,
+
+                Container(
+                  height: 80.0,
+                    padding: const EdgeInsets.all(5.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                    color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
+                    borderRadius: BorderRadius.circular(8.0),
                     ),
+                    child: TextFormField(
+                    controller: _departmentController,
+                    decoration: InputDecoration(
+                      labelText: 'Department',
+                      labelStyle: TextStyle(
+                        color:
+                              currentTheme == CSS.hallowTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.darkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.mintTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.lsiTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : currentTheme == CSS.pinkTheme
+                              ? Theme.of(context).secondaryHeaderColor
+                              : Theme.of(context).highlightColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a department!';
+                      }
+                      return null;
+                    },
                   ),
-                  style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a department!';
-                    }
-                    return null;
-                  },
                 ),
               ],
             )
@@ -386,7 +482,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     padding: const EdgeInsets.all(5.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                    color: Theme.of(context).splashColor,
+                    color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
                     borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextFormField(
@@ -428,7 +535,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     padding: const EdgeInsets.all(5.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).splashColor,
+                      color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
                     borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextFormField(
@@ -436,7 +554,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                       decoration: InputDecoration(
                         labelText: 'Journal Transfer Number',
                         labelStyle: TextStyle(
-                          color: Theme.of(context).secondaryHeaderColor,
+                          color:
+                            currentTheme == CSS.hallowTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.darkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.mintTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.lsiTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.pinkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : Theme.of(context).highlightColor,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0,
@@ -459,7 +588,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     padding: const EdgeInsets.all(5.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).splashColor,
+                      color:
+                      currentTheme == CSS.hallowTheme
+                      ? Theme.of(context).cardColor
+                      : currentTheme == CSS.darkTheme
+                      ? Theme.of(context).unselectedWidgetColor
+                      : currentTheme == CSS.mintTheme
+                      ? Theme.of(context).indicatorColor
+                      : currentTheme == CSS.lsiTheme
+                      ? Theme.of(context).splashColor
+                      : currentTheme == CSS.pinkTheme
+                      ? Theme.of(context).indicatorColor
+                      : Theme.of(context).splashColor,
                     borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextFormField(
@@ -467,7 +607,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                       decoration: InputDecoration(
                         labelText: 'Department',
                         labelStyle: TextStyle(
-                          color: Theme.of(context).secondaryHeaderColor,
+                          color:
+                            currentTheme == CSS.hallowTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.darkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.mintTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.lsiTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.pinkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : Theme.of(context).highlightColor,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0,
@@ -511,7 +662,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
               fontSize: 14.0,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColorLight,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).primaryColorLight // MAKE WHITE
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).primaryColorLight,
             ),
           ),
         ),
@@ -564,8 +726,19 @@ class CreateOrderPageState extends State<CreateOrderPage>
               ),
             ),
             style: TextStyle(
-              fontSize: 16.0,
-              color: Theme.of(context).shadowColor,
+              fontSize: 15.0,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -596,8 +769,19 @@ class CreateOrderPageState extends State<CreateOrderPage>
               ),
             ),
             style: TextStyle(
-              fontSize: 16.0,
-              color: Theme.of(context).shadowColor,
+              fontSize: 15.0,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -626,8 +810,19 @@ class CreateOrderPageState extends State<CreateOrderPage>
               ),
             ),
             style: TextStyle(
-              fontSize: 16.0,
-              color: Theme.of(context).shadowColor,
+              fontSize: 15.0,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -657,8 +852,19 @@ class CreateOrderPageState extends State<CreateOrderPage>
             keyboardType: TextInputType.number,
             initialValue: '1',
             style: TextStyle(
-              fontSize: 16.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              fontSize: 14.0,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : Theme.of(context).secondaryHeaderColor,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -713,7 +919,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Process: $_selectedProcess',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -722,7 +939,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Unit: $_selectedUnit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -731,7 +959,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Type: $_selectedType',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -740,7 +979,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Quantity: $_quantity',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -749,7 +999,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Rate: $_rate per cubic unit',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -758,7 +1019,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -767,7 +1039,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
             'Estimated Delivery:',
             style: TextStyle(
               fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).secondaryHeaderColor
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).shadowColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).shadowColor
+                  : Theme.of(context).secondaryHeaderColor,
               fontFamily: 'Klavika',
               fontWeight: FontWeight.normal,
             ),
@@ -928,7 +1211,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         labelText: 'Enter Order ID',
                         border: const OutlineInputBorder(),
                         labelStyle: TextStyle(
-                          color: Theme.of(context).unselectedWidgetColor,
+                          color:
+                            currentTheme == CSS.hallowTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.darkTheme
+                            ? Theme.of(context).primaryColorLight
+                            : currentTheme == CSS.mintTheme
+                            ? Theme.of(context).shadowColor
+                            : currentTheme == CSS.lsiTheme
+                            ? Theme.of(context).shadowColor
+                            : currentTheme == CSS.pinkTheme
+                            ? Theme.of(context).unselectedWidgetColor
+                            : Theme.of(context).primaryColorDark,
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                         ),
@@ -964,7 +1258,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     Text(
                       'Hi, ${globalOrderDetails.userName}',
                       style: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
+                        color:
+                            currentTheme == 
+                            CSS.lsiTheme
+                            ? Theme.of(context).cardColor
+                            : Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.bold,
                         fontSize: 24.0,
@@ -1075,7 +1373,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Order Number:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor, 
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1104,7 +1413,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Name:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor, 
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1133,7 +1453,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Process:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor, 
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1162,7 +1493,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Unit:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor,
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1191,7 +1533,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Type:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor,
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1220,7 +1573,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Quantity:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor, 
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1249,7 +1613,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Rate:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor,
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1278,7 +1653,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           Text(
                             'Estimated Price:',
                             style: TextStyle(
-                              color: Theme.of(context).shadowColor,
+                              color:
+                                currentTheme == CSS.hallowTheme
+                                ? Theme.of(context).hoverColor
+                                : currentTheme == CSS.darkTheme
+                                ? Theme.of(context).hintColor
+                                : currentTheme == CSS.mintTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.lsiTheme
+                                ? Theme.of(context).shadowColor
+                                : currentTheme == CSS.pinkTheme
+                                ? Theme.of(context).shadowColor
+                                : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
                               fontSize: 16.0,
@@ -1426,11 +1812,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildStatusContainer('Received', true, isLarge: false),
-                _buildStatusDivider(),
+                _buildStatusDivider(true),
                 _buildStatusContainer('In progress', false, isLarge: false),
-                _buildStatusDivider(),
+                _buildStatusDivider(false),
                 _buildStatusContainer('Delivered', false, isLarge: false),
-                _buildStatusDivider(),
+                _buildStatusDivider(false),
                 _buildStatusContainer('Completed', false, isLarge: false),
               ],
             ),
@@ -1455,7 +1841,15 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         child: Text(
           title,
           style: TextStyle(
-            color: isCompleted ? Theme.of(context).primaryColorLight : Theme.of(context).indicatorColor,
+            color: isCompleted 
+              ? (Theme.of(context).primaryColorLight)  // Default for completed
+              : (currentTheme ==  CSS.mintTheme
+                  ? Theme.of(context).splashColor
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).unselectedWidgetColor
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).canvasColor
+                  : Theme.of(context).primaryColorLight), // Default for not completed
             fontSize: 16.0, 
             fontFamily: 'Klavika',
             fontWeight: FontWeight.normal,
@@ -1465,11 +1859,13 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildStatusDivider() {
+  Widget _buildStatusDivider(bool isCompleted) {
     return Container(
       height: 10,
       width: 2,
-      color: Theme.of(context).secondaryHeaderColor,
+      color: isCompleted 
+        ? (Theme.of(context).secondaryHeaderColor)  
+        : ( Theme.of(context).hoverColor), 
     );
   }
 }
