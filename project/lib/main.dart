@@ -7,6 +7,8 @@ import 'dart:math';
 import 'css.dart';
 //import 'admin.dart';
 
+ThemeData currentTheme = CSS.lightTheme;
+
 void main() {
   runApp(const MyApp());
 }
@@ -20,7 +22,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> 
 {
-  ThemeData currentTheme = CSS.lightTheme;
+  //ThemeData currentTheme = CSS.lightTheme;
   void switchTheme(LsiThemes theme) {
     setState(() {
       currentTheme = CSS.changeTheme(theme);  
@@ -384,7 +386,7 @@ class CreateOrderPageState extends State<CreateOrderPage>
                     padding: const EdgeInsets.all(5.0),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).splashColor,
+                    color: Theme.of(context).splashColor,
                     borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: TextFormField(
@@ -392,7 +394,18 @@ class CreateOrderPageState extends State<CreateOrderPage>
                       decoration: InputDecoration(
                         labelText: 'Name',
                         labelStyle: TextStyle(
-                          color: Theme.of(context).secondaryHeaderColor,
+                          color:
+                            currentTheme == CSS.hallowTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.darkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.mintTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.lsiTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : currentTheme == CSS.pinkTheme
+                            ? Theme.of(context).secondaryHeaderColor
+                            : Theme.of(context).highlightColor, // Default Light theme
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0,
