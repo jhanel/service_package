@@ -28,6 +28,7 @@ flutter:
 
   assets:
     - assets/fonts/
+    - assets/orders.json
 
   fonts:
     - family: Klavika

@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
 import 'css.dart';
-//import 'admin.dart';
+import 'admin.dart';
 
 ThemeData currentTheme = CSS.lightTheme;
 
@@ -136,17 +136,32 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
 
-              /*// ADMIN
+              const SizedBox(height: 16.0),
+
+              // New button to go to Admin Page
               ElevatedButton(
                 onPressed: () {
-                  // Navigate to the AdminServices page
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AdminServices()),
+                    MaterialPageRoute(builder: (context) => const AdminServices()), // Navigate to AdminServices
                   );
                 },
-                child: const Text('ADMIN'),
-              )*/
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+                  side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  )),
+                ),
+                child: Text(
+                  'GO TO ADMIN PAGE', // Button text
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorLight,
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
