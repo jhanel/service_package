@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'main.dart';
+import 'css.dart';
 
 const String orderJson = '''
 [
@@ -45,6 +47,7 @@ class AdminServices extends StatefulWidget {
 
 class _AdminServicesState extends State<AdminServices> {
   List<NewOrder> orders = [];
+  String? successMessage;
 
   @override
   void initState() {
@@ -91,6 +94,7 @@ class _AdminServicesState extends State<AdminServices> {
                       order: order,
                       onUpdateStatus: () => _updateOrderStatus(order),
                       onDelete: () => _deleteOrder(order),
+                      successMessage: successMessage, // Pass success message
                     );
                   },
                 ),
@@ -101,8 +105,11 @@ class _AdminServicesState extends State<AdminServices> {
 
   // Function to update the order status
   void _updateOrderStatus(NewOrder order) {
-    // List of statuses to choose from
+    // List of statuses in the correct order
     List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
+
+    // Find the current status index
+    int currentIndex = statuses.indexOf(order.status);
 
     showDialog(
       context: context,
@@ -113,14 +120,25 @@ class _AdminServicesState extends State<AdminServices> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: statuses.map((status) {
+                int statusIndex = statuses.indexOf(status);
+
                 return ListTile(
-                  title: Text(status),
-                  onTap: () {
+                  title: Text(
+                    status,
+                    style: TextStyle(
+                      color: statusIndex <= currentIndex
+                          ? Colors.grey  // Grey out previous statuses
+                          : Colors.black,  // Regular color for selectable statuses
+                    ),
+                  ),
+                  enabled: statusIndex > currentIndex, // Disable previous statuses
+                  onTap: statusIndex > currentIndex ? () {
                     setState(() {
-                      order.status = status; // Update the order's status field to the new status
+                      order.status = status; // Update the order's status to the new one
+                      successMessage = 'Order updated successfully: $status'; // Set success message
                     });
                     Navigator.pop(context); // Close the dialog
-                  },
+                  } : null, // Disable the onTap action for greyed out statuses
                 );
               }).toList(),
             ),
@@ -137,6 +155,7 @@ class _AdminServicesState extends State<AdminServices> {
       },
     );
   }
+
 
   void _deleteOrder(NewOrder order) {
     setState(() {
@@ -199,12 +218,14 @@ class OrderContainer extends StatelessWidget {
   final NewOrder order;
   final VoidCallback onUpdateStatus;
   final VoidCallback onDelete;
+  final String? successMessage; // Message to show after status update
 
   const OrderContainer({
     Key? key,
     required this.order,
     required this.onUpdateStatus,
     required this.onDelete,
+    this.successMessage,
   }) : super(key: key);
 
   @override
@@ -239,20 +260,78 @@ class OrderContainer extends StatelessWidget {
           Text('Estimated Price: \$${order.estimatedPrice.toStringAsFixed(2)}'),
           Text('File Path: ${order.filePath}'),
           const SizedBox(height: 8.0),
+
+          // Display success message if available
+          if (successMessage != null)
+            Text(
+              successMessage!,
+              style: TextStyle(
+                color: Theme.of(context).secondaryHeaderColor,
+                fontSize: 12.0,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
                 onPressed: onUpdateStatus,
-                child: const Text('Update Status'),
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
+                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+                  side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
+                  minimumSize: WidgetStateProperty.all(const Size(100, 36)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                child: Text(
+                  'Update Status',
+                  style: TextStyle(
+              fontSize: 14.0,
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+              color:
+                  currentTheme == CSS.hallowTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.darkTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.mintTheme
+                  ? Theme.of(context).primaryColorLight
+                  : currentTheme == CSS.lsiTheme
+                  ? Theme.of(context).primaryColorLight // MAKE WHITE
+                  : currentTheme == CSS.pinkTheme
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).primaryColorLight,
+            ),
+                ),
+
               ),
               const SizedBox(width: 8.0),
               ElevatedButton(
                 onPressed: onDelete,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(const Color(0xffe64e46)),
+                  padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
+                  minimumSize: WidgetStateProperty.all(const Size(100, 36)),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
-                child: const Text('Delete'),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(
+                    color: Color(0xfefefefe),
+                    fontSize: 14.0,
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
               ),
             ],
           ),
