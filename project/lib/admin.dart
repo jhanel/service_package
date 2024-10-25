@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'css.dart';
 
 const String orderJson = '''
 [
@@ -42,12 +40,11 @@ class AdminServices extends StatefulWidget {
   const AdminServices({Key? key}) : super(key: key);
 
   @override
-  _AdminServicesState createState() => _AdminServicesState();
+  AdminServicesState createState() => AdminServicesState();
 }
 
-class _AdminServicesState extends State<AdminServices> {
+class AdminServicesState extends State<AdminServices> {
   List<NewOrder> orders = [];
-  String? successMessage;
 
   @override
   void initState() {
@@ -94,7 +91,6 @@ class _AdminServicesState extends State<AdminServices> {
                       order: order,
                       onUpdateStatus: () => _updateOrderStatus(order),
                       onDelete: () => _deleteOrder(order),
-                      successMessage: successMessage, // Pass success message
                     );
                   },
                 ),
@@ -104,11 +100,8 @@ class _AdminServicesState extends State<AdminServices> {
   }
 
   // Function to update the order status
-  void _updateOrderStatus(NewOrder order) {
-    // List of statuses in the correct order
+    void _updateOrderStatus(NewOrder order) {
     List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
-
-    // Find the current status index
     int currentIndex = statuses.indexOf(order.status);
 
     showDialog(
@@ -126,19 +119,17 @@ class _AdminServicesState extends State<AdminServices> {
                   title: Text(
                     status,
                     style: TextStyle(
-                      color: statusIndex <= currentIndex
-                          ? Colors.grey  // Grey out previous statuses
-                          : Colors.black,  // Regular color for selectable statuses
+                      color: statusIndex <= currentIndex ? Colors.grey : Colors.black,
                     ),
                   ),
-                  enabled: statusIndex > currentIndex, // Disable previous statuses
+                  enabled: statusIndex > currentIndex,
                   onTap: statusIndex > currentIndex ? () {
                     setState(() {
-                      order.status = status; // Update the order's status to the new one
-                      successMessage = 'Order updated successfully: $status'; // Set success message
+                      order.status = status;
+                      order.successMessage = 'Order updated successfully: $status';
                     });
-                    Navigator.pop(context); // Close the dialog
-                  } : null, // Disable the onTap action for greyed out statuses
+                    Navigator.pop(context);
+                  } : null,
                 );
               }).toList(),
             ),
@@ -147,7 +138,7 @@ class _AdminServicesState extends State<AdminServices> {
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog without making changes
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -178,6 +169,7 @@ class NewOrder {
   final String journalTransferNumber;
   final String department;
   String status;
+  String? successMessage;
 
   NewOrder({
     required this.orderNumber,
@@ -193,6 +185,7 @@ class NewOrder {
     required this.journalTransferNumber,
     required this.department,
     required this.status,
+    this.successMessage,
   });
 
   factory NewOrder.fromJson(Map<String, dynamic> json) {
@@ -212,20 +205,26 @@ class NewOrder {
       status: json['status'],
     );
   }
+
+  // Add this function to calculate the order's duration in days
+  int daysSinceSubmitted() {
+    final date = DateTime.parse(dateSubmitted);
+    final now = DateTime.now();
+    return now.difference(date).inDays;
+  }
+
 }
 
 class OrderContainer extends StatelessWidget {
   final NewOrder order;
   final VoidCallback onUpdateStatus;
   final VoidCallback onDelete;
-  final String? successMessage; // Message to show after status update
 
   const OrderContainer({
     Key? key,
     required this.order,
     required this.onUpdateStatus,
     required this.onDelete,
-    this.successMessage,
   }) : super(key: key);
 
   @override
@@ -248,6 +247,7 @@ class OrderContainer extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8.0),
+
           Text('Order Number: ${order.orderNumber}'),
           Text('Name: ${order.name}'),
           Text('Date Submitted: ${order.dateSubmitted}'),
@@ -259,18 +259,36 @@ class OrderContainer extends StatelessWidget {
           Text('Rate: \$${order.rate.toStringAsFixed(2)}'),
           Text('Estimated Price: \$${order.estimatedPrice.toStringAsFixed(2)}'),
           Text('File Path: ${order.filePath}'),
+
           const SizedBox(height: 8.0),
 
+          // Timeline: Show days since submitted
+          Text(
+            'Days in Queue: ${order.daysSinceSubmitted()} days',
+            style: const TextStyle(
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // Optional progress bar showing up to a max (e.g., 30 days)
+          LinearProgressIndicator(
+            value: order.daysSinceSubmitted() / 30,
+            backgroundColor: Colors.grey.shade400,
+            color: Colors.redAccent,
+          ),
+
           // Display success message if available
-          if (successMessage != null)
+          if (order.successMessage != null)
             Text(
-              successMessage!,
+              order.successMessage!,
               style: TextStyle(
                 color: Theme.of(context).secondaryHeaderColor,
                 fontSize: 12.0,
                 fontWeight: FontWeight.normal,
               ),
             ),
+
+            const SizedBox(height: 8.0),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -291,24 +309,12 @@ class OrderContainer extends StatelessWidget {
                 child: Text(
                   'Update Status',
                   style: TextStyle(
-              fontSize: 14.0,
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
-              color:
-                  currentTheme == CSS.hallowTheme
-                  ? Theme.of(context).primaryColorLight
-                  : currentTheme == CSS.darkTheme
-                  ? Theme.of(context).primaryColorLight
-                  : currentTheme == CSS.mintTheme
-                  ? Theme.of(context).primaryColorLight
-                  : currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).primaryColorLight // MAKE WHITE
-                  : currentTheme == CSS.pinkTheme
-                  ? Theme.of(context).primaryColorLight
-                  : Theme.of(context).primaryColorLight,
-            ),
+                    fontSize: 14.0,
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).primaryColorLight,
+                  ),
                 ),
-
               ),
               const SizedBox(width: 8.0),
               ElevatedButton(
