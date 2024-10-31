@@ -4,8 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:math';
-import 'admin.dart';
-import 'css.dart';
+import 'admin_eng/admin.dart';
+import 'css/css.dart';
 
 ThemeData currentTheme = CSS.lightTheme;
 
