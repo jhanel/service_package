@@ -13,6 +13,7 @@ class NewOrder {
   final String department;
   String status;
   String? successMessage;
+  final String? imagePath;
 
   NewOrder({
     required this.orderNumber,
@@ -29,6 +30,7 @@ class NewOrder {
     required this.department,
     required this.status,
     this.successMessage,
+    this.imagePath,
   });
 
   factory NewOrder.fromJson(Map<String, dynamic> json) {

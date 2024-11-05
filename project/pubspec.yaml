@@ -29,6 +29,7 @@ flutter:
 
   assets:
     - assets/fonts/
+    - assets/icons/
     #- assets/orders.json
 
   fonts:

@@ -19,14 +19,12 @@ class ServicesWidgetState extends State<ServicesWidget> {
   }
 
   void _loadServices() {
-    // Assuming you have a list of services in your data.dart
-    // Here you would replace with your actual data initialization
+    // Example services for demonstration; replace with actual data as needed
     _services = [
-      // Example data; replace this with your actual service initialization logic
       NewOrder(
         orderNumber: '1',
         name: 'Service A',
-        process: 'Process A',
+        process: 'Thermoforming',
         unit: 'Unit A',
         type: 'Type A',
         quantity: 10,
@@ -37,12 +35,11 @@ class ServicesWidgetState extends State<ServicesWidget> {
         estimatedPrice: 0.00, 
         filePath: '', 
         journalTransferNumber: '',
-        
       ),
       NewOrder(
         orderNumber: '2',
         name: 'Service B',
-        process: 'Process B',
+        process: '3D Printing',
         unit: 'Unit B',
         type: 'Type B',
         quantity: 20,
@@ -53,10 +50,36 @@ class ServicesWidgetState extends State<ServicesWidget> {
         estimatedPrice: 0.00, 
         filePath: '', 
         journalTransferNumber: '',
-        
       ),
-      // Add more services as needed...
+      NewOrder(
+        orderNumber: '3',
+        name: 'Service C',
+        process: 'Milling',
+        unit: 'Unit C',
+        type: 'Type C',
+        quantity: 5,
+        rate: 150.0,
+        dateSubmitted: '2024-10-03',
+        department: 'Dept C',
+        status: 'In Progress',
+        estimatedPrice: 0.00, 
+        filePath: '', 
+        journalTransferNumber: '',
+      ),
     ];
+  }
+
+  Widget _getProcessIcon(String process) {
+    switch (process) {
+      case 'Thermoforming':
+        return Image.asset('assets/emb_thermoform_sm.png', width: 40, height: 40);
+      case '3D Printing':
+        return Image.asset('assets/emb_printer_3d_sm.png', width: 40, height: 40);
+      case 'Milling':
+        return Image.asset('assets/emb_mill_sm.png', width: 40, height: 40);
+      default:
+        return const Icon(Icons.miscellaneous_services); // Default icon if process type is unrecognized
+    }
   }
 
   void _addOrEditService({NewOrder? service}) {
@@ -136,8 +159,9 @@ class ServicesWidgetState extends State<ServicesWidget> {
         itemBuilder: (context, index) {
           final service = _services[index];
           return ListTile(
+            leading: _getProcessIcon(service.process), // Display icon based on process type
             title: Text(service.name),
-            subtitle: Text(service.process), // Using 'process' for subtitle
+            subtitle: Text(service.process),
             onTap: () => _addOrEditService(service: service), // Navigate to edit service
             trailing: IconButton(
               icon: const Icon(Icons.delete),

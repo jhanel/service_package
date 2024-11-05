@@ -10,12 +10,35 @@ class AdminServices extends StatefulWidget {
   AdminServicesState createState() => AdminServicesState();
 }
 
+class ProcessImage {
+  final String processName;
+  final String imagePath;
+
+  ProcessImage({required this.processName, required this.imagePath});
+}
+
 class AdminServicesState extends State<AdminServices> {
   String sortBy = 'Date'; // Default sort option
   bool hideCompletedOrders = false; // Toggle switch state
   bool showAllOrders = true; // Toggle for showing all orders
   List<NewOrder> orders = []; // List to hold parsed orders
   List<bool> expandedState = []; // List to keep track of expanded order states
+
+
+  Widget getProcessImage(String process) {
+  switch (process) {
+    case 'Thermoforming':
+      return const Image(image: AssetImage('assets/icons/emb_thermoform_sm.png'));
+    case '3D Printing':
+      return const Image(image: AssetImage('assets/icons/emb_printer_3d_sm.png'));
+    case 'Milling':
+      return const Image(image: AssetImage('assets/icons/emb_mill_sm.png'));
+    default:
+      return const Image(image: AssetImage('assets/icons/default_icon.png')); // Fallback icon
+  }
+}
+
+
 
   @override
   void initState() {
@@ -116,6 +139,7 @@ class AdminServicesState extends State<AdminServices> {
           content: SingleChildScrollView(
             child: ListBody(
               children: [
+                Text('Process: ${order.process}'), // Process text
                 Text('Order Number: ${order.orderNumber}'),
                 Text('Process: ${order.process}'),
                 Text('Unit: ${order.unit}'),
@@ -306,33 +330,55 @@ class AdminServicesState extends State<AdminServices> {
             _formatCurrentMonth(), // Assume this function returns "Nov '24"
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredOrders.length,
-                    itemBuilder: (context, index) {
-                      NewOrder order = filteredOrders[index];
-                      return GestureDetector(
-                        onTap: () {
-                          showOrderDetails(order); // Show order details in a dialog
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(order.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                Text('Status: ${order.status}'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredOrders.length,
+              itemBuilder: (context, index) {
+                NewOrder order = filteredOrders[index];
+                return GestureDetector(
+                  onTap: () {
+                    showOrderDetails(order); // Show order details in a dialog
+        },
+        child: Card(
+          margin: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: SizedBox(
+                    width: 40, // Limit the image size
+                    child: getProcessImage(order.process), // Image widget
                   ),
                 ),
+                const SizedBox(width: 8.0), // Spacing
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        order.name,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis, // Handle overflow
+                      ),
+                      Text(
+                        'Status: ${order.status}',
+                        overflow: TextOverflow.ellipsis, // Handle overflow
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  ),
+),
+
               ],
             ),
           ),
@@ -348,6 +394,8 @@ class AdminServicesState extends State<AdminServices> {
 
     );
   }
+
+
 
   // Helper method to format the current month
   String _formatCurrentMonth() {
