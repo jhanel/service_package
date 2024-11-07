@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert'; // For json.decode
 import 'data.dart'; // Ensure you import your data.dart for orderJson and NewOrder
-import 'widget.dart'; // Import the widget containing your Services management
-
 class AdminServices extends StatefulWidget {
   const AdminServices({Key? key}) : super(key: key);
 
@@ -23,7 +21,8 @@ class AdminServicesState extends State<AdminServices> {
   bool showAllOrders = true; // Toggle for showing all orders
   List<NewOrder> orders = []; // List to hold parsed orders
   List<bool> expandedState = []; // List to keep track of expanded order states
-
+  final DateTime graphStartDate = DateTime.now().subtract(const Duration(days: 180));
+  final double dayWidth = 5.0;
 
   Widget getProcessImage(String process) {
   switch (process) {
@@ -52,6 +51,49 @@ class AdminServicesState extends State<AdminServices> {
     orders = jsonList.map((json) => NewOrder.fromJson(json)).toList();
     expandedState = List<bool>.filled(orders.length, false); // Initialize expanded state
     setState(() {}); // Trigger a rebuild to display orders
+  }
+
+  // Method to calculate the difference in months between two dates
+  int calculateDiffinMonths(DateTime start, DateTime end) {
+    return (end.year - start.year) * 12 + end.month - start.month;
+  }
+
+  // Helper method to build a horizontally scrollable header for months and weeks
+  List<Widget> chartHeader() {
+    int numOfMonths = calculateDiffinMonths(graphStartDate, DateTime.now());
+    int currYear = graphStartDate.year;
+    int currMonth = graphStartDate.month;
+
+    List<Widget> headerDates = [];
+
+    for (int i = 0; i < numOfMonths; i++) {
+      if (currMonth > 12 && currMonth % 12 == 1) {
+        currYear++;
+      }
+
+      // Adding weeks for each month
+      for (int j = 0; j < 3; j++) {
+        headerDates.add(
+          SizedBox(
+            width: dayWidth * 10,
+            height: 20,
+            child: Text(
+              "${_getMonthName(currMonth % 12)} '${currYear.toString().substring(2)} Week ${j + 1}",
+              textAlign: TextAlign.left,
+              style: Theme.of(context).primaryTextTheme.labelLarge!.copyWith(color: Theme.of(context).primaryColorLight),
+            ),
+          ),
+        );
+      }
+      currMonth++;
+    }
+    return headerDates;
+  }
+
+  // Helper method to get month name from month number
+  String _getMonthName(int month) {
+    const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[month];
   }
 
   void deleteOrder(int index) {
@@ -298,7 +340,7 @@ class AdminServicesState extends State<AdminServices> {
           ),
 
           // Button to Manage Services
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
               icon: const Icon(Icons.settings),
@@ -313,7 +355,7 @@ class AdminServicesState extends State<AdminServices> {
                 );
               },
             ),
-          ),
+          ),*/
         ],
       ),
       body: Row(
@@ -322,15 +364,26 @@ class AdminServicesState extends State<AdminServices> {
           Container(
             width: 300, // Width of the container
             padding: const EdgeInsets.all(8.0),
-            color: Colors.grey[200],
+            color: Theme.of(context).canvasColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-            _formatCurrentMonth(), // Assume this function returns "Nov '24"
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
+           SizedBox(
+              width: double.infinity,
+              height: 25,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  DateTime.now().year.toString(),
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Theme.of(context).secondaryHeaderColor,
+                  ),
+                )
+              )
+            ),
           Expanded(
             child: ListView.builder(
               itemCount: filteredOrders.length,
@@ -339,89 +392,53 @@ class AdminServicesState extends State<AdminServices> {
                 return GestureDetector(
                   onTap: () {
                     showOrderDetails(order); // Show order details in a dialog
-        },
-        child: Card(
-          margin: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: SizedBox(
-                    width: 40, // Limit the image size
-                    child: getProcessImage(order.process), // Image widget
-                  ),
-                ),
-                const SizedBox(width: 8.0), // Spacing
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        order.name,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis, // Handle overflow
-                      ),
-                      Text(
-                        'Status: ${order.status}',
-                        overflow: TextOverflow.ellipsis, // Handle overflow
-                      ),
-                    ],
+                  },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: SizedBox(
+                                    width: 40, // Limit the image size
+                                    child: getProcessImage(order.process), // Image widget
+                                  ),
+                                ),
+                                const SizedBox(width: 8.0), // Spacing
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.name,
+                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis, // Handle overflow
+                                      ),
+                                      Text(
+                                        'Status: ${order.status}',
+                                        overflow: TextOverflow.ellipsis, // Handle overflow
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      );
-    },
-  ),
-),
-
-              ],
-            ),
-          ),
-          // Right side for any other content or widgets
-          Expanded(
-            child: Container(
-              color: Theme.of(context).canvasColor,
-              child: const Center(child: Text('Timeline of Orders')),
-            ),
+          SingleChildScrollView(
+            
           ),
         ],
       ),
-
     );
-  }
-
-
-
-  // Helper method to format the current month
-  String _formatCurrentMonth() {
-    final now = DateTime.now();
-    final month = now.month;
-    final year = now.year.toString().substring(2); // Get last two digits of the year
-    return '${_getMonthName(month)} \'$year';
-  }
-
-  // Helper method to get month name from month number
-  String _getMonthName(int month) {
-    const monthNames = [
-      '', // Placeholder for index 0
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return monthNames[month];
   }
 }
