@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:convert'; // For json.decode
 import 'data.dart'; // Ensure you import your data.dart for orderJson and NewOrder
+import '../css/css.dart';
+
+ThemeData currentTheme = CSS.lightTheme;
+
 class AdminServices extends StatefulWidget {
   const AdminServices({Key? key}) : super(key: key);
 
   @override
   AdminServicesState createState() => AdminServicesState();
+
+  void switchTheme(LsiThemes theme) {
+    
+      currentTheme = CSS.changeTheme(theme);  
+    
+  }
+ 
 }
 
 class ProcessImage {
@@ -55,45 +66,48 @@ class AdminServicesState extends State<AdminServices> {
 
 final int currentWeek = (DateTime.now().day - 1) ~/ 7 + 1; // Calculate current week of the month
 
-// Helper method to build the date header up to the current week
 List<Widget> chartHeader(BuildContext context) {
+  // Get current date
   DateTime now = DateTime.now();
-  int currYear = now.year;
-  int currMonth = now.month;
 
-  // Start from October
-  if (currMonth == 11) {
-    currMonth = 10; // Start from October
-    currYear = 2024; // Set year to 2024 if we're in November 2024
+  // Find the earliest submission date in orders
+  DateTime? earliestDate;
+  if (orders.isNotEmpty) {
+    earliestDate = orders
+        .map((order) => DateTime.parse(order.dateSubmitted))
+        .reduce((a, b) => a.isBefore(b) ? a : b);
   }
 
+  // Fallback to today's date if no orders exist
+  earliestDate ??= now;
+
+  // Calculate the number of weeks between earliest date and today
+  int daysDifference = now.difference(earliestDate).inDays;
+  int totalWeeks = (daysDifference / 7).ceil(); // Total weeks from earliest date to now
+
+  // Generate week headers
   List<Widget> headerDates = [];
+  for (int week = 0; week < totalWeeks; week++) {
+    DateTime weekStart = earliestDate.add(Duration(days: week * 7));
+    int weekOfMonth = ((weekStart.day - 1) ~/ 7) + 1;
 
-  // Loop through weeks for October and November
-  int weeksInOctober = 4;  // Assuming 4 weeks for October
-  int weeksInNovember = 2; // Only show 2 weeks for November
-
-  for (int month = currMonth; month <= 11; month++) {
-    int weeksToShow = (month == 10) ? weeksInOctober : weeksInNovember; // Weeks for October and November
-    for (int week = 1; week <= weeksToShow; week++) {
-      headerDates.add(
-        SizedBox(
-          width: 250, // Consistent width for each week header to align with columns below
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "${_getMonthName(month)} '${currYear.toString().substring(2)} Week $week",
-              style: TextStyle(
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-                color: Theme.of(context).secondaryHeaderColor,
-              ),
+    headerDates.add(
+      SizedBox(
+        width: 250, // Consistent width for each week header
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            "${_getMonthName(weekStart.month)} '${weekStart.year.toString().substring(2)} Week $weekOfMonth",
+            style: TextStyle(
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   return headerDates;
@@ -102,8 +116,8 @@ List<Widget> chartHeader(BuildContext context) {
 // Helper function to get month name
 String _getMonthName(int month) {
   const List<String> monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.",
+    "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."
   ];
   return monthNames[month - 1];
 }
@@ -140,101 +154,6 @@ String _getMonthName(int month) {
                 Navigator.of(context).pop(); // Close the dialog after deletion
               },
               child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void updateOrderStatus(int index) {
-    // Update order status logic
-    List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed', 'Canceled'];
-    String currentStatus = orders[index].status; // Get the current status
-
-    // Show a dialog with the status options
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Status'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: statuses.map((status) {
-                return RadioListTile<String>(
-                  title: Text(status),
-                  value: status,
-                  groupValue: currentStatus,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        orders[index].status = value; // Update the order status
-                        orders[index].successMessage = 'Order updated successfully to $value'; // Success message
-                      });
-                      Navigator.of(context).pop(); // Close the dialog
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog without updating
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showOrderDetails(NewOrder order) {
-    // Display order details in a dialog or full-screen view
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(order.name),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [
-                Text('Process: ${order.process}'), // Process text
-                Text('Order Number: ${order.orderNumber}'),
-                Text('Process: ${order.process}'),
-                Text('Unit: ${order.unit}'),
-                Text('Type: ${order.type}'),
-                Text('Quantity: ${order.quantity}'),
-                Text('Rate: \$${order.rate.toStringAsFixed(2)}'),
-                Text('Date Submitted: ${order.dateSubmitted}'),
-                Text('Department: ${order.department}'),
-                Text('Status: ${order.status}'),
-                if (order.successMessage != null) ...[
-                  const SizedBox(height: 8.0),
-                  Text(order.successMessage!, style: const TextStyle(color: Colors.green)),
-                ],
-              ],
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => updateOrderStatus(orders.indexOf(order)), // Update order status
-              child: const Text('Update Status'),
-            ),
-            TextButton(
-              onPressed: () {
-                deleteOrder(orders.indexOf(order)); // Delete order
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Delete Order'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('Close'),
             ),
           ],
         );
@@ -358,24 +277,6 @@ String _getMonthName(int month) {
               ],
             ),
           ),
-
-          // Button to Manage Services
-          /*Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: const Icon(Icons.settings),
-              tooltip: 'Manage Services',
-              color: Theme.of(context).secondaryHeaderColor,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ServicesWidget(), // Navigate to ServicesWidget
-                  ),
-                );
-              },
-            ),
-          ),*/
         ],
       ),
       body: Row(
@@ -409,9 +310,14 @@ String _getMonthName(int month) {
               itemBuilder: (context, index) {
                 NewOrder order = filteredOrders[index];
                 return GestureDetector(
-                  onTap: () {
-                    showOrderDetails(order); // Show order details in a dialog
-                  },
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderDetailsPage(order: order), // Navigate to the new page
+                            ),
+                          );
+                        },
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Padding(
@@ -432,12 +338,13 @@ String _getMonthName(int month) {
                                     children: [
                                       Text(
                                         order.name,
-                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontFamily: 'Klavika', fontSize: 16, fontWeight: FontWeight.bold),
                                         overflow: TextOverflow.ellipsis, // Handle overflow
                                       ),
                                       Text(
                                         'Status: ${order.status}',
                                         overflow: TextOverflow.ellipsis, // Handle overflow
+                                        style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
                                       ),
                                     ],
                                   ),
@@ -453,70 +360,322 @@ String _getMonthName(int month) {
               ],
             ),
           ),
-          Column(
-  children: [
-    // Date header with consistent alignment and background color
-    Container(
-      color: Theme.of(context).cardColor, // Background color for the header
-      child: SizedBox(
-        // Dynamically adjust width of the SizedBox to match the timeline container
-        width: MediaQuery.of(context).size.width - 300, // Full width minus the vertical container width (300px)
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisSize: MainAxisSize.min, // Ensures no extra space in header
-            children: chartHeader(context), // Generates chart header with dates
-          ),
-        ),
-      ),
-    ),
-
-    // Timeline content with evenly spaced vertical dividers
-    Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          // Dynamically calculate width based on screen size and the width of the vertical container
-          width: MediaQuery.of(context).size.width - 300, // Full width minus the vertical container width (300px)
-          color: Theme.of(context).canvasColor, // Background color for the timeline container
-          child: Row(
-            children: [
-              // Weekly slots with content
-              for (int week = 1; week <= currentWeek; week++) ...[
-                // Weekly slot container
-                Container(
-                  width: 250, // Fixed width for each week
-                  height: double.infinity,
-                  color: Colors.transparent, // Transparent background for each week
-                  child: Center(
-                    child: Text(
-                      'Week $week content', // Placeholder for weekly content
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-                // Vertical Divider for each week, excluding the last one
-                if (week < currentWeek)
-                  VerticalDivider(
-                    color: Theme.of(context).dividerColor,
-                    thickness: 1,
-                    width: 20, // Consistent width for spacing
-                  ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    ),
-  ],
-)
-
-
-
-
-
-
         ],
+      ),
+    );
+  }
+}
+
+class OrderDetailsPage extends StatefulWidget {
+final NewOrder order;
+
+const OrderDetailsPage({Key? key, required this.order}) : super(key: key);
+
+@override
+OrderDetailsPageState createState() => OrderDetailsPageState();
+}
+
+class OrderDetailsPageState extends State<OrderDetailsPage> {
+String? updatedStatusMessage; // To display the status update success message
+String selectedStatus = ''; // Current selected status
+String comments = ''; // Stores user comments
+final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; // Status options
+
+@override
+void initState() {
+super.initState();
+selectedStatus = widget.order.status; // Initialize with the current status from data
+}
+
+void deleteOrder(BuildContext context) {
+showDialog(
+context: context,
+builder: (BuildContext context) {
+return AlertDialog(
+title: const Text('Confirm Delete'),
+content: const Text('Are you sure you want to delete this order?'),
+actions: [
+  TextButton(
+    onPressed: () => Navigator.pop(context), // Cancel deletion
+    child: const Text('Cancel'),
+  ),
+  TextButton(
+    onPressed: () {
+      // Handle deletion logic here (for now, just pop back)
+      Navigator.pop(context); // Close the alert
+      Navigator.pop(context); // Return to previous screen
+    },
+    child: const Text('Delete'),
+  ),
+],
+);
+},
+);
+}
+
+void updateStatus(BuildContext context, String newStatus) {
+setState(() {
+updatedStatusMessage = "Status updated successfully: $newStatus"; // Show success message
+selectedStatus = newStatus; // Update status
+});
+}
+
+void saveComment(BuildContext context) {
+setState(() {
+// Logic for saving comments, if necessary, can be added here
+});
+ScaffoldMessenger.of(context).showSnackBar(
+const SnackBar(content: Text('Comment saved successfully!')),
+);
+}
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+    appBar: AppBar(
+    leading: IconButton(
+    icon: const Icon(Icons.close), // X button
+    onPressed: () => Navigator.pop(context), // Close the page
+    ),
+    backgroundColor: Theme.of(context).cardColor,
+    ),
+    body: Container(
+      color: Theme.of(context).canvasColor,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Order Details Container
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Order Details',
+                      style:  
+                      TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0
+                        ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      'Name: ${widget.order.name}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                    ),
+                    Text(
+                      'Process: ${widget.order.process}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Order Number: ${widget.order.orderNumber}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                    ),
+                    Text(
+                      'Unit: ${widget.order.unit}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Type: ${widget.order.type}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Quantity: ${widget.order.quantity}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Rate: \$${widget.order.rate.toStringAsFixed(2)}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Date Submitted: ${widget.order.dateSubmitted}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Department: ${widget.order.department}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    Text(
+                      'Status: ${widget.order.status}',
+                      style:  
+                      const TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    if (updatedStatusMessage != null) ...[
+                      const SizedBox(height: 8.0),
+                      Text(
+                        updatedStatusMessage!,
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
+                    const Spacer(), // Push buttons to the bottom
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                         // Dropdown for Status Updates
+                          DropdownButton<String>(
+                            value: selectedStatus, // Current selected status
+                            items: statuses.map((status) {
+                              // Disable current and previous statuses
+                              final isDisabled = statuses.indexOf(status) <= statuses.indexOf(selectedStatus);
+                              return DropdownMenuItem<String>(
+                                value: status,
+                                enabled: !isDisabled,
+                                child: Text(
+                                  status,
+                                  style: TextStyle(
+                                    color: isDisabled ? Colors.grey : Colors.black,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedStatus = value; // Update the status
+                                  updatedStatusMessage = "Status updated successfully: $value";
+                                });
+                              }
+                            },
+                            dropdownColor: Theme.of(context).cardColor,
+                            style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+                          ),
+
+
+                        const SizedBox(width: 20.0),
+
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.all(Colors.red),
+                            side: WidgetStateProperty.all( const BorderSide(width: 2.0, color: Colors.red)),
+                            shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          )),
+                          ),
+                          onPressed: () => deleteOrder(context),
+                          child: const Text(
+                            'DELETE ORDER',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.bold
+                            ),
+                            ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 16.0), // Spacing between containers
+            // Comments Container
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).primaryColorLight),
+                ),
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Comments',
+                      style:  
+                      TextStyle(
+                        fontFamily: 'Klavika', 
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0
+                        ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Expanded(
+                      child: TextField(
+                        onChanged: (value) => comments = value, // Capture comments
+                        maxLines: null,
+                        expands: true,
+                        decoration: const InputDecoration(
+                          //border: OutlineInputBorder(),
+                          hintText: 'Enter your comments here...',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
+                            side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
+                            shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          )),
+                          ),
+                          onPressed: () => saveComment(context),
+                          child: Text(
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColorLight,
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.bold
+                            ),
+                            'SAVE'
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

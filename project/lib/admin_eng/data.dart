@@ -72,7 +72,7 @@ const String orderJson = '''
     "rate": 2.5,
     "estimatedPrice": 25.0,
     "filePath": "path/to/file1.stl",
-    "dateSubmitted": "2024-10-20",
+    "dateSubmitted": "2024-08-20",
     "journalTransferNumber": "JT001",
     "department": "Computer Science",
     "status": "Received"
@@ -87,10 +87,11 @@ const String orderJson = '''
     "rate": 4.7,
     "estimatedPrice": 23.5,
     "filePath": "path/to/file2.obj",
-    "dateSubmitted": "2024-10-21",
+    "dateSubmitted": "2024-08-21",
     "journalTransferNumber": "JT002",
     "department": "Engineering",
     "status": "In Progress"
   }
 ]
 ''';
+

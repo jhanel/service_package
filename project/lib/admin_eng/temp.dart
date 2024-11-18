@@ -55,45 +55,48 @@ class AdminServicesState extends State<AdminServices> {
 
 final int currentWeek = (DateTime.now().day - 1) ~/ 7 + 1; // Calculate current week of the month
 
-// Helper method to build the date header up to the current week
 List<Widget> chartHeader(BuildContext context) {
+  // Get current date
   DateTime now = DateTime.now();
-  int currYear = now.year;
-  int currMonth = now.month;
 
-  // Start from October
-  if (currMonth == 11) {
-    currMonth = 10; // Start from October
-    currYear = 2024; // Set year to 2024 if we're in November 2024
+  // Find the earliest submission date in orders
+  DateTime? earliestDate;
+  if (orders.isNotEmpty) {
+    earliestDate = orders
+        .map((order) => DateTime.parse(order.dateSubmitted))
+        .reduce((a, b) => a.isBefore(b) ? a : b);
   }
 
+  // Fallback to today's date if no orders exist
+  earliestDate ??= now;
+
+  // Calculate the number of weeks between earliest date and today
+  int daysDifference = now.difference(earliestDate).inDays;
+  int totalWeeks = (daysDifference / 7).ceil(); // Total weeks from earliest date to now
+
+  // Generate week headers
   List<Widget> headerDates = [];
+  for (int week = 0; week < totalWeeks; week++) {
+    DateTime weekStart = earliestDate.add(Duration(days: week * 7));
+    int weekOfMonth = ((weekStart.day - 1) ~/ 7) + 1;
 
-  // Loop through weeks for October and November
-  int weeksInOctober = 4;  // Assuming 4 weeks for October
-  int weeksInNovember = 2; // Only show 2 weeks for November
-
-  for (int month = currMonth; month <= 11; month++) {
-    int weeksToShow = (month == 10) ? weeksInOctober : weeksInNovember; // Weeks for October and November
-    for (int week = 1; week <= weeksToShow; week++) {
-      headerDates.add(
-        SizedBox(
-          width: 250, // Consistent width for each week header to align with columns below
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "${_getMonthName(month)} '${currYear.toString().substring(2)} Week $week",
-              style: TextStyle(
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-                color: Theme.of(context).secondaryHeaderColor,
-              ),
+    headerDates.add(
+      SizedBox(
+        width: 250, // Consistent width for each week header
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            "${_getMonthName(weekStart.month)} '${weekStart.year.toString().substring(2)} Week $weekOfMonth",
+            style: TextStyle(
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   return headerDates;
@@ -102,8 +105,8 @@ List<Widget> chartHeader(BuildContext context) {
 // Helper function to get month name
 String _getMonthName(int month) {
   const List<String> monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.",
+    "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."
   ];
   return monthNames[month - 1];
 }
@@ -471,43 +474,52 @@ String _getMonthName(int month) {
       ),
     ),
 
-    // Timeline content with evenly spaced vertical dividers
-    Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          // Dynamically calculate width based on screen size and the width of the vertical container
-          width: MediaQuery.of(context).size.width - 300, // Full width minus the vertical container width (300px)
-          color: Theme.of(context).canvasColor, // Background color for the timeline container
-          child: Row(
-            children: [
-              // Weekly slots with content
-              for (int week = 1; week <= currentWeek; week++) ...[
-                // Weekly slot container
-                Container(
-                  width: 250, // Fixed width for each week
-                  height: double.infinity,
-                  color: Colors.transparent, // Transparent background for each week
-                  child: Center(
-                    child: Text(
-                      'Week $week content', // Placeholder for weekly content
-                      style: const TextStyle(color: Colors.grey),
+ // Timeline content with evenly spaced vertical dividers
+Expanded(
+  child: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Container(
+      width: MediaQuery.of(context).size.width - 300, // Full width minus the vertical container width (300px)
+      color: Theme.of(context).canvasColor, // Background color for the timeline container
+      child: Row(
+        children: [
+          // Weekly slots with horizontal progress bars
+          for (int week = 1; week <= 3; week++) ...[
+            // Weekly slot container with a horizontal bar
+            Container(
+              width: 250, // Fixed width for each week
+              height: 25, // Reduced height of the bar to match the order card height (half of the previous size)
+              color: Colors.transparent, // Transparent background for each week
+              child: Stack(
+                children: [
+                  // Solid horizontal bar representing progress in the queue
+                  Positioned(
+                    top: 5, // Position the bar in the center vertically
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 15, // Adjusted height of the bar (half the previous height)
+                      color: Colors.blue, // Set the color of the timeline bar
                     ),
                   ),
-                ),
-                // Vertical Divider for each week, excluding the last one
-                if (week < currentWeek)
-                  VerticalDivider(
-                    color: Theme.of(context).dividerColor,
-                    thickness: 1,
-                    width: 20, // Consistent width for spacing
-                  ),
-              ],
-            ],
-          ),
-        ),
+                ],
+              ),
+            ),
+            // Vertical Divider for each week, excluding the last one
+            if (week < 3)
+              VerticalDivider(
+                color: Theme.of(context).dividerColor,
+                thickness: 1,
+                width: 20, // Consistent width for spacing
+              ),
+          ],
+        ],
       ),
     ),
+  ),
+),
+
+
   ],
 )
 
