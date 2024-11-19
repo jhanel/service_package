@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; // For json.decode
-import 'data.dart'; // Ensure you import your data.dart for orderJson and NewOrder
+import 'dart:convert'; 
+import 'data.dart'; 
 import '../css/css.dart';
 
 ThemeData currentTheme = CSS.lightTheme;
@@ -28,10 +28,10 @@ class ProcessImage {
 
 class AdminServicesState extends State<AdminServices> {
   String sortBy = 'Date'; // Default sort option
-  bool hideCompletedOrders = false; // Toggle switch state
-  bool showAllOrders = true; // Toggle for showing all orders
-  List<NewOrder> orders = []; // List to hold parsed orders
-  List<bool> expandedState = []; // List to keep track of expanded order states
+  bool hideCompletedOrders = false; 
+  bool showAllOrders = true; 
+  List<NewOrder> orders = []; 
+  List<bool> expandedState = []; 
   final DateTime graphStartDate = DateTime.now().subtract(const Duration(days: 180));
   final double dayWidth = 5.0;
 
@@ -44,7 +44,7 @@ class AdminServicesState extends State<AdminServices> {
     case 'Milling':
       return const Image(image: AssetImage('assets/icons/emb_mill_sm.png'));
     default:
-      return const Image(image: AssetImage('assets/icons/default_icon.png')); // Fallback icon
+      return const Image(image: AssetImage('assets/icons/default_icon.png')); 
   }
 }
 
@@ -53,24 +53,22 @@ class AdminServicesState extends State<AdminServices> {
   @override
   void initState() {
     super.initState();
-    loadOrders(); // Load orders when the state initializes
+    loadOrders();
   }
 
   void loadOrders() {
-    // Parse the JSON string and create a list of NewOrder objects
     List<dynamic> jsonList = json.decode(orderJson);
     orders = jsonList.map((json) => NewOrder.fromJson(json)).toList();
-    expandedState = List<bool>.filled(orders.length, false); // Initialize expanded state
-    setState(() {}); // Trigger a rebuild to display orders
+    expandedState = List<bool>.filled(orders.length, false);
+    setState(() {});
   }
 
-final int currentWeek = (DateTime.now().day - 1) ~/ 7 + 1; // Calculate current week of the month
+final int currentWeek = (DateTime.now().day - 1) ~/ 7 + 1; 
 
 List<Widget> chartHeader(BuildContext context) {
-  // Get current date
+  
   DateTime now = DateTime.now();
 
-  // Find the earliest submission date in orders
   DateTime? earliestDate;
   if (orders.isNotEmpty) {
     earliestDate = orders
@@ -81,11 +79,9 @@ List<Widget> chartHeader(BuildContext context) {
   // Fallback to today's date if no orders exist
   earliestDate ??= now;
 
-  // Calculate the number of weeks between earliest date and today
   int daysDifference = now.difference(earliestDate).inDays;
   int totalWeeks = (daysDifference / 7).ceil(); // Total weeks from earliest date to now
 
-  // Generate week headers
   List<Widget> headerDates = [];
   for (int week = 0; week < totalWeeks; week++) {
     DateTime weekStart = earliestDate.add(Duration(days: week * 7));
@@ -93,7 +89,7 @@ List<Widget> chartHeader(BuildContext context) {
 
     headerDates.add(
       SizedBox(
-        width: 250, // Consistent width for each week header
+        width: 250, 
         child: Align(
           alignment: Alignment.center,
           child: Text(
@@ -113,7 +109,6 @@ List<Widget> chartHeader(BuildContext context) {
   return headerDates;
 }
 
-// Helper function to get month name
 String _getMonthName(int month) {
   const List<String> monthNames = [
     "Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.",
@@ -131,27 +126,26 @@ String _getMonthName(int month) {
 
 
   void deleteOrder(int index) {
-    // Show confirmation dialog before deleting
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Delete'),
+          title: const Text('Confirm'),
           content: const Text('Are you sure you want to delete this order?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); 
               },
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
-                  orders.removeAt(index); // Remove order from the list
-                  expandedState.removeAt(index); // Remove the expanded state
+                  orders.removeAt(index); 
+                  expandedState.removeAt(index);
                 });
-                Navigator.of(context).pop(); // Close the dialog after deletion
+                Navigator.of(context).pop(); 
               },
               child: const Text('Delete'),
             ),
@@ -163,7 +157,6 @@ String _getMonthName(int month) {
 
   @override
   Widget build(BuildContext context) {
-    // Filter orders based on toggles
     List<NewOrder> filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
@@ -184,7 +177,6 @@ String _getMonthName(int month) {
         ),
         backgroundColor: Theme.of(context).cardColor,
         actions: [
-          // Sort By Dropdown
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Row(
@@ -217,16 +209,12 @@ String _getMonthName(int month) {
                   onChanged: (String? newValue) {
                     setState(() {
                       sortBy = newValue!;
-                      // Here you can add sorting logic based on sortBy value
-                      // E.g. sort the filteredOrders list
                     });
                   },
                 ),
               ],
             ),
           ),
-
-          // Toggle Hide Completed Orders
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Row(
@@ -251,8 +239,6 @@ String _getMonthName(int month) {
               ],
             ),
           ),
-
-          // Toggle Show All Orders
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Row(
@@ -281,9 +267,8 @@ String _getMonthName(int month) {
       ),
       body: Row(
         children: [
-          // Vertical container on the left
           Container(
-            width: 300, // Width of the container
+            width: 300, 
             padding: const EdgeInsets.all(8.0),
             color: Theme.of(context).canvasColor,
             child: Column(
@@ -314,7 +299,7 @@ String _getMonthName(int month) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => OrderDetailsPage(order: order), // Navigate to the new page
+                              builder: (context) => OrderDetailsPage(order: order),
                             ),
                           );
                         },
@@ -327,11 +312,11 @@ String _getMonthName(int month) {
                               children: [
                                 Flexible(
                                   child: SizedBox(
-                                    width: 40, // Limit the image size
-                                    child: getProcessImage(order.process), // Image widget
+                                    width: 40, 
+                                    child: getProcessImage(order.process), 
                                   ),
                                 ),
-                                const SizedBox(width: 8.0), // Spacing
+                                const SizedBox(width: 8.0), 
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,11 +324,11 @@ String _getMonthName(int month) {
                                       Text(
                                         order.name,
                                         style: const TextStyle(fontFamily: 'Klavika', fontSize: 16, fontWeight: FontWeight.bold),
-                                        overflow: TextOverflow.ellipsis, // Handle overflow
+                                        overflow: TextOverflow.ellipsis, 
                                       ),
                                       Text(
                                         'Status: ${order.status}',
-                                        overflow: TextOverflow.ellipsis, // Handle overflow
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
                                       ),
                                     ],
@@ -376,15 +361,15 @@ OrderDetailsPageState createState() => OrderDetailsPageState();
 }
 
 class OrderDetailsPageState extends State<OrderDetailsPage> {
-String? updatedStatusMessage; // To display the status update success message
-String selectedStatus = ''; // Current selected status
-String comments = ''; // Stores user comments
-final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; // Status options
+String? updatedStatusMessage; 
+String selectedStatus = ''; 
+String comments = ''; 
+final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
 
 @override
 void initState() {
 super.initState();
-selectedStatus = widget.order.status; // Initialize with the current status from data
+selectedStatus = widget.order.status; 
 }
 
 void deleteOrder(BuildContext context) {
@@ -396,12 +381,11 @@ title: const Text('Confirm Delete'),
 content: const Text('Are you sure you want to delete this order?'),
 actions: [
   TextButton(
-    onPressed: () => Navigator.pop(context), // Cancel deletion
+    onPressed: () => Navigator.pop(context), 
     child: const Text('Cancel'),
   ),
   TextButton(
     onPressed: () {
-      // Handle deletion logic here (for now, just pop back)
       Navigator.pop(context); // Close the alert
       Navigator.pop(context); // Return to previous screen
     },
@@ -415,14 +399,14 @@ actions: [
 
 void updateStatus(BuildContext context, String newStatus) {
 setState(() {
-updatedStatusMessage = "Status updated successfully: $newStatus"; // Show success message
-selectedStatus = newStatus; // Update status
+updatedStatusMessage = "Status updated successfully: $newStatus"; 
+selectedStatus = newStatus; 
 });
 }
 
 void saveComment(BuildContext context) {
 setState(() {
-// Logic for saving comments, if necessary, can be added here
+// save comment code
 });
 ScaffoldMessenger.of(context).showSnackBar(
 const SnackBar(content: Text('Comment saved successfully!')),
@@ -434,249 +418,261 @@ const SnackBar(content: Text('Comment saved successfully!')),
     return Scaffold(
     appBar: AppBar(
     leading: IconButton(
-    icon: const Icon(Icons.close), // X button
-    onPressed: () => Navigator.pop(context), // Close the page
+    icon: const Icon(Icons.close), 
+    onPressed: () => Navigator.pop(context), 
     ),
     backgroundColor: Theme.of(context).cardColor,
     ),
-    body: Container(
-      color: Theme.of(context).canvasColor,
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Order Details Container
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                ),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Order Details',
-                      style:  
-                      TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0
-                        ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      'Name: ${widget.order.name}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                    ),
-                    Text(
-                      'Process: ${widget.order.process}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
+    body: Center(
+        child: Container(
+          color: Theme.of(context).canvasColor,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center, 
+                crossAxisAlignment: CrossAxisAlignment.start, 
+                children: [
+                  // Order Details Container
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Theme.of(context).primaryColorLight),
                       ),
-                    Text(
-                      'Order Number: ${widget.order.orderNumber}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                    ),
-                    Text(
-                      'Unit: ${widget.order.unit}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
+                      constraints: const BoxConstraints(
+                        maxHeight: 400,
                       ),
-                    Text(
-                      'Type: ${widget.order.type}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    Text(
-                      'Quantity: ${widget.order.quantity}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    Text(
-                      'Rate: \$${widget.order.rate.toStringAsFixed(2)}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    Text(
-                      'Date Submitted: ${widget.order.dateSubmitted}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    Text(
-                      'Department: ${widget.order.department}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    Text(
-                      'Status: ${widget.order.status}',
-                      style:  
-                      const TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    if (updatedStatusMessage != null) ...[
-                      const SizedBox(height: 8.0),
-                      Text(
-                        updatedStatusMessage!,
-                        style: const TextStyle(color: Colors.green),
-                      ),
-                    ],
-                    const Spacer(), // Push buttons to the bottom
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                         // Dropdown for Status Updates
-                          DropdownButton<String>(
-                            value: selectedStatus, // Current selected status
-                            items: statuses.map((status) {
-                              // Disable current and previous statuses
-                              final isDisabled = statuses.indexOf(status) <= statuses.indexOf(selectedStatus);
-                              return DropdownMenuItem<String>(
-                                value: status,
-                                enabled: !isDisabled,
-                                child: Text(
-                                  status,
-                                  style: TextStyle(
-                                    color: isDisabled ? Colors.grey : Colors.black,
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Order Details',
+                            style: TextStyle(
+                              fontFamily: 'Klavika',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.0,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Expanded(
+                            child: ListView(
+                              padding: EdgeInsets.zero,
+                              children: [
+                                Text(
+                                  'Name: ${widget.order.name}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  selectedStatus = value; // Update the status
-                                  updatedStatusMessage = "Status updated successfully: $value";
-                                });
-                              }
-                            },
-                            dropdownColor: Theme.of(context).cardColor,
-                            style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+                                Text(
+                                  'Process: ${widget.order.process}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                Text(
+                                          'Order Number: ${widget.order.orderNumber}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Unit: ${widget.order.unit}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Type: ${widget.order.type}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Quantity: ${widget.order.quantity}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Rate: \$${widget.order.rate.toStringAsFixed(2)}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Date Submitted: ${widget.order.dateSubmitted}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Department: ${widget.order.department}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Status: ${widget.order.status}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                        if (updatedStatusMessage != null) ...[
+                                          const SizedBox(height: 8.0),
+                                          Text(
+                                            updatedStatusMessage!,
+                                            style: const TextStyle(
+                                              color: Colors.green,
+                                              fontFamily: 'Klavika'
+                                              ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                          const SizedBox(height: 16.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              DropdownButton<String>(
+                                value: selectedStatus,
+                                items: statuses.map((status) {
+                                  final isDisabled = statuses.indexOf(status) <= statuses.indexOf(selectedStatus);
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    enabled: !isDisabled,
+                                    child: Text(
+                                      status,
+                                      style: TextStyle(
+                                        color: isDisabled ? Colors.grey : Colors.black,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      selectedStatus = value;
+                                      updatedStatusMessage = "Status updated successfully: $value";
+                                    });
+                                  }
+                                },
+                                dropdownColor: Theme.of(context).cardColor,
+                                style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+                              ),
+                              const SizedBox(width: 20.0),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                                onPressed: () => deleteOrder(context),
+                                child: const Text(
+                                  'DELETE ORDER',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-
-
-                        const SizedBox(width: 20.0),
-
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all(Colors.red),
-                            side: WidgetStateProperty.all( const BorderSide(width: 2.0, color: Colors.red)),
-                            shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          )),
-                          ),
-                          onPressed: () => deleteOrder(context),
-                          child: const Text(
-                            'DELETE ORDER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Klavika',
-                              fontWeight: FontWeight.bold
-                            ),
-                            ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 16.0), // Spacing between containers
-            // Comments Container
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColorLight),
-                ),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Comments',
-                      style:  
-                      TextStyle(
-                        fontFamily: 'Klavika', 
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0
-                        ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Expanded(
-                      child: TextField(
-                        onChanged: (value) => comments = value, // Capture comments
-                        maxLines: null,
-                        expands: true,
-                        decoration: const InputDecoration(
-                          //border: OutlineInputBorder(),
-                          hintText: 'Enter your comments here...',
-                        ),
+                        ],
                       ),
                     ),
-                    const SizedBox(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-                            side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-                            shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          )),
-                          ),
-                          onPressed: () => saveComment(context),
-                          child: Text(
+                  ),
+                  const SizedBox(width: 16.0),
+                  // Comments Container
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Theme.of(context).primaryColorLight),
+                      ),
+                      constraints: const BoxConstraints(
+                        maxHeight: 400,
+                      ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Comments',
                             style: TextStyle(
-                              color: Theme.of(context).primaryColorLight,
                               fontFamily: 'Klavika',
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.0,
                             ),
-                            'SAVE'
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8.0),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Theme.of(context).primaryColorLight),
+                                color: Theme.of(context).canvasColor,
+                              ),
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextField(
+                                onChanged: (value) => comments = value,
+                                maxLines: null,
+                                expands: true,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter your comments here...',
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16.0),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).secondaryHeaderColor,
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                              onPressed: () => saveComment(context),
+                              child: Text(
+                                'SAVE',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColorLight,
+                                  fontFamily: 'Klavika',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 }
