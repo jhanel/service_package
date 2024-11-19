@@ -32,8 +32,9 @@ class AdminServicesState extends State<AdminServices> {
   bool showAllOrders = true; 
   List<NewOrder> orders = []; 
   List<bool> expandedState = []; 
-  final DateTime graphStartDate = DateTime.now().subtract(const Duration(days: 180));
+  late DateTime graphStartDate;
   final double dayWidth = 5.0;
+  
 
   Widget getProcessImage(String process) {
   switch (process) {
@@ -54,6 +55,15 @@ class AdminServicesState extends State<AdminServices> {
   void initState() {
     super.initState();
     loadOrders();
+
+    // Initialize graphStartDate based on orders
+  if (orders.isNotEmpty) {
+    graphStartDate = orders
+        .map((order) => DateTime.parse(order.dateSubmitted))
+        .reduce((a, b) => a.isBefore(b) ? a : b);
+  } else {
+    graphStartDate = DateTime.now(); // Default to today if no orders
+  }
   }
 
   void loadOrders() {
@@ -63,63 +73,77 @@ class AdminServicesState extends State<AdminServices> {
     setState(() {});
   }
 
-final int currentWeek = (DateTime.now().day - 1) ~/ 7 + 1; 
+  int calculateDiffinMonths(DateTime start, DateTime end) {
+  int monDiff = ((end.year - start.year) * 12) + (end.month - start.month + 1);
+  return monDiff;
+}
 
-List<Widget> chartHeader(BuildContext context) {
-  
-  DateTime now = DateTime.now();
+DateTime subtractDateByMon(DateTime date, int monthdiff) {
+  int newYear = date.year;
+  int newMonth = (date.month - monthdiff) + 1;
 
-  DateTime? earliestDate;
-  if (orders.isNotEmpty) {
-    earliestDate = orders
-        .map((order) => DateTime.parse(order.dateSubmitted))
-        .reduce((a, b) => a.isBefore(b) ? a : b);
+  if (newMonth <= 0) {
+    newYear--;
+    newMonth = 12 + newMonth;
   }
 
-  // Fallback to today's date if no orders exist
-  earliestDate ??= now;
+  return DateTime(newYear, newMonth, 1);
+}
 
-  int daysDifference = now.difference(earliestDate).inDays;
-  int totalWeeks = (daysDifference / 7).ceil(); // Total weeks from earliest date to now
 
+List<Widget> chartHeader(BuildContext context) {
+  DateTime now = DateTime.now();
+
+  // Calculate the number of months from graphStartDate to now
+  int numOfMonths = calculateDiffinMonths(graphStartDate, now);
+
+  int currYear = graphStartDate.year;
+  int currMon = graphStartDate.month;
+
+  double weekWidth = 250.0; // Adjust based on your layout
   List<Widget> headerDates = [];
-  for (int week = 0; week < totalWeeks; week++) {
-    DateTime weekStart = earliestDate.add(Duration(days: week * 7));
-    int weekOfMonth = ((weekStart.day - 1) ~/ 7) + 1;
 
-    headerDates.add(
-      SizedBox(
-        width: 250, 
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            "${_getMonthName(weekStart.month)} '${weekStart.year.toString().substring(2)} Week $weekOfMonth",
-            style: TextStyle(
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-              color: Theme.of(context).secondaryHeaderColor,
+  // Determine the start week for the first month
+  int startWeek = ((graphStartDate.day - 1) ~/ 7) + 1;
+
+  for (int i = 0; i < numOfMonths; i++) {
+    if (currMon > 12) {
+      currYear++;
+      currMon = 1; // Reset to January
+    }
+
+    // Determine the end week for the last month
+    int endWeek = 4; // Default to 4 weeks
+    if (currMon == now.month && currYear == now.year) {
+      endWeek = ((now.day - 1) ~/ 7) + 1; // Adjust for the current date
+    }
+
+    // Generate weeks for the current month
+    for (int j = (i == 0 ? startWeek - 1 : 0); j < endWeek; j++) {
+      headerDates.add(
+        SizedBox(
+          width: weekWidth,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              "${Month.getMonth(currMon, currYear).name}. '${currYear.toString().substring(2)} Week ${j + 1}",
+              style: TextStyle(
+                fontFamily: 'Klavika',
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+                color: Theme.of(context).secondaryHeaderColor,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
+    currMon++;
   }
 
   return headerDates;
 }
-
-String _getMonthName(int month) {
-  const List<String> monthNames = [
-    "Jan.", "Feb.", "Mar.", "Apr.", "May.", "Jun.",
-    "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."
-  ];
-  return monthNames[month - 1];
-}
-
-
-
-
 
 
 
@@ -345,6 +369,42 @@ String _getMonthName(int month) {
               ],
             ),
           ),
+          // Right Horizontal Container: Chart Header
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Chart Header
+         Container(
+  height: 40, // Adjust height for the header
+  color: Theme.of(context).cardColor, // Background color
+  padding: const EdgeInsets.all(8.0),
+  child: ListView(
+    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+    children: chartHeader(context), // Dynamic weeks
+  ),
+),
+
+
+
+          // Placeholder for additional UI or timeline
+          Expanded(
+            child: Container(
+              color: Theme.of(context).canvasColor, // Blank space
+              child: Center(
+                child: Text(
+                  'Timeline Content Here',
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    color: Theme.of(context).secondaryHeaderColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
         ],
       ),
     );
@@ -364,6 +424,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
 String? updatedStatusMessage; 
 String selectedStatus = ''; 
 String comments = ''; 
+List<String> savedComments = []; // Stores all saved comments
 final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
 
 @override
@@ -466,6 +527,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                   style: const TextStyle(
                                     fontFamily: 'Klavika',
                                     fontWeight: FontWeight.normal,
+                                    fontSize: 17.0
                                   ),
                                 ),
                                 Text(
@@ -473,6 +535,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                   style: const TextStyle(
                                     fontFamily: 'Klavika',
                                     fontWeight: FontWeight.normal,
+                                    fontSize: 17.0
                                   ),
                                 ),
                                 Text(
@@ -480,6 +543,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -487,6 +551,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -494,6 +559,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -501,6 +567,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -508,6 +575,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -515,6 +583,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -522,6 +591,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         Text(
@@ -529,6 +599,7 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                           style: const TextStyle(
                                             fontFamily: 'Klavika',
                                             fontWeight: FontWeight.normal,
+                                            fontSize: 17.0
                                           ),
                                         ),
                                         if (updatedStatusMessage != null) ...[
@@ -537,7 +608,8 @@ const SnackBar(content: Text('Comment saved successfully!')),
                                             updatedStatusMessage!,
                                             style: const TextStyle(
                                               color: Colors.green,
-                                              fontFamily: 'Klavika'
+                                              fontFamily: 'Klavika',
+                                              fontSize: 17.0
                                               ),
                                           ),
                                         ],

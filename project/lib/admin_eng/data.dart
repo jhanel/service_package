@@ -72,7 +72,7 @@ const String orderJson = '''
     "rate": 2.5,
     "estimatedPrice": 25.0,
     "filePath": "path/to/file1.stl",
-    "dateSubmitted": "2024-08-20",
+    "dateSubmitted": "2024-06-20",
     "journalTransferNumber": "JT001",
     "department": "Computer Science",
     "status": "Received"
@@ -94,4 +94,62 @@ const String orderJson = '''
   }
 ]
 ''';
+
+class Month {
+  Month({
+    required this.name,
+    required this.days,
+  });
+  
+  String name;
+  int days;
+
+    static Month getMonth(int monthNum, int year){
+    Month thisMonth;
+    if(monthNum == 0){monthNum = 12;}
+
+    switch (monthNum) {
+        case 1:
+          thisMonth = Month(name: "Jan", days: 30); //31);
+          break;
+        case 2:
+          thisMonth = Month(name: "Feb", days: (year%4 == 0)?29:28);
+          break;
+        case 3:
+          thisMonth = Month(name: "Mar", days: 30); //31);
+          break;
+        case 4:
+          thisMonth = Month(name: "Apr", days: 30);
+          break;
+        case 5:
+          thisMonth = Month(name: "May", days: 30); //31);
+          break;
+        case 6:
+          thisMonth = Month(name: "Jun", days: 30);
+          break;
+        case 7:
+          thisMonth = Month(name: "Jul", days: 30); //31);
+          break;
+        case 8:
+          thisMonth = Month(name: "Aug", days: 30); //31);
+          break;
+        case 9:
+          thisMonth = Month(name: "Sep", days: 30);
+          break;
+        case 10:
+          thisMonth = Month(name: "Oct", days: 30); //31);
+          break;
+        case 11:
+          thisMonth = Month(name: "Nov", days: 30);
+          break;
+        case 12:
+          thisMonth = Month(name: "Dec", days: 30); //31);
+          break;
+        default:
+          thisMonth = Month(name: "", days: 1);
+      }
+
+    return thisMonth;
+  }
+}
 
