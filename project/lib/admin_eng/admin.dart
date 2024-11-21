@@ -31,9 +31,13 @@ class AdminServicesState extends State<AdminServices> {
   bool hideCompletedOrders = false; 
   bool showAllOrders = true; 
   List<NewOrder> orders = []; 
+  List<NewOrder> filteredOrders = []; // Filtered list of orders for display
   List<bool> expandedState = []; 
-  late DateTime graphStartDate;
   final double dayWidth = 5.0;
+  final double weekWidth = 250.0; // Width for each week on the timeline
+  final ScrollController _scrollController = ScrollController(); // Shared ScrollController
+  late DateTime graphStartDate;
+
   
 
   Widget getProcessImage(String process) {
@@ -52,19 +56,32 @@ class AdminServicesState extends State<AdminServices> {
 
 
   @override
-  void initState() {
-    super.initState();
-    loadOrders();
+void initState() {
+  super.initState();
 
-    // Initialize graphStartDate based on orders
-  if (orders.isNotEmpty) {
-    graphStartDate = orders
-        .map((order) => DateTime.parse(order.dateSubmitted))
+  // Load orders into the main list
+  loadOrders();
+
+  // Filter orders dynamically
+  filteredOrders = orders.where((order) {
+    if (hideCompletedOrders) {
+      return order.status != 'Completed'; // Exclude completed orders
+    }
+    return true; // Include all other orders
+  }).toList();
+
+  // Set the graphStartDate to the earliest date
+  if (filteredOrders.isNotEmpty) {
+    graphStartDate = filteredOrders
+        .map((order) => DateTime.parse(order.dateSubmitted)) // Convert String to DateTime
         .reduce((a, b) => a.isBefore(b) ? a : b);
   } else {
     graphStartDate = DateTime.now(); // Default to today if no orders
   }
-  }
+}
+
+
+
 
   void loadOrders() {
     List<dynamic> jsonList = json.decode(orderJson);
@@ -93,14 +110,12 @@ DateTime subtractDateByMon(DateTime date, int monthdiff) {
 
 List<Widget> chartHeader(BuildContext context) {
   DateTime now = DateTime.now();
-
-  // Calculate the number of months from graphStartDate to now
   int numOfMonths = calculateDiffinMonths(graphStartDate, now);
 
   int currYear = graphStartDate.year;
   int currMon = graphStartDate.month;
 
-  double weekWidth = 250.0; // Adjust based on your layout
+  double weekWidth = 250.0; // Ensure consistent width with timeline
   List<Widget> headerDates = [];
 
   // Determine the start week for the first month
@@ -112,13 +127,11 @@ List<Widget> chartHeader(BuildContext context) {
       currMon = 1; // Reset to January
     }
 
-    // Determine the end week for the last month
     int endWeek = 4; // Default to 4 weeks
     if (currMon == now.month && currYear == now.year) {
-      endWeek = ((now.day - 1) ~/ 7) + 1; // Adjust for the current date
+      endWeek = ((now.day - 1) ~/ 7) + 1; // Adjust for current date
     }
 
-    // Generate weeks for the current month
     for (int j = (i == 0 ? startWeek - 1 : 0); j < endWeek; j++) {
       headerDates.add(
         SizedBox(
@@ -144,6 +157,33 @@ List<Widget> chartHeader(BuildContext context) {
 
   return headerDates;
 }
+
+
+int calculateDiffinWeeks(DateTime startDate, DateTime endDate) {
+  return endDate.difference(startDate).inDays ~/ 7 + 1; // Total weeks
+}
+
+
+
+  double calculateBarPosition(DateTime graphStartDate, DateTime barStartDate, double weekWidth) {
+  int daysDifference = barStartDate.difference(graphStartDate).inDays;
+  return (daysDifference / 7) * weekWidth;
+}
+
+double calculateBarWidth(DateTime startDate, DateTime endDate, double weekWidth) {
+  int daysDifference = endDate.difference(startDate).inDays + 1;
+  return (daysDifference / 7) * weekWidth;
+}
+
+double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
+  if (orders.isEmpty) return weekWidth; // Fallback width
+  DateTime earliestDate = DateTime.parse(orders.first.dateSubmitted);
+  DateTime latestDate = DateTime.now(); // Extend timeline to the current date
+  int totalWeeks = latestDate.difference(earliestDate).inDays ~/ 7;
+  return (totalWeeks + 1) * weekWidth; // Total width for the timeline
+}
+
+
 
 
 
@@ -290,123 +330,147 @@ List<Widget> chartHeader(BuildContext context) {
         ],
       ),
       body: Row(
+  children: [
+    // Left Vertical Container: Order Cards
+    Container(
+      width: 300,
+      padding: const EdgeInsets.all(8.0),
+      color: Theme.of(context).canvasColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 300, 
-            padding: const EdgeInsets.all(8.0),
-            color: Theme.of(context).canvasColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-           SizedBox(
-              height: 25,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  DateTime.now().year.toString(),
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                )
-              )
+          SizedBox(
+            height: 25,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                DateTime.now().year.toString(),
+                style: TextStyle(
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Theme.of(context).secondaryHeaderColor,
+                ),
+              ),
             ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: filteredOrders.length,
               itemBuilder: (context, index) {
                 NewOrder order = filteredOrders[index];
                 return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderDetailsPage(order: order),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderDetailsPage(order: order),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: SizedBox(
+                              width: 40,
+                              child: getProcessImage(order.process),
                             ),
-                          );
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
+                          ),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Flexible(
-                                  child: SizedBox(
-                                    width: 40, 
-                                    child: getProcessImage(order.process), 
+                                Text(
+                                  order.name,
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(width: 8.0), 
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        order.name,
-                                        style: const TextStyle(fontFamily: 'Klavika', fontSize: 16, fontWeight: FontWeight.bold),
-                                        overflow: TextOverflow.ellipsis, 
-                                      ),
-                                      Text(
-                                        'Status: ${order.status}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
-                                      ),
-                                    ],
+                                Text(
+                                  'Status: ${order.status}',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          // Right Horizontal Container: Chart Header
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Chart Header
-         Container(
-  height: 40, // Adjust height for the header
-  color: Theme.of(context).cardColor, // Background color
-  padding: const EdgeInsets.all(8.0),
-  child: ListView(
-    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-    children: chartHeader(context), // Dynamic weeks
-  ),
-),
-
-
-
-          // Placeholder for additional UI or timeline
-          Expanded(
-            child: Container(
-              color: Theme.of(context).canvasColor, // Blank space
-              child: Center(
-                child: Text(
-                  'Timeline Content Here',
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
       ),
     ),
-        ],
+
+    Expanded(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Chart Header (already implemented)
+      SingleChildScrollView(
+        controller: _scrollController,
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: chartHeader(context),
+        ),
       ),
+
+      // Timeline Bars Section
+      Expanded(
+        child: SingleChildScrollView(
+          controller: _scrollController, // Sync with chart header
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: calculateTotalWidth(filteredOrders, weekWidth), // Total width
+            child: Stack(
+              children: [
+                for (int index = 0; index < filteredOrders.length; index++)
+                  Positioned(
+                    top: index * 70.0,
+                    left: calculateBarPosition(
+                      graphStartDate,
+                      DateTime.parse(filteredOrders[index].dateSubmitted),
+                      weekWidth,
+                    ),
+                    child: Container(
+                      width: calculateBarWidth(
+                        DateTime.parse(filteredOrders[index].dateSubmitted),
+                        DateTime.now(), // Extend to current week
+                        weekWidth,
+                      ),
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).secondaryHeaderColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+  ],
+),
     );
   }
 }
