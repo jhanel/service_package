@@ -183,41 +183,24 @@ double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
   return (totalWeeks + 1) * weekWidth; // Total width for the timeline
 }
 
+void deleteOrder(int index) {
+  setState(() {
+    // Remove from main orders list
+    orders.removeAt(index);
+    
+    // Update the filtered list
+    filteredOrders = orders.where((order) {
+      if (hideCompletedOrders && order.status == "Completed") {
+        return false;
+      }
+      return true;
+    }).toList();
+    
+    // Update expanded state
+    expandedState.removeAt(index);
+  });
+}
 
-
-
-
-
-
-  void deleteOrder(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm'),
-          content: const Text('Are you sure you want to delete this order?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); 
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  orders.removeAt(index); 
-                  expandedState.removeAt(index);
-                });
-                Navigator.of(context).pop(); 
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,13 +343,16 @@ double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
               itemBuilder: (context, index) {
                 NewOrder order = filteredOrders[index];
                 return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                      final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OrderDetailsPage(order: order),
+                        builder: (context) => OrderDetailsPage(order: order, index: index),
                       ),
                     );
+                    if (result != null) {
+                      deleteOrder(result); // Use the returned index to delete the order
+                    }
                   },
                   child: Card(
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -477,8 +463,9 @@ double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
 
 class OrderDetailsPage extends StatefulWidget {
 final NewOrder order;
+final int index;
 
-const OrderDetailsPage({Key? key, required this.order}) : super(key: key);
+const OrderDetailsPage({Key? key, required this.order, required this.index}) : super(key: key);
 
 @override
 OrderDetailsPageState createState() => OrderDetailsPageState();
@@ -512,7 +499,7 @@ actions: [
   TextButton(
     onPressed: () {
       Navigator.pop(context); // Close the alert
-      Navigator.pop(context); // Return to previous screen
+      Navigator.pop(context, widget.index); // Pass the index back to parent
     },
     child: const Text('Delete'),
   ),
