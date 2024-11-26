@@ -158,6 +158,53 @@ List<Widget> chartHeader(BuildContext context) {
   return headerDates;
 }
 
+List<Widget> timelineBars(BuildContext context) {
+  return [
+    SizedBox(
+      width: calculateTotalWidth(filteredOrders, weekWidth), // Total width
+      child: Stack(
+        children: [
+          // Week Dividers (Background)
+          for (int week = 0;
+              week <= calculateDiffinWeeks(graphStartDate, DateTime.now());
+              week++)
+            Positioned(
+              left: week * weekWidth,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 2,
+                color: Colors.black54, // Divider color
+              ),
+            ),
+
+          // Timeline Bars (Foreground)
+          for (int index = 0; index < filteredOrders.length; index++)
+            Positioned(
+              top: index * 70.0 + 10, // Adjust for spacing
+              left: calculateBarPosition(
+                graphStartDate,
+                DateTime.parse(filteredOrders[index].dateSubmitted),
+                weekWidth,
+              ),
+              child: Container(
+                width: calculateBarWidth(
+                  DateTime.parse(filteredOrders[index].dateSubmitted),
+                  DateTime.now(), // Use current date as the end
+                  weekWidth,
+                ),
+                height: 40.0,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+        ],
+      ),
+    ),
+  ];
+}
 
 int calculateDiffinWeeks(DateTime startDate, DateTime endDate) {
   return endDate.difference(startDate).inDays ~/ 7 + 1; // Total weeks
@@ -185,21 +232,22 @@ double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
 
 void deleteOrder(int index) {
   setState(() {
-    // Remove from main orders list
+    // Remove the order from the main list
     orders.removeAt(index);
-    
-    // Update the filtered list
+
+    // Reapply filters to update the filteredOrders
     filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
       }
       return true;
     }).toList();
-    
-    // Update expanded state
-    expandedState.removeAt(index);
+
+    // Update the expandedState list
+    expandedState = List<bool>.filled(orders.length, false);
   });
 }
+
 
 
   @override
@@ -404,57 +452,43 @@ void deleteOrder(int index) {
       ),
     ),
 
-    Expanded(
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Chart Header (already implemented)
-      SingleChildScrollView(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: chartHeader(context),
-        ),
-      ),
+    // Divider Line
+    Container(
+      width: 2,
+      color: Colors.black54,
+    ),
 
-      // Timeline Bars Section
-      Expanded(
-        child: SingleChildScrollView(
-          controller: _scrollController, // Sync with chart header
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: calculateTotalWidth(filteredOrders, weekWidth), // Total width
-            child: Stack(
-              children: [
-                for (int index = 0; index < filteredOrders.length; index++)
-                  Positioned(
-                    top: index * 70.0,
-                    left: calculateBarPosition(
-                      graphStartDate,
-                      DateTime.parse(filteredOrders[index].dateSubmitted),
-                      weekWidth,
-                    ),
-                    child: Container(
-                      width: calculateBarWidth(
-                        DateTime.parse(filteredOrders[index].dateSubmitted),
-                        DateTime.now(), // Extend to current week
-                        weekWidth,
-                      ),
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-              ],
+    Expanded(
+  child: SingleChildScrollView(
+    controller: _scrollController, // Unified scroll controller
+    scrollDirection: Axis.horizontal,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Chart Header
+        Container(
+          color: Theme.of(context).cardColor, // Chart header background
+          height: 43.0, // Fixed height for the chart header
+          child: Row(
+            children: chartHeader(context), // Call to chartHeader()
+          ),
+        ),
+
+        // Timeline Bars Section
+        Expanded(
+          child: Container(
+            color: Theme.of(context).canvasColor, // Timeline background
+            child: Row(
+              children: timelineBars(context), // Call to timelineBars()
             ),
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   ),
 ),
+
+
   ],
 ),
     );
@@ -485,29 +519,30 @@ selectedStatus = widget.order.status;
 }
 
 void deleteOrder(BuildContext context) {
-showDialog(
-context: context,
-builder: (BuildContext context) {
-return AlertDialog(
-title: const Text('Confirm Delete'),
-content: const Text('Are you sure you want to delete this order?'),
-actions: [
-  TextButton(
-    onPressed: () => Navigator.pop(context), 
-    child: const Text('Cancel'),
-  ),
-  TextButton(
-    onPressed: () {
-      Navigator.pop(context); // Close the alert
-      Navigator.pop(context, widget.index); // Pass the index back to parent
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this order?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Close dialog
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context, widget.index); // Pass the index back
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      );
     },
-    child: const Text('Delete'),
-  ),
-],
-);
-},
-);
+  );
 }
+
 
 void updateStatus(BuildContext context, String newStatus) {
 setState(() {
