@@ -27,15 +27,15 @@ class ProcessImage {
 }
 
 class AdminServicesState extends State<AdminServices> {
-  String sortBy = 'Date'; // Default sort option
+  String sortBy = 'Date';
   bool hideCompletedOrders = false; 
   bool showAllOrders = true; 
   List<NewOrder> orders = []; 
-  List<NewOrder> filteredOrders = []; // Filtered list of orders for display
+  List<NewOrder> filteredOrders = []; 
   List<bool> expandedState = []; 
   final double dayWidth = 5.0;
-  final double weekWidth = 250.0; // Width for each week on the timeline
-  final ScrollController _scrollController = ScrollController(); // Shared ScrollController
+  final double weekWidth = 250.0; 
+  final ScrollController _scrollController = ScrollController(); 
   late DateTime graphStartDate;
 
   
@@ -59,24 +59,20 @@ class AdminServicesState extends State<AdminServices> {
 void initState() {
   super.initState();
 
-  // Load orders into the main list
   loadOrders();
 
-  // Filter orders dynamically
   filteredOrders = orders.where((order) {
     if (hideCompletedOrders) {
-      return order.status != 'Completed'; // Exclude completed orders
+      return order.status != 'Completed'; 
     }
-    return true; // Include all other orders
+    return true; 
   }).toList();
-
-  // Set the graphStartDate to the earliest date
   if (filteredOrders.isNotEmpty) {
     graphStartDate = filteredOrders
-        .map((order) => DateTime.parse(order.dateSubmitted)) // Convert String to DateTime
+        .map((order) => DateTime.parse(order.dateSubmitted)) 
         .reduce((a, b) => a.isBefore(b) ? a : b);
   } else {
-    graphStartDate = DateTime.now(); // Default to today if no orders
+    graphStartDate = DateTime.now(); 
   }
 }
 
@@ -115,21 +111,20 @@ List<Widget> chartHeader(BuildContext context) {
   int currYear = graphStartDate.year;
   int currMon = graphStartDate.month;
 
-  double weekWidth = 250.0; // Ensure consistent width with timeline
+  double weekWidth = 250.0;
   List<Widget> headerDates = [];
 
-  // Determine the start week for the first month
   int startWeek = ((graphStartDate.day - 1) ~/ 7) + 1;
 
   for (int i = 0; i < numOfMonths; i++) {
     if (currMon > 12) {
       currYear++;
-      currMon = 1; // Reset to January
+      currMon = 1;
     }
 
-    int endWeek = 4; // Default to 4 weeks
+    int endWeek = 4;
     if (currMon == now.month && currYear == now.year) {
-      endWeek = ((now.day - 1) ~/ 7) + 1; // Adjust for current date
+      endWeek = ((now.day - 1) ~/ 7) + 1; 
     }
 
     for (int j = (i == 0 ? startWeek - 1 : 0); j < endWeek; j++) {
@@ -161,10 +156,9 @@ List<Widget> chartHeader(BuildContext context) {
 List<Widget> timelineBars(BuildContext context) {
   return [
     SizedBox(
-      width: calculateTotalWidth(filteredOrders, weekWidth), // Total width
+      width: calculateTotalWidth(filteredOrders, weekWidth), 
       child: Stack(
         children: [
-          // Week Dividers (Background)
           for (int week = 0;
               week <= calculateDiffinWeeks(graphStartDate, DateTime.now());
               week++)
@@ -174,14 +168,12 @@ List<Widget> timelineBars(BuildContext context) {
               bottom: 0,
               child: Container(
                 width: 2,
-                color: Colors.black54, // Divider color
+                color: Colors.black54, 
               ),
             ),
-
-          // Timeline Bars (Foreground)
           for (int index = 0; index < filteredOrders.length; index++)
             Positioned(
-              top: index * 70.0 + 10, // Adjust for spacing
+              top: index * 70.0 + 10, 
               left: calculateBarPosition(
                 graphStartDate,
                 DateTime.parse(filteredOrders[index].dateSubmitted),
@@ -190,7 +182,7 @@ List<Widget> timelineBars(BuildContext context) {
               child: Container(
                 width: calculateBarWidth(
                   DateTime.parse(filteredOrders[index].dateSubmitted),
-                  DateTime.now(), // Use current date as the end
+                  DateTime.now(),
                   weekWidth,
                 ),
                 height: 40.0,
@@ -207,7 +199,7 @@ List<Widget> timelineBars(BuildContext context) {
 }
 
 int calculateDiffinWeeks(DateTime startDate, DateTime endDate) {
-  return endDate.difference(startDate).inDays ~/ 7 + 1; // Total weeks
+  return endDate.difference(startDate).inDays ~/ 7 + 1;
 }
 
 
@@ -223,33 +215,24 @@ double calculateBarWidth(DateTime startDate, DateTime endDate, double weekWidth)
 }
 
 double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
-  if (orders.isEmpty) return weekWidth; // Fallback width
+  if (orders.isEmpty) return weekWidth;
   DateTime earliestDate = DateTime.parse(orders.first.dateSubmitted);
-  DateTime latestDate = DateTime.now(); // Extend timeline to the current date
+  DateTime latestDate = DateTime.now();
   int totalWeeks = latestDate.difference(earliestDate).inDays ~/ 7;
-  return (totalWeeks + 1) * weekWidth; // Total width for the timeline
+  return (totalWeeks + 1) * weekWidth; 
 }
-
 void deleteOrder(int index) {
   setState(() {
-    // Remove the order from the main list
     orders.removeAt(index);
-
-    // Reapply filters to update the filteredOrders
     filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
       }
       return true;
     }).toList();
-
-    // Update the expandedState list
     expandedState = List<bool>.filled(orders.length, false);
   });
 }
-
-
-
   @override
   Widget build(BuildContext context) {
     List<NewOrder> filteredOrders = orders.where((order) {
@@ -258,7 +241,6 @@ void deleteOrder(int index) {
       }
       return true;
     }).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -361,204 +343,194 @@ void deleteOrder(int index) {
         ],
       ),
       body: Row(
-  children: [
-    // Left Vertical Container: Order Cards
-    Container(
-      width: 300,
-      padding: const EdgeInsets.all(8.0),
-      color: Theme.of(context).canvasColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 25,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                DateTime.now().year.toString(),
-                style: TextStyle(
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                  color: Theme.of(context).secondaryHeaderColor,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredOrders.length,
-              itemBuilder: (context, index) {
-                NewOrder order = filteredOrders[index];
-                return GestureDetector(
-                  onTap: () async {
-                      final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderDetailsPage(order: order, index: index),
+          Container(
+            width: 300,
+            padding: const EdgeInsets.all(8.0),
+            color: Theme.of(context).canvasColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 25,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      DateTime.now().year.toString(),
+                      style: TextStyle(
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Theme.of(context).secondaryHeaderColor,
                       ),
-                    );
-                    if (result != null) {
-                      deleteOrder(result); // Use the returned index to delete the order
-                    }
-                  },
-                  child: Card(
-                    margin: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: SizedBox(
-                              width: 40,
-                              child: getProcessImage(order.process),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredOrders.length,
+                    itemBuilder: (context, index) {
+                      NewOrder order = filteredOrders[index];
+                      return GestureDetector(
+                        onTap: () async {
+                            final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderDetailsPage(order: order, index: index),
                             ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Expanded(
-                            child: Column(
+                          );
+                          if (result != null) {
+                            deleteOrder(result); 
+                          }
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  order.name,
-                                  style: const TextStyle(
-                                    fontFamily: 'Klavika',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                Flexible(
+                                  child: SizedBox(
+                                    width: 40,
+                                    child: getProcessImage(order.process),
                                   ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
-                                  'Status: ${order.status}',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontFamily: 'Klavika',
-                                    fontWeight: FontWeight.normal,
+                                const SizedBox(width: 8.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.name,
+                                        style: const TextStyle(
+                                          fontFamily: 'Klavika',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        'Status: ${order.status}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontFamily: 'Klavika',
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 2,
+            color: Colors.black54,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController, 
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: Theme.of(context).cardColor,
+                    height: 43.0, 
+                    child: Row(
+                      children: chartHeader(context), 
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: Theme.of(context).canvasColor, 
+                      child: Row(
+                        children: timelineBars(context), 
                       ),
                     ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
           ),
         ],
       ),
-    ),
-
-    // Divider Line
-    Container(
-      width: 2,
-      color: Colors.black54,
-    ),
-
-    Expanded(
-  child: SingleChildScrollView(
-    controller: _scrollController, // Unified scroll controller
-    scrollDirection: Axis.horizontal,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Chart Header
-        Container(
-          color: Theme.of(context).cardColor, // Chart header background
-          height: 43.0, // Fixed height for the chart header
-          child: Row(
-            children: chartHeader(context), // Call to chartHeader()
-          ),
-        ),
-
-        // Timeline Bars Section
-        Expanded(
-          child: Container(
-            color: Theme.of(context).canvasColor, // Timeline background
-            child: Row(
-              children: timelineBars(context), // Call to timelineBars()
-            ),
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
-
-  ],
-),
     );
   }
 }
 
-class OrderDetailsPage extends StatefulWidget {
-final NewOrder order;
-final int index;
+  class OrderDetailsPage extends StatefulWidget {
+    final NewOrder order;
+    final int index;
 
-const OrderDetailsPage({Key? key, required this.order, required this.index}) : super(key: key);
+    const OrderDetailsPage({Key? key, required this.order, required this.index}) : super(key: key);
 
-@override
-OrderDetailsPageState createState() => OrderDetailsPageState();
-}
+    @override
+    OrderDetailsPageState createState() => OrderDetailsPageState();
+  }
 
 class OrderDetailsPageState extends State<OrderDetailsPage> {
 String? updatedStatusMessage; 
 String selectedStatus = ''; 
 String comments = ''; 
-List<String> savedComments = []; // Stores all saved comments
+List<String> savedComments = []; 
 final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
 
-@override
-void initState() {
-super.initState();
-selectedStatus = widget.order.status; 
-}
+  @override
+  void initState() {
+    super.initState();
+    selectedStatus = widget.order.status; 
+  }
 
-void deleteOrder(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this order?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context), // Close dialog
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context, widget.index); // Pass the index back
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      );
-    },
-  );
-}
+  void deleteOrder(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text('Are you sure you want to delete this order?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), 
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context, widget.index); 
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 
-void updateStatus(BuildContext context, String newStatus) {
-setState(() {
-updatedStatusMessage = "Status updated successfully: $newStatus"; 
-selectedStatus = newStatus; 
-});
-}
+  void updateStatus(BuildContext context, String newStatus) {
+    setState(() {
+    updatedStatusMessage = "Status updated successfully: $newStatus"; 
+    selectedStatus = newStatus; 
+    });
+  }
 
-void saveComment(BuildContext context) {
-setState(() {
-// save comment code
-});
-ScaffoldMessenger.of(context).showSnackBar(
-const SnackBar(content: Text('Comment saved successfully!')),
-);
-}
+  void saveComment(BuildContext context) {
+    setState(() {
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Comment saved successfully!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -581,7 +553,6 @@ const SnackBar(content: Text('Comment saved successfully!')),
                 mainAxisAlignment: MainAxisAlignment.center, 
                 crossAxisAlignment: CrossAxisAlignment.start, 
                 children: [
-                  // Order Details Container
                   Expanded(
                     flex: 1,
                     child: Container(
@@ -758,7 +729,6 @@ const SnackBar(content: Text('Comment saved successfully!')),
                     ),
                   ),
                   const SizedBox(width: 16.0),
-                  // Comments Container
                   Expanded(
                     flex: 1,
                     child: Container(
