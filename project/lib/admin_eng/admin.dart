@@ -405,21 +405,18 @@ void deleteOrder(int index) async {
                             ),
                           );
 
-                          if (result != null) {
+                          if (result != null && result is NewOrder) {
                             setState(() {
-                              if (result is int) {
-                                deleteOrder(result);
-                              }
-                              else if (result is NewOrder) {
-                                orders[index] = result; 
-                                filteredOrders = orders.where((order) {
-                                  if (hideCompletedOrders && order.status == "Completed") {
-                                    return false;
-                                  }
-                                  return true;
-                                }).toList(); 
-                              }
+                              orders[index] = result; 
+                              saveOrdersToLocalStorage(); 
                             });
+
+                            filteredOrders = orders.where((order) {
+                              if (hideCompletedOrders && order.status == "Completed") {
+                                return false;
+                              }
+                              return true;
+                            }).toList();
                           }
                         },
                         child: Card(
@@ -559,11 +556,14 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
 
 
   void updateStatus(BuildContext context, String newStatus) {
-    setState(() {
-    updatedStatusMessage = "Status updated successfully: $newStatus"; 
-    selectedStatus = newStatus; 
-    });
-  }
+  setState(() {
+    widget.order.status = newStatus; 
+    updatedStatusMessage = "Status updated successfully: $newStatus";
+  });
+
+  Navigator.pop(context, widget.order);
+}
+
 
   @override
   void dispose() {
