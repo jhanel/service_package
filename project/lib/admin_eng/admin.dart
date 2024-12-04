@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert'; 
 import 'data.dart'; 
 import '../css/css.dart';
+import 'package:shared_preferences/shared_preferences.dart'; 
+
 
 ThemeData currentTheme = CSS.lightTheme;
 
@@ -76,6 +78,23 @@ void initState() {
   }
 }
 
+  Future<void> saveOrdersToLocalStorage() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String ordersJson = jsonEncode(orders.map((e) => e.toJson()).toList());
+  await prefs.setString('orders', ordersJson);
+}
+
+
+Future<void> loadOrdersFromLocalStorage() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String? ordersJson = prefs.getString('orders');
+
+  if (ordersJson != null) {
+    List<dynamic> jsonList = jsonDecode(ordersJson);
+    orders = jsonList.map((json) => NewOrder.fromJson(json)).toList();
+  }
+  setState(() {});
+}
 
 
 
@@ -221,7 +240,8 @@ double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
   int totalWeeks = latestDate.difference(earliestDate).inDays ~/ 7;
   return (totalWeeks + 1) * weekWidth; 
 }
-void deleteOrder(int index) {
+
+void deleteOrder(int index) async {
   setState(() {
     orders.removeAt(index);
     filteredOrders = orders.where((order) {
@@ -232,7 +252,12 @@ void deleteOrder(int index) {
     }).toList();
     expandedState = List<bool>.filled(orders.length, false);
   });
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(
+      'orders', jsonEncode(orders.map((e) => e.toJson()).toList()));
 }
+
+
   @override
   Widget build(BuildContext context) {
     List<NewOrder> filteredOrders = orders.where((order) {
@@ -373,14 +398,28 @@ void deleteOrder(int index) {
                       NewOrder order = filteredOrders[index];
                       return GestureDetector(
                         onTap: () async {
-                            final result = await Navigator.push(
+                          final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => OrderDetailsPage(order: order, index: index),
                             ),
                           );
+
                           if (result != null) {
-                            deleteOrder(result); 
+                            setState(() {
+                              if (result is int) {
+                                deleteOrder(result);
+                              }
+                              else if (result is NewOrder) {
+                                orders[index] = result; 
+                                filteredOrders = orders.where((order) {
+                                  if (hideCompletedOrders && order.status == "Completed") {
+                                    return false;
+                                  }
+                                  return true;
+                                }).toList(); 
+                              }
+                            });
                           }
                         },
                         child: Card(
@@ -482,6 +521,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
 String? updatedStatusMessage; 
 String selectedStatus = ''; 
 String comments = ''; 
+late TextEditingController _commentsController;
 List<String> savedComments = []; 
 final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
 
@@ -489,6 +529,7 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
   void initState() {
     super.initState();
     selectedStatus = widget.order.status; 
+    _commentsController = TextEditingController(text: widget.order.comment);
   }
 
   void deleteOrder(BuildContext context) {
@@ -524,13 +565,25 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
     });
   }
 
-  void saveComment(BuildContext context) {
-    setState(() {
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Comment saved successfully!')),
-    );
+  @override
+  void dispose() {
+    _commentsController.dispose();
+    super.dispose();
   }
+
+  void saveComment(BuildContext context) {
+  setState(() {
+    widget.order.comment = _commentsController.text; 
+  });
+
+  Navigator.pop(context, widget.order); 
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Comment saved successfully!')),
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {

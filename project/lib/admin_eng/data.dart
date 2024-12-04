@@ -11,9 +11,10 @@ class NewOrder {
   final String dateSubmitted;
   final String journalTransferNumber;
   final String department;
-  String status;
-  String? successMessage;
   final String? imagePath;
+  String status;
+  String comment;
+  String? successMessage;
 
   NewOrder({
     required this.orderNumber,
@@ -29,6 +30,7 @@ class NewOrder {
     required this.journalTransferNumber,
     required this.department,
     required this.status,
+    required this.comment,
     this.successMessage,
     this.imagePath,
   });
@@ -48,18 +50,38 @@ class NewOrder {
       journalTransferNumber: json['journalTransferNumber'],
       department: json['department'],
       status: json['status'],
+      comment: json['comment'] ?? '', 
+
     );
   }
-
-  // Function to calculate the order's duration in days
   int daysSinceSubmitted() {
     final date = DateTime.parse(dateSubmitted);
     final now = DateTime.now();
     return now.difference(date).inDays;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'orderNumber': orderNumber,
+      'name': name,
+      'process': process,
+      'unit': unit,
+      'type': type,
+      'quantity': quantity,
+      'rate': rate,
+      'estimatedPrice': estimatedPrice,
+      'filePath': filePath,
+      'dateSubmitted': dateSubmitted,
+      'journalTransferNumber': journalTransferNumber,
+      'department': department,
+      'status': status,
+      'comment': comment,
+      'imagePath': imagePath,
+    };
+  }
 }
 
-// Example JSON orders (if you want to include this in the same file)
+
 const String orderJson = '''
 [
   {
@@ -75,7 +97,8 @@ const String orderJson = '''
     "dateSubmitted": "2024-06-20",
     "journalTransferNumber": "JT001",
     "department": "Computer Science",
-    "status": "Received"
+    "status": "Received",
+    "comment": "Add comment" 
   },
   {
     "orderNumber": "002",
@@ -90,7 +113,9 @@ const String orderJson = '''
     "dateSubmitted": "2024-08-21",
     "journalTransferNumber": "JT002",
     "department": "Engineering",
-    "status": "In Progress"
+    "status": "In Progress",
+    "comment": "Add comment" 
+
   }
 ]
 ''';
