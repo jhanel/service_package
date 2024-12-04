@@ -32,9 +32,9 @@ class NewOrder {
 }
 
 Future<void> submitNewOrder(NewOrder order) async {
-  const String filePath = 'data.json'; // Path to your JSON file
+  const String filePath = 'data.json'; 
 
-  File file = File(filePath); // Read the existing JSON file
+  File file = File(filePath); 
   List<dynamic> orders = [];
   
   if (await file.exists()) {
@@ -42,9 +42,9 @@ Future<void> submitNewOrder(NewOrder order) async {
     orders = jsonDecode(contents);
   }
 
-  orders.add(order.toJson()); // Append the new order
+  orders.add(order.toJson()); 
 
-  await file.writeAsString(jsonEncode(orders)); // Write the updated list back to the file
+  await file.writeAsString(jsonEncode(orders)); 
 
   developer.log('Order submitted!');
 }

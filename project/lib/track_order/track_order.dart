@@ -12,7 +12,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   String _orderStatus = '';
 
   void _trackOrder() {
-    // Simulate an order tracking process
     setState(() {
       _orderStatus = 'Results for Order #${_orderIdController.text}:';
     });
