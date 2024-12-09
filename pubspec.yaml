@@ -1,0 +1,52 @@
+name: service_package
+description: A Flutter package for Limbitless S.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  logger: ^2.3.0
+  file_picker: ^8.0.6
+  http: ^1.0.0
+  path_provider: ^2.0.11
+  universal_html: ^2.2.4
+  cupertino_icons: ^1.0.2
+  intl: ^0.17.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/icons/
+    #- assets/orders.json
+
+  fonts:
+    - family: Klavika
+      fonts:
+        - asset: assets/fonts/Klavika-Bold.otf
+          weight: 700
+        - asset: assets/fonts/Klavika-Regular.otf
+          weight: 400
+
+    - family: MuseoSans
+      fonts:
+        - asset: assets/fonts/MuseoSans_500.otf
+          weight: 500
+        - asset: assets/fonts/MuseoSans_700.otf
+          weight: 700
+        - asset: assets/fonts/MuseoSans-100.otf
+          weight: 100
+        - asset: assets/fonts/MuseoSans-300.otf
+          weight: 300
