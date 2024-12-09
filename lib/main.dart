@@ -5,6 +5,7 @@ import 'admin_eng/admin.dart';
 //import 'dart:typed_data';
 import 'css/css.dart';
 import 'create_order.dart';
+import 'track_order.dart';
 
 
 ThemeData currentTheme = CSS.lightTheme;
@@ -112,11 +113,11 @@ class MyHomePage extends StatelessWidget {
 
               const SizedBox(height: 16.0), 
 
-              /*ElevatedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const TrackOrderPage()),
+                    MaterialPageRoute(builder: (context) => TrackOrderPage(currentTheme: Theme.of(context))),
                   );
                 },
                 style: ButtonStyle(
@@ -134,7 +135,7 @@ class MyHomePage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),*/
+              ),
 
               const SizedBox(height: 16.0),
 

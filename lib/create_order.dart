@@ -24,6 +24,8 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   String _selectedProcess = 'Thermoforming';
   String _selectedUnit = 'mm';
   String _selectedType = 'Aluminum';
+  String? name;
+  final String orderNumber =  globalOrder.orderNumber;
   int _quantity = 1;
   double _rate = 0.0;
   final double _volume = 100.0;
@@ -49,7 +51,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       int orderNumber = 100 + Random().nextInt(900);
       double estimatedPrice = _quantity * _rate;
 
-      NewOrder newOrder = orderLogic.createOrder(
+      globalOrder = orderLogic.createOrder(
         process: _selectedProcess,
         unit: _selectedUnit,
         type: _selectedType,
@@ -60,16 +62,10 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         dateSubmitted: DateTime.now().toString(),
         journalTransferNumber: _journalNumController.text,
         department: _departmentController.text,
-      );
+        name: _nameController.text,
+        orderNumber: orderNumber.toString(),
 
-      globalOrderDetails = OrderDetails()
-        ..orderNumber = orderNumber.toString()
-        ..userName = _nameController.text
-        ..rate = newOrder.rate
-        ..type = newOrder.type
-        ..quantity = newOrder.quantity
-        ..process = newOrder.process
-        ..unit = newOrder.unit;
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),

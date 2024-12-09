@@ -62,6 +62,8 @@ class OrderLogic {
     required double estimatedPrice,
     required String filePath,
     required String dateSubmitted,
+    required String name,
+    required String orderNumber,
     required String journalTransferNumber,
     required String department,
   }) {
@@ -74,8 +76,10 @@ class OrderLogic {
       estimatedPrice: estimatedPrice,
       filePath: filePath,
       dateSubmitted: dateSubmitted,
+      name: name,
       journalTransferNumber: journalTransferNumber,
       department: department,
+      orderNumber: orderNumber,
     );
   }
 }
