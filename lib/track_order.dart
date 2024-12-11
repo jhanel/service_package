@@ -14,7 +14,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   final TextEditingController _orderIdController = TextEditingController();
   bool _isCancelRequested = false;
   final double _volume = 100.0;
-
+  NewOrder? _currentOrder;
   bool _isTracking = false;
 
   @override
@@ -52,7 +52,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   _buildTrackButton(),
                 ] else ...[
                   Text(
-                    'Hi, ${globalOrder.name}',
+                    'Hi, ${_currentOrder?.name ?? "Order not found"}',
                     style: TextStyle(
                       color: widget.currentTheme == CSS.lsiTheme
                           ? Theme.of(context).cardColor
@@ -223,7 +223,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.orderNumber,
+                              _currentOrder?.orderNumber ?? 'N/A',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -242,7 +242,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Name:',
+                            'File:',
                             style: TextStyle(
                               color:
                                 widget.currentTheme == CSS.hallowTheme
@@ -263,7 +263,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.name,
+                              _currentOrder?.filePath != null && _currentOrder!.filePath.isNotEmpty
+                                  ? _currentOrder!.filePath
+                                  : 'No file uploaded',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -303,7 +305,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.process,
+                              _currentOrder?.process ?? 'N/A',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -343,7 +345,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.unit,
+                              _currentOrder?.unit ?? 'N/A',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -383,7 +385,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.type,
+                              _currentOrder?.type ?? 'N/A',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -423,7 +425,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              globalOrder.quantity.toString(),
+                             _currentOrder?.quantity.toString() ?? '',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -463,7 +465,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              '${globalOrder.rate} per cubic unit',
+                             '${_currentOrder?.rate != null ? _currentOrder!.rate.toStringAsFixed(2) : 'N/A'} per cubic unit',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor, 
@@ -503,7 +505,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                           ),
                           Expanded(
                             child: Text(
-                              '\$${(_volume * (globalOrder.rate) * (globalOrder.quantity)).toStringAsFixed(2)}',
+                              '\$${(_volume * (_currentOrder?.rate ?? 0) * (_currentOrder?.quantity ?? 0)).toStringAsFixed(2)}',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -601,7 +603,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   }
   setState(() {
     _isCancelRequested = true;
-    globalOrder.isCancelled = true;
+    orders.isCancelled = true;
   });
 
   showDialog(
@@ -626,10 +628,34 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
   void _trackOrder() {
+  String orderId = _orderIdController.text.trim();
+
   setState(() {
-    _isTracking = true;
+    _isTracking = true; // Set tracking to true
   });
+
+  // Ensure `orders` is a List<NewOrder>
+  NewOrder? order = orders.cast<NewOrder?>().firstWhere(
+        (o) => o?.orderNumber == orderId,
+        orElse: () => null,
+      );
+
+  if (order != null) {
+    // If order is found, assign it to `_currentOrder`
+    setState(() {
+      _currentOrder = order;
+    });
+  } else {
+    // Show an error if no order is found
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Order not found. Please check the Order ID.")),
+    );
+    setState(() {
+      _isTracking = false;
+    });
+  }
 }
+
 
 Widget _buildOrderStatus() {
   return Container(

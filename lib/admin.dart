@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; 
-import 'data.dart'; 
-import '../css/css.dart';
+//import 'dart:convert'; 
+//import 'data.dart'; 
+import 'css/css.dart';
+import 'order_data.dart';
+import 'order_details.dart';
 
 
 ThemeData currentTheme = CSS.lightTheme;
@@ -31,12 +33,13 @@ class AdminServicesState extends State<AdminServices> {
   String sortBy = 'Date';
   bool hideCompletedOrders = false; 
   bool showAllOrders = true; 
-  List<NewOrder> orders = []; 
+  //List<NewOrder> orders = []; 
   List<NewOrder> filteredOrders = []; 
   List<bool> expandedState = []; 
   final double dayWidth = 5.0;
   final double weekWidth = 250.0; 
   final ScrollController _scrollController = ScrollController(); 
+  final OrderLogic orderLogic = OrderLogic();
   late DateTime graphStartDate;
 
   
@@ -57,34 +60,52 @@ class AdminServicesState extends State<AdminServices> {
 
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  loadOrders();
+    // No need to reinitialize orders, just filter it directly
+    filteredOrders = orders.where((order) {
+      if (hideCompletedOrders) {
+        return order.status != 'Completed'; 
+      }
+      return true; 
+    }).toList();
 
-  filteredOrders = orders.where((order) {
-    if (hideCompletedOrders) {
-      return order.status != 'Completed'; 
+    if (filteredOrders.isNotEmpty) {
+      graphStartDate = filteredOrders
+          .map((order) => DateTime.parse(order.dateSubmitted))
+          .reduce((a, b) => a.isBefore(b) ? a : b);
+    } else {
+      graphStartDate = DateTime.now();
     }
-    return true; 
-  }).toList();
-  if (filteredOrders.isNotEmpty) {
-    graphStartDate = filteredOrders
-        .map((order) => DateTime.parse(order.dateSubmitted)) 
-        .reduce((a, b) => a.isBefore(b) ? a : b);
-  } else {
-    graphStartDate = DateTime.now(); 
   }
-}
 
 
 
   void loadOrders() {
-    List<dynamic> jsonList = json.decode(orderJson);
-    orders = jsonList.map((json) => NewOrder.fromJson(json)).toList();
-    expandedState = List<bool>.filled(orders.length, false);
-    setState(() {});
+  // Ensure expandedState matches the global orders list size
+  expandedState = List<bool>.filled(orders.length, false);
+
+  // Filter global orders list
+  filteredOrders = orders.where((order) {
+    if (hideCompletedOrders) {
+      return order.status != 'Completed';
+    }
+    return true;
+  }).toList();
+
+  // Update graphStartDate dynamically
+  if (filteredOrders.isNotEmpty) {
+    graphStartDate = filteredOrders
+        .map((order) => DateTime.parse(order.dateSubmitted))
+        .reduce((a, b) => a.isBefore(b) ? a : b);
+  } else {
+    graphStartDate = DateTime.now();
   }
+
+  setState(() {}); // Trigger UI update
+}
+
 
   int calculateDiffinMonths(DateTime start, DateTime end) {
   int monDiff = ((end.year - start.year) * 12) + (end.month - start.month + 1);

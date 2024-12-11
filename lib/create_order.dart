@@ -24,12 +24,8 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   String _selectedProcess = 'Thermoforming';
   String _selectedUnit = 'mm';
   String _selectedType = 'Aluminum';
-  String? name;
-  final String orderNumber =  globalOrder.orderNumber;
   int _quantity = 1;
   double _rate = 0.0;
-  final double _volume = 100.0;
-
 
   void _calculateRate() {
     setState(() {
@@ -37,6 +33,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     });
   }
 
+  // File picker for uploading files
   Future<void> _pickFile() async {
     String? fileName = await orderLogic.pickFile();
     if (fileName != null) {
@@ -46,12 +43,15 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     }
   }
 
+  // Submitting the order
   void _submitOrder(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
-      int orderNumber = 100 + Random().nextInt(900);
-      double estimatedPrice = _quantity * _rate;
+      // Generate a dynamic order number
+      int orderNumber = 100 + Random().nextInt(900); // Generate a 3-digit order number
+      double estimatedPrice = _quantity * _rate * volume;
 
-      globalOrder = orderLogic.createOrder(
+      // Create a new order
+      NewOrder newOrder = orderLogic.createOrder(
         process: _selectedProcess,
         unit: _selectedUnit,
         type: _selectedType,
@@ -59,18 +59,50 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         rate: _rate,
         estimatedPrice: estimatedPrice,
         filePath: _fileName ?? '',
-        dateSubmitted: DateTime.now().toString(),
+        dateSubmitted: DateTime.now().toIso8601String(),
         journalTransferNumber: _journalNumController.text,
         department: _departmentController.text,
         name: _nameController.text,
         orderNumber: orderNumber.toString(),
-
       );
 
+        orders.add(newOrder);
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
       );
+
+      _formKey.currentState?.reset();
+      _nameController.clear();
+      _journalNumController.clear();
+      _departmentController.clear();
+      setState(() {
+        _fileName = null;
+        _quantity = 1;
+        _rate = 0.0;
+      });
     }
+  }
+
+  Widget _buildSubmitOrder() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () => _submitOrder(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).secondaryHeaderColor,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
+        child: Text(
+          'SUBMIT ORDER',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColorLight,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildForm(bool isMobile) {
@@ -779,7 +811,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             ),
           ),
           Text(
-            'Estimated Price: \$${(_volume * _rate * _quantity).toStringAsFixed(2)}',
+            'Estimated Price: \$${(volume * _rate * _quantity).toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 20.0,
               color:
@@ -823,7 +855,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     );
   }
 
-  Widget _buildSubmitOrder() {
+  /*Widget _buildSubmitOrder() {
   return Center(
     child: ElevatedButton(
       onPressed: () {
@@ -848,7 +880,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       ),
     ),
   );
-}
+}*/
 
 
   @override
