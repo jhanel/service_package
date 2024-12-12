@@ -53,7 +53,7 @@ class OrderLogic {
     return null;
   }
 
-  NewOrder createOrder({
+    NewOrder createOrder({
     required String process,
     required String unit,
     required String type,
@@ -67,7 +67,7 @@ class OrderLogic {
     required String journalTransferNumber,
     required String department,
   }) {
-    return NewOrder(
+    final newOrder = NewOrder(
       process: process,
       unit: unit,
       type: type,
@@ -81,5 +81,10 @@ class OrderLogic {
       department: department,
       orderNumber: orderNumber,
     );
+
+    orders.add(newOrder);
+
+    return newOrder;
   }
+
 }

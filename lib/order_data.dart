@@ -1,4 +1,4 @@
-dynamic orders = [];
+List<NewOrder> orders = [];
 
 const double volume = 100.0;
 

@@ -33,7 +33,6 @@ class AdminServicesState extends State<AdminServices> {
   String sortBy = 'Date';
   bool hideCompletedOrders = false; 
   bool showAllOrders = true; 
-  //List<NewOrder> orders = []; 
   List<NewOrder> filteredOrders = []; 
   List<bool> expandedState = []; 
   final double dayWidth = 5.0;
@@ -62,13 +61,20 @@ class AdminServicesState extends State<AdminServices> {
   @override
   void initState() {
     super.initState();
+    loadOrders(); 
+  }
 
-    // No need to reinitialize orders, just filter it directly
+
+
+
+  void loadOrders() {
+    expandedState = List<bool>.filled(orders.length, false);
+
     filteredOrders = orders.where((order) {
       if (hideCompletedOrders) {
         return order.status != 'Completed'; 
       }
-      return true; 
+      return true;
     }).toList();
 
     if (filteredOrders.isNotEmpty) {
@@ -78,33 +84,10 @@ class AdminServicesState extends State<AdminServices> {
     } else {
       graphStartDate = DateTime.now();
     }
+
+    setState(() {}); 
   }
 
-
-
-  void loadOrders() {
-  // Ensure expandedState matches the global orders list size
-  expandedState = List<bool>.filled(orders.length, false);
-
-  // Filter global orders list
-  filteredOrders = orders.where((order) {
-    if (hideCompletedOrders) {
-      return order.status != 'Completed';
-    }
-    return true;
-  }).toList();
-
-  // Update graphStartDate dynamically
-  if (filteredOrders.isNotEmpty) {
-    graphStartDate = filteredOrders
-        .map((order) => DateTime.parse(order.dateSubmitted))
-        .reduce((a, b) => a.isBefore(b) ? a : b);
-  } else {
-    graphStartDate = DateTime.now();
-  }
-
-  setState(() {}); // Trigger UI update
-}
 
 
   int calculateDiffinMonths(DateTime start, DateTime end) {
@@ -236,7 +219,7 @@ double calculateBarWidth(DateTime startDate, DateTime endDate, double weekWidth)
 }
 
 double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
-  if (orders.isEmpty) return weekWidth;
+  if (filteredOrders.isEmpty || filteredOrders.first.dateSubmitted.isEmpty) return weekWidth;
   DateTime earliestDate = DateTime.parse(orders.first.dateSubmitted);
   DateTime latestDate = DateTime.now();
   int totalWeeks = latestDate.difference(earliestDate).inDays ~/ 7;
@@ -251,6 +234,7 @@ void deleteOrder(int index) async {
 
   @override
   Widget build(BuildContext context) {
+    loadOrders();
     List<NewOrder> filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
@@ -325,6 +309,7 @@ void deleteOrder(int index) async {
                   onChanged: (bool value) {
                     setState(() {
                       hideCompletedOrders = value;
+                      loadOrders();
                     });
                   },
                   activeColor: Theme.of(context).secondaryHeaderColor,
@@ -358,7 +343,18 @@ void deleteOrder(int index) async {
           ),
         ],
       ),
-      body: Row(
+      body: filteredOrders.isEmpty
+      ? Center(
+          child: Text(
+            'No orders available.',
+            style: TextStyle(
+              fontFamily: 'Klavika',
+              fontSize: 18.0,
+              color: Theme.of(context).secondaryHeaderColor,
+            ),
+          ),
+        )
+      : Row(
         children: [
           Container(
             width: 300,

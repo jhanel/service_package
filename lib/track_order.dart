@@ -603,7 +603,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   }
   setState(() {
     _isCancelRequested = true;
-    orders.isCancelled = true;
+    //orders.isCancelled = true;
   });
 
   showDialog(
