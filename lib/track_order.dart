@@ -631,22 +631,18 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   String orderId = _orderIdController.text.trim();
 
   setState(() {
-    _isTracking = true; // Set tracking to true
+    _isTracking = true;
   });
 
-  // Ensure `orders` is a List<NewOrder>
-  NewOrder? order = orders.cast<NewOrder?>().firstWhere(
-        (o) => o?.orderNumber == orderId,
-        orElse: () => null,
-      );
+  NewOrder? order = orders.where((o) => o.orderNumber == orderId).isEmpty
+    ? null
+    : orders.firstWhere((o) => o.orderNumber == orderId);
 
   if (order != null) {
-    // If order is found, assign it to `_currentOrder`
     setState(() {
       _currentOrder = order;
     });
   } else {
-    // Show an error if no order is found
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Order not found. Please check the Order ID.")),
     );
@@ -658,6 +654,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
 Widget _buildOrderStatus() {
+  final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
+
   return Container(
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
@@ -694,15 +692,15 @@ Widget _buildOrderStatus() {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildStatusContainer('Received', true, isLarge: false),
-              _buildStatusDivider(true),
-              _buildStatusContainer('In progress', false, isLarge: false),
-              _buildStatusDivider(false),
-              _buildStatusContainer('Delivered', false, isLarge: false),
-              _buildStatusDivider(false),
-              _buildStatusContainer('Completed', false, isLarge: false),
-            ],
+            children: statuses.map((status) {
+              final bool isCompleted = statuses.indexOf(status) <= statuses.indexOf(orders[0].status);
+              return Column(
+                children: [
+                  _buildStatusContainer(status, isCompleted, isLarge: false),
+                  if (status != statuses.last) _buildStatusDivider(isCompleted),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ],

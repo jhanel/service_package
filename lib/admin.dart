@@ -85,6 +85,14 @@ class AdminServicesState extends State<AdminServices> {
       graphStartDate = DateTime.now();
     }
 
+    if (sortBy == 'Date') {
+      filteredOrders.sort((a, b) => DateTime.parse(a.dateSubmitted)
+          .compareTo(DateTime.parse(b.dateSubmitted)));
+    } else if (sortBy == 'Status') {
+      filteredOrders.sort((a, b) => statusHierarchy.indexOf(a.status)
+          .compareTo(statusHierarchy.indexOf(b.status)));
+    }
+
     setState(() {}); 
   }
 
@@ -234,7 +242,7 @@ void deleteOrder(int index) async {
 
   @override
   Widget build(BuildContext context) {
-    loadOrders();
+    //loadOrders();
     List<NewOrder> filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
@@ -286,6 +294,7 @@ void deleteOrder(int index) async {
                   onChanged: (String? newValue) {
                     setState(() {
                       sortBy = newValue!;
+                      loadOrders(); 
                     });
                   },
                 ),
@@ -309,7 +318,7 @@ void deleteOrder(int index) async {
                   onChanged: (bool value) {
                     setState(() {
                       hideCompletedOrders = value;
-                      loadOrders();
+                      //loadOrders();
                     });
                   },
                   activeColor: Theme.of(context).secondaryHeaderColor,
@@ -343,148 +352,151 @@ void deleteOrder(int index) async {
           ),
         ],
       ),
-      body: filteredOrders.isEmpty
-      ? Center(
-          child: Text(
-            'No orders available.',
-            style: TextStyle(
-              fontFamily: 'Klavika',
-              fontSize: 18.0,
-              color: Theme.of(context).secondaryHeaderColor,
+      body: Container(
+        color: Theme.of(context).canvasColor,
+        child: filteredOrders.isEmpty
+        ? Center(
+            child: Text(
+              'No orders available.',
+              style: TextStyle(
+                fontFamily: 'Klavika',
+                fontSize: 18.0,
+                color: Theme.of(context).secondaryHeaderColor,
+              ),
             ),
-          ),
-        )
-      : Row(
-        children: [
-          Container(
-            width: 300,
-            padding: const EdgeInsets.all(8.0),
-            color: Theme.of(context).canvasColor,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 25,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      DateTime.now().year.toString(),
-                      style: TextStyle(
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                        color: Theme.of(context).secondaryHeaderColor,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredOrders.length,
-                    itemBuilder: (context, index) {
-                      NewOrder order = filteredOrders[index];
-                      return GestureDetector(
-                        onTap: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderDetailsPage(order: order, index: index),
-                            ),
-                          );
-
-                          if (result != null && result is NewOrder) {
-                            setState(() {
-                              orders[index] = result; 
-                            });
-
-                            filteredOrders = orders.where((order) {
-                              if (hideCompletedOrders && order.status == "Completed") {
-                                return false;
-                              }
-                              return true;
-                            }).toList();
-                          }
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: SizedBox(
-                                    width: 40,
-                                    child: getProcessImage(order.process),
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        order.name,
-                                        style: const TextStyle(
-                                          fontFamily: 'Klavika',
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        'Status: ${order.status}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontFamily: 'Klavika',
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 2,
-            color: Colors.black54,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              controller: _scrollController, 
-              scrollDirection: Axis.horizontal,
+          )
+        : Row(
+          children: [
+            Container(
+              width: 300,
+              padding: const EdgeInsets.all(8.0),
+              color: Theme.of(context).canvasColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    color: Theme.of(context).cardColor,
-                    height: 43.0, 
-                    child: Row(
-                      children: chartHeader(context), 
+                  SizedBox(
+                    height: 25,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        DateTime.now().year.toString(),
+                        style: TextStyle(
+                          fontFamily: 'Klavika',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Theme.of(context).secondaryHeaderColor,
+                        ),
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      color: Theme.of(context).canvasColor, 
-                      child: Row(
-                        children: timelineBars(context), 
-                      ),
+                    child: ListView.builder(
+                      itemCount: filteredOrders.length,
+                      itemBuilder: (context, index) {
+                        NewOrder order = filteredOrders[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderDetailsPage(order: order, index: index),
+                              ),
+                            );
+
+                            if (result != null && result is NewOrder) {
+                              setState(() {
+                                orders[index] = result; 
+                              });
+
+                              filteredOrders = orders.where((order) {
+                                if (hideCompletedOrders && order.status == "Completed") {
+                                  return false;
+                                }
+                                return true;
+                              }).toList();
+                            }
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: SizedBox(
+                                      width: 40,
+                                      child: getProcessImage(order.process),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          order.name,
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          'Status: ${order.status}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontFamily: 'Klavika',
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            Container(
+              width: 2,
+              color: Colors.black54,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController, 
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      color: Theme.of(context).cardColor,
+                      height: 43.0, 
+                      child: Row(
+                        children: chartHeader(context), 
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Theme.of(context).canvasColor, 
+                        child: Row(
+                          children: timelineBars(context), 
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -542,13 +554,17 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
 
 
   void updateStatus(BuildContext context, String newStatus) {
-  setState(() {
-    widget.order.status = newStatus; 
-    updatedStatusMessage = "Status updated successfully: $newStatus";
-  });
+    setState(() {
+      widget.order.status = newStatus; 
+      updatedStatusMessage = "Status updated successfully: $newStatus";
 
-  Navigator.pop(context, widget.order);
-}
+      final globalOrder = orders.firstWhere((o) => o.orderNumber == widget.order.orderNumber);
+      globalOrder.status = newStatus; 
+    });
+
+    Navigator.pop(context, widget.order); 
+  }
+
 
 
   @override
@@ -598,8 +614,10 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Order Details',
+                           Text(
+                            'Order Details: #${widget.order.orderNumber}',
+                            
+                            // ignore: prefer_const_constructors
                             style: TextStyle(
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.bold,
@@ -616,7 +634,31 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
                                   style: const TextStyle(
                                     fontFamily: 'Klavika',
                                     fontWeight: FontWeight.normal,
-                                    fontSize: 17.0
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Department: ${widget.order.department}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Journal Transfer Number: ${widget.order.journalTransferNumber}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'File: ${widget.order.filePath}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
                                   ),
                                 ),
                                 Text(
@@ -624,117 +666,99 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
                                   style: const TextStyle(
                                     fontFamily: 'Klavika',
                                     fontWeight: FontWeight.normal,
-                                    fontSize: 17.0
+                                    fontSize: 15.5
                                   ),
                                 ),
                                 Text(
-                                          'Order Number: ${widget.order.orderNumber}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Unit: ${widget.order.unit}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Type: ${widget.order.type}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Quantity: ${widget.order.quantity}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Rate: \$${widget.order.rate.toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Date Submitted: ${widget.order.dateSubmitted}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Department: ${widget.order.department}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        Text(
-                                          'Status: ${widget.order.status}',
-                                          style: const TextStyle(
-                                            fontFamily: 'Klavika',
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 17.0
-                                          ),
-                                        ),
-                                        if (updatedStatusMessage != null) ...[
-                                          const SizedBox(height: 8.0),
-                                          Text(
-                                            updatedStatusMessage!,
-                                            style: const TextStyle(
-                                              color: Colors.green,
-                                              fontFamily: 'Klavika',
-                                              fontSize: 17.0
-                                              ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
+                                  'Unit: ${widget.order.unit}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
                                   ),
+                                ),
+                                Text(
+                                  'Type: ${widget.order.type}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Quantity: ${widget.order.quantity}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Rate: \$${widget.order.rate.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Date Submitted: ${widget.order.formatDateSubmitted()}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                Text(
+                                  'Status: ${widget.order.status}',
+                                  style: const TextStyle(
+                                    fontFamily: 'Klavika',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 15.5
+                                  ),
+                                ),
+                                if (updatedStatusMessage != null) ...[
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    updatedStatusMessage!,
+                                    style: const TextStyle(
+                                      color: Colors.green,
+                                      fontFamily: 'Klavika',
+                                      fontSize: 15.5
+                                      ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
                           const SizedBox(height: 16.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               DropdownButton<String>(
-                                value: selectedStatus,
-                                items: statuses.map((status) {
-                                  final isDisabled = statuses.indexOf(status) <= statuses.indexOf(selectedStatus);
-                                  return DropdownMenuItem<String>(
-                                    value: status,
-                                    enabled: !isDisabled,
-                                    child: Text(
-                                      status,
-                                      style: TextStyle(
-                                        color: isDisabled ? Colors.grey : Colors.black,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      selectedStatus = value;
-                                      updatedStatusMessage = "Status updated successfully: $value";
-                                    });
-                                  }
-                                },
-                                dropdownColor: Theme.of(context).cardColor,
-                                style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
-                              ),
+  value: statuses.contains(selectedStatus) ? selectedStatus : statuses.first, // Ensure valid value
+  items: statuses.map((status) {
+    return DropdownMenuItem<String>(
+      value: status,
+      child: Text(status),
+    );
+  }).toList(),
+  onChanged: (value) {
+    if (value != null) {
+      setState(() {
+        selectedStatus = value;
+        updatedStatusMessage = "Status updated successfully: $value";
+
+        // Update the global order list
+        final globalOrder = orders.firstWhere((o) => o.orderNumber == widget.order.orderNumber);
+        globalOrder.status = value;
+      });
+    }
+  },
+  dropdownColor: Theme.of(context).cardColor,
+  style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+),
+
                               const SizedBox(width: 20.0),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(

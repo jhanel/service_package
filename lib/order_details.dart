@@ -82,8 +82,6 @@ class OrderLogic {
       orderNumber: orderNumber,
     );
 
-    orders.add(newOrder);
-
     return newOrder;
   }
 

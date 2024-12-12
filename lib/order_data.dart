@@ -1,6 +1,7 @@
 List<NewOrder> orders = [];
 
 const double volume = 100.0;
+const List<String> statusHierarchy = ['Received', 'In Progress', 'Delivered', 'Completed'];
 
 class NewOrder {
   String orderNumber;
@@ -36,12 +37,11 @@ class NewOrder {
     required this.department,
     this.isCancelled = false,
     this.imagePath,
-    this.status = "",
+    this.status = "Received",
     this.comment = "",
     this.successMessage,
   });
 
-  // Serialize to JSON
   Map<String, dynamic> toJson() {
     return {
       'orderNumber': orderNumber,
@@ -64,7 +64,6 @@ class NewOrder {
     };
   }
 
-  // Deserialize from JSON
   factory NewOrder.fromJson(Map<String, dynamic> json) {
     return NewOrder(
       orderNumber: json['orderNumber'],
@@ -87,7 +86,6 @@ class NewOrder {
     );
   }
 
-  // Mark the order as cancelled
   void markAsCancelled() {
     isCancelled = true;
   }
@@ -101,6 +99,13 @@ class NewOrder {
     final now = DateTime.now();
     return now.difference(date).inDays;
   }
+
+  String formatDateSubmitted() {
+    final DateTime parsedDate = DateTime.parse(dateSubmitted);
+    return "${parsedDate.year}-${parsedDate.month.toString().padLeft(2, '0')}-${parsedDate.day.toString().padLeft(2, '0')} "
+           "${parsedDate.hour.toString().padLeft(2, '0')}:${parsedDate.minute.toString().padLeft(2, '0')}:${parsedDate.second.toString().padLeft(2, '0')}";
+  }
+
 }
 
 class Month {
