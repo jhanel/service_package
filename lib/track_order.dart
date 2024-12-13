@@ -3,7 +3,7 @@ import 'order_data.dart';
 import 'css/css.dart'; 
 
 class TrackOrderPage extends StatefulWidget {
-  final dynamic currentTheme; // Accept the theme as a parameter
+  final dynamic currentTheme; 
   const TrackOrderPage({Key? key, required this.currentTheme}) : super(key: key);
 
   @override
@@ -19,92 +19,92 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        'Track Your Order',
-        style: TextStyle(
-          color: Theme.of(context).secondaryHeaderColor,
-          fontFamily: 'Klavika',
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      backgroundColor: Theme.of(context).cardColor,
-    ),
-    body: LayoutBuilder(
-      builder: (context, constraints) {
-        bool isMobile = constraints.maxWidth < 600.0;
-
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          color: Theme.of(context).canvasColor,
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Track Your Order',
+          style: TextStyle(
+            color: Theme.of(context).secondaryHeaderColor,
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 16.0),
-                if (!_isTracking) ...[
-                  _buildOrderInputField(),
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isMobile = constraints.maxWidth < 600.0;
+
+          return Container(
+            padding: const EdgeInsets.all(16.0),
+            color: Theme.of(context).canvasColor,
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
                   const SizedBox(height: 16.0),
-                  _buildTrackButton(),
-                ] else ...[
-                  Text(
-                    'Hi, ${_currentOrder?.name ?? "Order not found"}',
-                    style: TextStyle(
-                      color: widget.currentTheme == CSS.lsiTheme
-                          ? Theme.of(context).cardColor
-                          : Theme.of(context).secondaryHeaderColor,
-                      fontFamily: 'Klavika',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
+                  if (!_isTracking) ...[
+                    _buildOrderInputField(),
+                    const SizedBox(height: 16.0),
+                    _buildTrackButton(),
+                  ] else ...[
+                    Text(
+                      'Hi, ${_currentOrder?.name ?? "Order not found"}',
+                      style: TextStyle(
+                        color: widget.currentTheme == CSS.lsiTheme
+                            ? Theme.of(context).cardColor
+                            : Theme.of(context).secondaryHeaderColor,
+                        fontFamily: 'Klavika',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  if (isMobile)
-                    Column(
-                      children: [
-                        _buildOrderDetails(),
-                        const SizedBox(height: 16.0),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorLight,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: _buildOrderStatus(), // Call _buildOrderStatus here
-                        ),
-                      ],
-                    )
-                  else
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: _buildOrderDetails()),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Container(
-                            height: 400,
+                    const SizedBox(height: 16.0),
+                    if (isMobile)
+                      Column(
+                        children: [
+                          _buildOrderDetails(),
+                          const SizedBox(height: 16.0),
+                          Container(
+                            width: double.infinity,
                             decoration: BoxDecoration(
                               color: Theme.of(context).primaryColorLight,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: _buildOrderStatus(), // Call _buildOrderStatus here
+                            child: _buildOrderStatus(), 
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      )
+                    else
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _buildOrderDetails()),
+                          const SizedBox(width: 16.0),
+                          Expanded(
+                            child: Container(
+                              height: 400,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColorLight,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: _buildOrderStatus(), 
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 
   Widget _buildOrderInputField() {
     return TextField(
@@ -523,6 +523,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               ),
 
               const SizedBox( height: 18.0),
+              
               Align(
               alignment: Alignment.bottomLeft,
               child: ElevatedButton(
@@ -582,172 +583,184 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   }
 
   void _cancelOrder(BuildContext context) {
-  if (_isCancelRequested) {
-    // Prevent multiple cancel requests.
+    if (_isCancelRequested) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Cancellation request already submitted."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    setState(() {
+      _isCancelRequested = true;
+      if (_currentOrder != null) {
+        _currentOrder!.markAsCancelled(); 
+        notifyAdmin();
+      }
+    });
+
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Error"),
-        content: const Text("Cancellation request already submitted."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the error dialog.
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Order Cancellation"),
+          content: const Text("Your order has been set for cancellation."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); 
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
     );
-    return;
   }
-  setState(() {
-    _isCancelRequested = true;
-    //orders.isCancelled = true;
-  });
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Order Cancellation"),
-        content: const Text("Your order has been set for cancellation."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog.
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      );
-    },
-  );
-}
+  void notifyAdmin() {
+    if (_currentOrder != null) {
+      int index = orders.indexWhere((order) => order.orderNumber == _currentOrder!.orderNumber);
+      if (index != -1) {
+        orders[index].markAsCancelled();
+      }
+    }
+  }
+
 
 
 
   void _trackOrder() {
-  String orderId = _orderIdController.text.trim();
+    String orderId = _orderIdController.text.trim();
 
-  setState(() {
-    _isTracking = true;
-  });
-
-  NewOrder? order = orders.where((o) => o.orderNumber == orderId).isEmpty
-    ? null
-    : orders.firstWhere((o) => o.orderNumber == orderId);
-
-  if (order != null) {
     setState(() {
-      _currentOrder = order;
+      _isTracking = true;
     });
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Order not found. Please check the Order ID.")),
-    );
-    setState(() {
-      _isTracking = false;
-    });
+
+    NewOrder? order = orders.where((o) => o.orderNumber == orderId).isEmpty
+      ? null
+      : orders.firstWhere((o) => o.orderNumber == orderId);
+
+    if (order != null) {
+      setState(() {
+        _currentOrder = order;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Order not found. Please check the Order ID.")),
+      );
+      setState(() {
+        _isTracking = false;
+      });
+    }
   }
-}
 
 
-Widget _buildOrderStatus() {
-  final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
+  Widget _buildOrderStatus() {
+    final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
 
-  return Container(
-    padding: const EdgeInsets.all(16.0),
-    decoration: BoxDecoration(
-      color: Theme.of(context).splashColor,
-      borderRadius: BorderRadius.circular(10.0),
-      boxShadow: [
-        BoxShadow(
-          color: Theme.of(context).shadowColor,
-          spreadRadius: 1,
-          blurRadius: 4,
-          offset: const Offset(1, 1), // Shadow position
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'ORDER STATUS',
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).splashColor,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor,
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(1, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'ORDER STATUS',
+            style: TextStyle(
+              color: Theme.of(context).secondaryHeaderColor,
+              fontFamily: 'Klavika',
+              fontWeight: FontWeight.normal,
+              fontSize: 18.0,
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: statuses.map((status) {
+                final bool isCompleted = statuses.indexOf(status) <= statuses.indexOf(orders[0].status);
+                return Column(
+                  children: [
+                    _buildStatusContainer(status, isCompleted, isLarge: false),
+                    if (status != statuses.last) _buildStatusDivider(isCompleted),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      constraints: const BoxConstraints(
+        maxWidth: 220,
+        minHeight: 50.0,
+      ),
+      decoration: BoxDecoration(
+        color: isCompleted ? Theme.of(context).secondaryHeaderColor : Theme.of(context).hoverColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Text(
+          title,
           style: TextStyle(
-            color: Theme.of(context).secondaryHeaderColor,
+            color: isCompleted
+                ? Theme.of(context).primaryColorLight 
+                : (widget.currentTheme == CSS.mintTheme
+                    ? Theme.of(context).splashColor
+                    : widget.currentTheme == CSS.lsiTheme
+                        ? Theme.of(context).unselectedWidgetColor
+                        : widget.currentTheme == CSS.pinkTheme
+                            ? Theme.of(context).canvasColor
+                            : Theme.of(context).primaryColorLight), 
+            fontSize: 16.0,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.normal,
-            fontSize: 18.0,
           ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: statuses.map((status) {
-              final bool isCompleted = statuses.indexOf(status) <= statuses.indexOf(orders[0].status);
-              return Column(
-                children: [
-                  _buildStatusContainer(status, isCompleted, isLarge: false),
-                  if (status != statuses.last) _buildStatusDivider(isCompleted),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
-  return Container(
-    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-    constraints: const BoxConstraints(
-      maxWidth: 220,
-      minHeight: 50.0,
-    ),
-    decoration: BoxDecoration(
-      color: isCompleted ? Theme.of(context).secondaryHeaderColor : Theme.of(context).hoverColor,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Center(
-      child: Text(
-        title,
-        style: TextStyle(
-          color: isCompleted
-              ? Theme.of(context).primaryColorLight // Completed status color
-              : (widget.currentTheme == CSS.mintTheme
-                  ? Theme.of(context).splashColor
-                  : widget.currentTheme == CSS.lsiTheme
-                      ? Theme.of(context).unselectedWidgetColor
-                      : widget.currentTheme == CSS.pinkTheme
-                          ? Theme.of(context).canvasColor
-                          : Theme.of(context).primaryColorLight), // Default for not completed
-          fontSize: 16.0,
-          fontFamily: 'Klavika',
-          fontWeight: FontWeight.normal,
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildStatusDivider(bool isCompleted) {
-  return Container(
-    height: 10,
-    width: 2,
-    color: isCompleted
-        ? Theme.of(context).secondaryHeaderColor
-        : Theme.of(context).hoverColor,
-  );
-}
+  Widget _buildStatusDivider(bool isCompleted) {
+    return Container(
+      height: 10,
+      width: 2,
+      color: isCompleted
+          ? Theme.of(context).secondaryHeaderColor
+          : Theme.of(context).hoverColor,
+    );
+  }
 }

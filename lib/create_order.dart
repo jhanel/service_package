@@ -33,7 +33,6 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     });
   }
 
-  // File picker for uploading files
   Future<void> _pickFile() async {
     String? fileName = await orderLogic.pickFile();
     if (fileName != null) {
@@ -43,14 +42,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     }
   }
 
-  // Submitting the order
   void _submitOrder(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
-      // Generate a dynamic order number
-      int orderNumber = 100 + Random().nextInt(900); // Generate a 3-digit order number
+      int orderNumber = 100 + Random().nextInt(900);
       double estimatedPrice = _quantity * _rate * volume;
 
-      // Create a new order
       NewOrder newOrder = orderLogic.createOrder(
         process: _selectedProcess,
         unit: _selectedUnit,
@@ -164,6 +160,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 ),
 
                 const SizedBox(height: 16.0),
+
                 Container(
                   height: 80.0,
                     padding: const EdgeInsets.all(5.0),
@@ -307,7 +304,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                             ? Theme.of(context).secondaryHeaderColor
                             : widget.currentTheme == CSS.pinkTheme
                             ? Theme.of(context).secondaryHeaderColor
-                            : Theme.of(context).highlightColor, // Default Light theme
+                            : Theme.of(context).highlightColor, 
                           fontFamily: 'Klavika',
                           fontWeight: FontWeight.normal,
                           fontSize: 12.0,
@@ -465,7 +462,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                   : widget.currentTheme == CSS.mintTheme
                   ? Theme.of(context).primaryColorLight
                   : widget.currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).primaryColorLight // MAKE WHITE
+                  ? Theme.of(context).primaryColorLight
                   : widget.currentTheme == CSS.pinkTheme
                   ? Theme.of(context).primaryColorLight
                   : Theme.of(context).primaryColorLight,
@@ -480,7 +477,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             child: Text(
               _fileName!, 
               style: TextStyle(color: Theme.of(context).secondaryHeaderColor, fontSize: 12.0),
-              overflow: TextOverflow.ellipsis, // Truncate if too long
+              overflow: TextOverflow.ellipsis, 
             ),
           ),
       ],
@@ -854,34 +851,6 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       ),
     );
   }
-
-  /*Widget _buildSubmitOrder() {
-  return Center(
-    child: ElevatedButton(
-      onPressed: () {
-        _submitOrder(context);
-      },
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-        side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-      ),
-      child: Text(
-        'SUBMIT ORDER',
-        style: TextStyle(
-          fontFamily: 'Klavika',
-          fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColorLight,
-        ),
-      ),
-    ),
-  );
-}*/
-
 
   @override
   Widget build(BuildContext context) {

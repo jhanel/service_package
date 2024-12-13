@@ -60,7 +60,6 @@ class MyHomePage extends StatelessWidget {
         ),
         backgroundColor: Theme.of(context).cardColor,
         actions: <Widget>[
-          // Theme switcher dropdown in the AppBar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButton<LsiThemes>(
@@ -153,7 +152,7 @@ class MyHomePage extends StatelessWidget {
                   )),
                 ),
                 child: Text(
-                  'GO TO ADMIN PAGE', // Button text
+                  'GO TO ADMIN PAGE', 
                   style: TextStyle(
                     color: Theme.of(context).primaryColorLight,
                     fontFamily: 'Klavika',

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-//import 'dart:convert'; 
-//import 'data.dart'; 
 import 'css/css.dart';
 import 'order_data.dart';
 import 'order_details.dart';
 
+// I usually scroll using my touchscreen, so let me know if scrolling doesn't work with mouse
 
 ThemeData currentTheme = CSS.lightTheme;
 
@@ -44,17 +43,17 @@ class AdminServicesState extends State<AdminServices> {
   
 
   Widget getProcessImage(String process) {
-  switch (process) {
-    case 'Thermoforming':
-      return const Image(image: AssetImage('assets/icons/emb_thermoform_sm.png'));
-    case '3D Printing':
-      return const Image(image: AssetImage('assets/icons/emb_printer_3d_sm.png'));
-    case 'Milling':
-      return const Image(image: AssetImage('assets/icons/emb_mill_sm.png'));
-    default:
-      return const Image(image: AssetImage('assets/icons/default_icon.png')); 
+    switch (process) {
+      case 'Thermoforming':
+        return const Image(image: AssetImage('assets/icons/emb_thermoform_sm.png'));
+      case '3D Printing':
+        return const Image(image: AssetImage('assets/icons/emb_printer_3d_sm.png'));
+      case 'Milling':
+        return const Image(image: AssetImage('assets/icons/emb_mill_sm.png'));
+      default:
+        return const Image(image: AssetImage('assets/icons/default_icon.png')); 
+    }
   }
-}
 
 
 
@@ -64,25 +63,22 @@ class AdminServicesState extends State<AdminServices> {
     loadOrders(); 
   }
 
-
-
+  /* for the following methods, I was able to get the chartHeader to start
+     from July 2024 using graphStartDate, but then it messed up the positioning of the timeline bar
+  */
 
   void loadOrders() {
     expandedState = List<bool>.filled(orders.length, false);
 
     filteredOrders = orders.where((order) {
       if (hideCompletedOrders) {
-        return order.status != 'Completed'; 
+        return order.status != 'Completed' || order.isCancelled; 
       }
       return true;
     }).toList();
 
     if (filteredOrders.isNotEmpty) {
-      graphStartDate = filteredOrders
-          .map((order) => DateTime.parse(order.dateSubmitted))
-          .reduce((a, b) => a.isBefore(b) ? a : b);
-    } else {
-      graphStartDate = DateTime.now();
+      graphStartDate = DateTime(2024, 7, 1);
     }
 
     if (sortBy == 'Date') {
@@ -96,153 +92,153 @@ class AdminServicesState extends State<AdminServices> {
     setState(() {}); 
   }
 
-
-
   int calculateDiffinMonths(DateTime start, DateTime end) {
-  int monDiff = ((end.year - start.year) * 12) + (end.month - start.month + 1);
-  return monDiff;
-}
-
-DateTime subtractDateByMon(DateTime date, int monthdiff) {
-  int newYear = date.year;
-  int newMonth = (date.month - monthdiff) + 1;
-
-  if (newMonth <= 0) {
-    newYear--;
-    newMonth = 12 + newMonth;
+    int monDiff = ((end.year - start.year) * 12) + (end.month - start.month + 1);
+    return monDiff;
   }
 
-  return DateTime(newYear, newMonth, 1);
-}
+  DateTime subtractDateByMon(DateTime date, int monthdiff) {
+    int newYear = date.year;
+    int newMonth = (date.month - monthdiff) + 1;
 
-
-List<Widget> chartHeader(BuildContext context) {
-  DateTime now = DateTime.now();
-  int numOfMonths = calculateDiffinMonths(graphStartDate, now);
-
-  int currYear = graphStartDate.year;
-  int currMon = graphStartDate.month;
-
-  double weekWidth = 250.0;
-  List<Widget> headerDates = [];
-
-  int startWeek = ((graphStartDate.day - 1) ~/ 7) + 1;
-
-  for (int i = 0; i < numOfMonths; i++) {
-    if (currMon > 12) {
-      currYear++;
-      currMon = 1;
+    if (newMonth <= 0) {
+      newYear--;
+      newMonth = 12 + newMonth;
     }
 
-    int endWeek = 4;
-    if (currMon == now.month && currYear == now.year) {
-      endWeek = ((now.day - 1) ~/ 7) + 1; 
-    }
+    return DateTime(newYear, newMonth, 1);
+  }
 
-    for (int j = (i == 0 ? startWeek - 1 : 0); j < endWeek; j++) {
-      headerDates.add(
-        SizedBox(
-          width: weekWidth,
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              "${Month.getMonth(currMon, currYear).name}. '${currYear.toString().substring(2)} Week ${j + 1}",
-              style: TextStyle(
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-                color: Theme.of(context).secondaryHeaderColor,
+
+  List<Widget> chartHeader(BuildContext context) {
+    DateTime now = DateTime.now();
+    int numOfMonths = calculateDiffinMonths(graphStartDate, now);
+
+    int currYear = graphStartDate.year;
+    int currMon = graphStartDate.month;
+
+    double weekWidth = 250.0;
+    List<Widget> headerDates = [];
+
+    int startWeek = ((graphStartDate.day - 1) ~/ 7) + 1;
+
+    for (int i = 0; i < numOfMonths; i++) {
+      if (currMon > 12) {
+        currYear++;
+        currMon = 1;
+      }
+
+      int endWeek = 4;
+      if (currMon == now.month && currYear == now.year) {
+        endWeek = ((now.day - 1) ~/ 7) + 1; 
+      }
+
+      for (int j = (i == 0 ? startWeek - 1 : 0); j < endWeek; j++) {
+        headerDates.add(
+          SizedBox(
+            width: weekWidth,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                "${Month.getMonth(currMon, currYear).name}. '${currYear.toString().substring(2)} Week ${j + 1}",
+                style: TextStyle(
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: Theme.of(context).secondaryHeaderColor,
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
+
+      currMon++;
     }
 
-    currMon++;
+    return headerDates;
   }
 
-  return headerDates;
-}
-
-List<Widget> timelineBars(BuildContext context) {
-  return [
-    SizedBox(
-      width: calculateTotalWidth(filteredOrders, weekWidth), 
-      child: Stack(
-        children: [
-          for (int week = 0;
-              week <= calculateDiffinWeeks(graphStartDate, DateTime.now());
-              week++)
-            Positioned(
-              left: week * weekWidth,
-              top: 0,
-              bottom: 0,
-              child: Container(
-                width: 2,
-                color: Colors.black54, 
+  List<Widget> timelineBars(BuildContext context) {
+    return [
+      SizedBox(
+        width: calculateTotalWidth(filteredOrders, weekWidth),
+        child: Stack(
+          children: [
+            for (int week = 0;
+                week <= calculateDiffinWeeks(graphStartDate, DateTime.now());
+                week++)
+              Positioned(
+                left: week * weekWidth,
+                top: 0,
+                bottom: 0,
+                child: Container(
+                  width: 2,
+                  color: Colors.black54,
+                ),
               ),
-            ),
-          for (int index = 0; index < filteredOrders.length; index++)
-            Positioned(
-              top: index * 70.0 + 10, 
-              left: calculateBarPosition(
-                graphStartDate,
-                DateTime.parse(filteredOrders[index].dateSubmitted),
-                weekWidth,
-              ),
-              child: Container(
-                width: calculateBarWidth(
+            for (int index = 0; index < filteredOrders.length; index++)
+              Positioned(
+                top: index * 70.0 + 10, 
+                left: calculateBarPosition(
+                  graphStartDate,
                   DateTime.parse(filteredOrders[index].dateSubmitted),
-                  DateTime.now(),
                   weekWidth,
-                ),
-                height: 40.0,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  borderRadius: BorderRadius.circular(10),
+                ), 
+                child: Container(
+                  width: calculateBarWidth(
+                    DateTime.parse(filteredOrders[index].dateSubmitted),
+                    DateTime.now(),
+                    weekWidth,
+                  ), 
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
-    ),
-  ];
-}
-
-int calculateDiffinWeeks(DateTime startDate, DateTime endDate) {
-  return endDate.difference(startDate).inDays ~/ 7 + 1;
-}
+    ];
+  }
 
 
 
-  double calculateBarPosition(DateTime graphStartDate, DateTime barStartDate, double weekWidth) {
-  int daysDifference = barStartDate.difference(graphStartDate).inDays;
-  return (daysDifference / 7) * weekWidth;
-}
+  int calculateDiffinWeeks(DateTime startDate, DateTime endDate) {
+    return endDate.difference(startDate).inDays ~/ 7 + 1;
+  }
 
-double calculateBarWidth(DateTime startDate, DateTime endDate, double weekWidth) {
-  int daysDifference = endDate.difference(startDate).inDays + 1;
-  return (daysDifference / 7) * weekWidth;
-}
+    double calculateBarPosition(DateTime graphStartDate, DateTime barStartDate, double weekWidth) {
+    int daysDifference = barStartDate.difference(graphStartDate).inDays;
 
-double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
-  if (filteredOrders.isEmpty || filteredOrders.first.dateSubmitted.isEmpty) return weekWidth;
-  DateTime earliestDate = DateTime.parse(orders.first.dateSubmitted);
-  DateTime latestDate = DateTime.now();
-  int totalWeeks = latestDate.difference(earliestDate).inDays ~/ 7;
-  return (totalWeeks + 1) * weekWidth; 
-}
+    double position = (daysDifference / 7) * weekWidth;
 
-void deleteOrder(int index) async {
-    // WILL COME BACK TO
-}
+    return position;
+  }
 
 
+
+  double calculateBarWidth(DateTime startDate, DateTime endDate, double weekWidth) {
+    int daysDifference = endDate.difference(startDate).inDays + 1;
+    return (daysDifference / 7) * weekWidth;
+  }
+
+  double calculateTotalWidth(List<NewOrder> orders, double weekWidth) {
+    if (filteredOrders.isEmpty) return weekWidth;
+
+    DateTime latestDate = filteredOrders
+        .map((order) => DateTime.parse(order.dateSubmitted))
+        .reduce((a, b) => a.isAfter(b) ? a : b);
+
+    int totalWeeks = calculateDiffinWeeks(graphStartDate, latestDate);
+
+    return (totalWeeks + 1) * weekWidth;
+  }
 
   @override
   Widget build(BuildContext context) {
-    //loadOrders();
     List<NewOrder> filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
@@ -318,7 +314,6 @@ void deleteOrder(int index) async {
                   onChanged: (bool value) {
                     setState(() {
                       hideCompletedOrders = value;
-                      //loadOrders();
                     });
                   },
                   activeColor: Theme.of(context).secondaryHeaderColor,
@@ -414,6 +409,10 @@ void deleteOrder(int index) async {
                                 }
                                 return true;
                               }).toList();
+                            } else if (result != null && result == true) {
+                              setState(() {
+                                loadOrders(); 
+                              });
                             }
                           },
                           child: Card(
@@ -443,6 +442,11 @@ void deleteOrder(int index) async {
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                        if (order.isCancelled)
+                                          const Icon(
+                                            Icons.warning,
+                                            color: Colors.red,
+                                        ), 
                                         Text(
                                           'Status: ${order.status}',
                                           overflow: TextOverflow.ellipsis,
@@ -502,23 +506,23 @@ void deleteOrder(int index) async {
   }
 }
 
-  class OrderDetailsPage extends StatefulWidget {
-    final NewOrder order;
-    final int index;
+class OrderDetailsPage extends StatefulWidget {
+  final NewOrder order;
+  final int index;
 
-    const OrderDetailsPage({Key? key, required this.order, required this.index}) : super(key: key);
+  const OrderDetailsPage({Key? key, required this.order, required this.index}) : super(key: key);
 
-    @override
-    OrderDetailsPageState createState() => OrderDetailsPageState();
-  }
+  @override
+  OrderDetailsPageState createState() => OrderDetailsPageState();
+}
 
 class OrderDetailsPageState extends State<OrderDetailsPage> {
-String? updatedStatusMessage; 
-String selectedStatus = ''; 
-String comments = ''; 
-late TextEditingController _commentsController;
-List<String> savedComments = []; 
-final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
+  String? updatedStatusMessage; 
+  String selectedStatus = ''; 
+  String comments = ''; 
+  late TextEditingController _commentsController;
+  List<String> savedComments = []; 
+  final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed']; 
 
   @override
   void initState() {
@@ -541,8 +545,9 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context, widget.index); 
+                orders.removeWhere((o) => o.orderNumber == widget.order.orderNumber);
+                Navigator.pop(context); 
+                Navigator.pop(context, true); 
               },
               child: const Text('Delete'),
             ),
@@ -551,6 +556,7 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
       },
     );
   }
+
 
 
   void updateStatus(BuildContext context, String newStatus) {
@@ -573,24 +579,36 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
     super.dispose();
   }
 
+  // comment doesn't save when I leave Order Details page :(
   void saveComment(BuildContext context) {
-    // WILL COME BACK TO
+    setState(() {
+      widget.order.comment = comments; 
+      final globalOrder = orders.firstWhere(
+        (o) => o.orderNumber == widget.order.orderNumber,
+        orElse: () => widget.order,
+      );
+      globalOrder.comment = comments; 
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Comment saved successfully!'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: AppBar(
-    leading: IconButton(
-    icon: const Icon(Icons.close), 
-    onPressed: () => Navigator.pop(context), 
-    ),
-    backgroundColor: Theme.of(context).cardColor,
-    ),
-    body: Center(
+      appBar: AppBar(
+        leading: IconButton(
+        icon: const Icon(Icons.close), 
+        onPressed: () => Navigator.pop(context), 
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+      ),
+      body: Center(
         child: Container(
           color: Theme.of(context).canvasColor,
           padding: const EdgeInsets.all(16.0),
@@ -616,9 +634,7 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
                         children: [
                            Text(
                             'Order Details: #${widget.order.orderNumber}',
-                            
-                            // ignore: prefer_const_constructors
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
@@ -736,29 +752,26 @@ final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Complete
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               DropdownButton<String>(
-  value: statuses.contains(selectedStatus) ? selectedStatus : statuses.first, // Ensure valid value
-  items: statuses.map((status) {
-    return DropdownMenuItem<String>(
-      value: status,
-      child: Text(status),
-    );
-  }).toList(),
-  onChanged: (value) {
-    if (value != null) {
-      setState(() {
-        selectedStatus = value;
-        updatedStatusMessage = "Status updated successfully: $value";
-
-        // Update the global order list
-        final globalOrder = orders.firstWhere((o) => o.orderNumber == widget.order.orderNumber);
-        globalOrder.status = value;
-      });
-    }
-  },
-  dropdownColor: Theme.of(context).cardColor,
-  style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
-),
-
+                                value: statuses.contains(selectedStatus) ? selectedStatus : statuses.first,
+                                items: statuses.map((status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      selectedStatus = value;
+                                      updatedStatusMessage = "Status updated successfully: $value";
+                                      final globalOrder = orders.firstWhere((o) => o.orderNumber == widget.order.orderNumber);
+                                      globalOrder.status = value;
+                                    });
+                                  }
+                                },
+                                dropdownColor: Theme.of(context).cardColor,
+                                style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+                              ),
                               const SizedBox(width: 20.0),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
