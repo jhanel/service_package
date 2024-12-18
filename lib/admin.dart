@@ -5,6 +5,8 @@ import 'order_details.dart';
 
 // I usually scroll using my touchscreen, so let me know if scrolling doesn't work with mouse
 
+//scrolling does not seem to be working for the keyboard and mouse -nlw
+
 ThemeData currentTheme = CSS.lightTheme;
 
 class AdminServices extends StatefulWidget {
@@ -257,7 +259,7 @@ class AdminServicesState extends State<AdminServices> {
           ),
         ),
         backgroundColor: Theme.of(context).cardColor,
-        actions: [
+        actions: [ //will need a mobile version for the appbar -nlw
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Row(
@@ -531,7 +533,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
     _commentsController = TextEditingController(text: widget.order.comment);
   }
 
-  void deleteOrder(BuildContext context) {
+  void deleteOrder(BuildContext context) { //notify the person who created the order -nlw
     showDialog(
       context: context,
       builder: (BuildContext context) {
