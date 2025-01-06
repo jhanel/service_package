@@ -149,7 +149,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildOrderDetails() {
+  Widget _buildOrderDetails() { //might want to make the text inside a bit bigger -nlw
     return LayoutBuilder(
       builder: (context, constraints) {
         bool isMobile = constraints.maxWidth < 600.0;
@@ -526,7 +526,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               
               Align(
               alignment: Alignment.bottomLeft,
-              child: ElevatedButton(
+              child: ElevatedButton( //use the squarebutton from savedWidgets -nlw
                 onPressed: () { //will want to send john a notification -nlw 
                   showDialog(
                     context: context,

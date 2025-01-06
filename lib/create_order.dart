@@ -241,7 +241,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           : Row(
               children: [
                 Expanded(
-                  child: EnterTextFormField(
+                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
                     //width: 50,
                     height: 80,
                     padding: const EdgeInsets.all(10),
@@ -315,7 +315,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
-                  child: EnterTextFormField(
+                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
                     //width: 50,
                     height: 80,
                     padding: const EdgeInsets.all(10),
@@ -389,7 +389,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
-                  child: EnterTextFormField(
+                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
                     //width: 50,
                     height: 80,
                     padding: const EdgeInsets.all(10),

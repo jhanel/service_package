@@ -299,7 +299,7 @@ class AdminServicesState extends State<AdminServices> {
               ],
             ),
           ),
-          Padding(
+          Padding( 
             padding: const EdgeInsets.only(right: 16.0),
             child: Row(
               children: [
@@ -325,7 +325,7 @@ class AdminServicesState extends State<AdminServices> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
+            child: Row( 
               children: [
                 Text(
                   'Show All Orders:',
@@ -606,7 +606,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
       appBar: AppBar(
         leading: IconButton(
         icon: const Icon(Icons.close), 
-        onPressed: () => Navigator.pop(context), 
+        onPressed: () => Navigator.pop(context, widget.order), //missing something; please refer to reprt-api line 1700 -nlw 
         ),
         backgroundColor: Theme.of(context).cardColor,
       ),
@@ -843,7 +843,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
                           const SizedBox(height: 16.0),
                           Align(
                             alignment: Alignment.bottomRight,
-                            child: ElevatedButton(
+                            child: ElevatedButton( //use squarebutton from savedWidgets -nlw
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).secondaryHeaderColor,
                                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
