@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:css/css.dart';
 import 'dart:math';
-//import 'css/css.dart';
 import 'order_data.dart';
 import 'order_details.dart';
 import 'styles/savedWidgets.dart';
-import 'styles/globals.dart';
 
 class CreateOrderPage extends StatefulWidget {
   final dynamic currentTheme;
@@ -23,10 +22,10 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   final TextEditingController _departmentController = TextEditingController();
 
   String? _fileName;
-  String _selectedProcess = 'Thermoforming';
-  String _selectedUnit = 'mm';
-  String _selectedType = 'Aluminum';
-  int _quantity = 1;
+  String _selectedProcess = 'Process';
+  String _selectedUnit = 'Unit';
+  String _selectedType = 'Type';
+  int _quantity = 0;
   double _rate = 0.0;
 
   void _calculateRate() {
@@ -105,364 +104,214 @@ class CreateOrderPageState extends State<CreateOrderPage> {
 
   Widget _buildForm(bool isMobile) { //include a contact field ??? -nlw
     return Form(
-      key: _formKey, 
-      child: isMobile
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EnterTextFormField(
-                  //width: 50,
-                  height: 80,
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.all(10),
-                  radius: 8,
-                  color: Theme.of(context).canvasColor,
-                  maxLines: 1,
-                  label: 'Name',
-                  controller: _nameController,
-                  onEditingComplete: () {
-                  },
-                  onSubmitted: (val) {},
-                  onTap: () {
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
+    key: _formKey, 
+    child: isMobile
+    ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          EnterTextFormField(
+            //width: 50,
+            height: 80,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            radius: 8,
+            color: Theme.of(context).canvasColor,
+            maxLines: 1,
+            label: 'Name',
+            controller: _nameController,
+            onEditingComplete: () {
+            },
+            onSubmitted: (val) {},
+            onTap: () {
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a name!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16.0),
+          Container(
+            height: 80.0,
+              padding: const EdgeInsets.all(5.0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+              color:
+                widget.currentTheme == CSS.hallowTheme
+                ? Theme.of(context).cardColor
+                : widget.currentTheme == CSS.darkTheme
+                ? Theme.of(context).unselectedWidgetColor
+                : widget.currentTheme == CSS.mintTheme
+                ? Theme.of(context).indicatorColor
+                : widget.currentTheme == CSS.lsiTheme
+                ? Theme.of(context).splashColor
+                : widget.currentTheme == CSS.pinkTheme
+                ? Theme.of(context).indicatorColor
+                : Theme.of(context).splashColor, //gonna simplify the themes -nlw
+              borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+              controller: _journalNumController,
+              decoration: InputDecoration(
+                labelText: 'Journal Transfer Number',
+                labelStyle: TextStyle(
+                  color:
+                        widget.currentTheme == CSS.hallowTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.darkTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.mintTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.lsiTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.pinkTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
                 ),
-                const SizedBox(height: 16.0),
-                Container(
-                  height: 80.0,
-                    padding: const EdgeInsets.all(5.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                    color:
-                      widget.currentTheme == CSS.hallowTheme
-                      ? Theme.of(context).cardColor
-                      : widget.currentTheme == CSS.darkTheme
-                      ? Theme.of(context).unselectedWidgetColor
-                      : widget.currentTheme == CSS.mintTheme
-                      ? Theme.of(context).indicatorColor
-                      : widget.currentTheme == CSS.lsiTheme
-                      ? Theme.of(context).splashColor
-                      : widget.currentTheme == CSS.pinkTheme
-                      ? Theme.of(context).indicatorColor
-                      : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-                    borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextFormField(
-                    controller: _journalNumController,
-                    decoration: InputDecoration(
-                      labelText: 'Journal Transfer Number',
-                      labelStyle: TextStyle(
-                        color:
-                              widget.currentTheme == CSS.hallowTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.darkTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.mintTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.lsiTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.pinkTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a journal transfer number';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16.0),
-
-                Container(
-                  height: 80.0,
-                    padding: const EdgeInsets.all(5.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                    color:
-                      widget.currentTheme == CSS.hallowTheme
-                      ? Theme.of(context).cardColor
-                      : widget.currentTheme == CSS.darkTheme
-                      ? Theme.of(context).unselectedWidgetColor
-                      : widget.currentTheme == CSS.mintTheme
-                      ? Theme.of(context).indicatorColor
-                      : widget.currentTheme == CSS.lsiTheme
-                      ? Theme.of(context).splashColor
-                      : widget.currentTheme == CSS.pinkTheme
-                      ? Theme.of(context).indicatorColor
-                      : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-                    borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TextFormField(
-                    controller: _departmentController,
-                    decoration: InputDecoration(
-                      labelText: 'Department',
-                      labelStyle: TextStyle(
-                        color:
-                              widget.currentTheme == CSS.hallowTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.darkTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.mintTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.lsiTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : widget.currentTheme == CSS.pinkTheme
-                              ? Theme.of(context).secondaryHeaderColor
-                              : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                        fontFamily: 'Klavika',
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                    style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a department!';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(
-                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
-                    //width: 50,
-                    height: 80,
-                    padding: const EdgeInsets.all(10),
-                    radius: 8,
-                    color: Theme.of(context).primaryColorLight,
-                    maxLines: 1,
-                    label: 'Name',
-                    controller: _nameController,
-                    onEditingComplete: () {
-                    },
-                    onSubmitted: (val) {},
-                    onTap: () {
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a name';
-                      }
-                      return null;
-                    },
-                  ),
-                  // Container(
-                  //   height: 80.0,
-                  //   padding: const EdgeInsets.all(5.0),
-                  //   alignment: Alignment.center,
-                  //   decoration: BoxDecoration(
-                  //   color:
-                  //     widget.currentTheme == CSS.hallowTheme
-                  //     ? Theme.of(context).cardColor
-                  //     : widget.currentTheme == CSS.darkTheme
-                  //     ? Theme.of(context).unselectedWidgetColor
-                  //     : widget.currentTheme == CSS.mintTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : widget.currentTheme == CSS.lsiTheme
-                  //     ? Theme.of(context).splashColor
-                  //     : widget.currentTheme == CSS.pinkTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-                  //   borderRadius: BorderRadius.circular(8.0),
-                  //   ),
-                  //   child: TextFormField(
-                  //     controller: _nameController,
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Name',
-                  //       labelStyle: TextStyle(
-                  //         color:
-                  //           widget.currentTheme == CSS.hallowTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.darkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.mintTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.lsiTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.pinkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                  //         fontFamily: 'Klavika',
-                  //         fontWeight: FontWeight.normal,
-                  //         fontSize: 12.0,
-                  //       ),
-                  //     ),
-                  //     style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  //     validator: (value) {
-                  //       if (value == null || value.isEmpty) {
-                  //         return 'Please enter a name!';
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  // ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
-                    //width: 50,
-                    height: 80,
-                    padding: const EdgeInsets.all(10),
-                    radius: 8,
-                    color: Theme.of(context).primaryColorLight,
-                    maxLines: 1,
-                    label: 'Journal Transfer Number',
-                    controller: _journalNumController,
-                    onEditingComplete: () {
-                    },
-                    onSubmitted: (val) {},
-                    onTap: () {
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a journal transfer number';
-                      }
-                      return null;
-                    },
-                  ),
-                  // Container(
-                  //   height: 80.0,
-                  //   padding: const EdgeInsets.all(5.0),
-                  //   alignment: Alignment.center,
-                  //   decoration: BoxDecoration(
-                  //     color:
-                  //     widget.currentTheme == CSS.hallowTheme
-                  //     ? Theme.of(context).cardColor
-                  //     : widget.currentTheme == CSS.darkTheme
-                  //     ? Theme.of(context).unselectedWidgetColor
-                  //     : widget.currentTheme == CSS.mintTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : widget.currentTheme == CSS.lsiTheme
-                  //     ? Theme.of(context).splashColor
-                  //     : widget.currentTheme == CSS.pinkTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-                  //   borderRadius: BorderRadius.circular(8.0),
-                  //   ),
-                  //   child: TextFormField(
-                  //     controller: _journalNumController,
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Journal Transfer Number',
-                  //       labelStyle: TextStyle(
-                  //         color:
-                  //           widget.currentTheme == CSS.hallowTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.darkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.mintTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.lsiTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.pinkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                  //         fontFamily: 'Klavika',
-                  //         fontWeight: FontWeight.normal,
-                  //         fontSize: 12.0,
-                  //       ),
-                  //     ),
-                  //     style:  TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  //     validator: (value) {
-                  //       if (value == null || value.isEmpty) {
-                  //         return 'Please enter a journal transfer number!';
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  // ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
-                    //width: 50,
-                    height: 80,
-                    padding: const EdgeInsets.all(10),
-                    radius: 8,
-                    color: Theme.of(context).primaryColorLight,
-                    maxLines: 1,
-                    label: 'Department',
-                    controller: _departmentController,
-                    onEditingComplete: () {
-                    },
-                    onSubmitted: (val) {},
-                    onTap: () {
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a department!';
-                      }
-                      return null;
-                    },
-                  ),
-                  // Container(
-                  //   height: 80.0,
-                  //   padding: const EdgeInsets.all(5.0),
-                  //   alignment: Alignment.center,
-                  //   decoration: BoxDecoration(
-                  //     color:
-                  //     widget.currentTheme == CSS.hallowTheme
-                  //     ? Theme.of(context).cardColor
-                  //     : widget.currentTheme == CSS.darkTheme
-                  //     ? Theme.of(context).unselectedWidgetColor
-                  //     : widget.currentTheme == CSS.mintTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : widget.currentTheme == CSS.lsiTheme
-                  //     ? Theme.of(context).splashColor
-                  //     : widget.currentTheme == CSS.pinkTheme
-                  //     ? Theme.of(context).indicatorColor
-                  //     : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-                  //   borderRadius: BorderRadius.circular(8.0),
-                  //   ),
-                  //   child: TextFormField(
-                  //     controller: _departmentController,
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Department',
-                  //       labelStyle: TextStyle(
-                  //         color:
-                  //           widget.currentTheme == CSS.hallowTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.darkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.mintTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.lsiTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : widget.currentTheme == CSS.pinkTheme
-                  //           ? Theme.of(context).secondaryHeaderColor
-                  //           : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                  //         fontFamily: 'Klavika',
-                  //         fontWeight: FontWeight.normal,
-                  //         fontSize: 12.0,
-                  //       ),
-                  //     ),
-                  //     style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-                  //     validator: (value) {
-                  //       if (value == null || value.isEmpty) {
-                  //         return 'Please enter a department!';
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  // ),
-                ),
-              ],
+              ),
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a journal transfer number!';
+                }
+                return null;
+              },
             ),
+          ),
+
+          const SizedBox(height: 16.0),
+
+          Container(
+            height: 80.0,
+              padding: const EdgeInsets.all(5.0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+              color:
+                widget.currentTheme == CSS.hallowTheme
+                ? Theme.of(context).cardColor
+                : widget.currentTheme == CSS.darkTheme
+                ? Theme.of(context).unselectedWidgetColor
+                : widget.currentTheme == CSS.mintTheme
+                ? Theme.of(context).indicatorColor
+                : widget.currentTheme == CSS.lsiTheme
+                ? Theme.of(context).splashColor
+                : widget.currentTheme == CSS.pinkTheme
+                ? Theme.of(context).indicatorColor
+                : Theme.of(context).splashColor, //gonna simplify the themes -nlw
+              borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextFormField(
+              controller: _departmentController,
+              decoration: InputDecoration(
+                labelText: 'Department',
+                labelStyle: TextStyle(
+                  color:
+                        widget.currentTheme == CSS.hallowTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.darkTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.mintTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.lsiTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : widget.currentTheme == CSS.pinkTheme
+                        ? Theme.of(context).secondaryHeaderColor
+                        : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
+                  fontFamily: 'Klavika',
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12.0,
+                ),
+              ),
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a department!';
+                }
+                return null;
+              },
+            ),
+          ),
+        ],
+      )
+    : Row(
+        children: [
+          Expanded(
+            child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
+              //width: 50,
+              height: 80,
+              padding: const EdgeInsets.all(10),
+              radius: 8,
+              color: Theme.of(context).primaryColorLight,
+              maxLines: 1,
+              label: 'Name',
+              controller: _nameController,
+              onEditingComplete: () {
+              },
+              onSubmitted: (val) {},
+              onTap: () {
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a name';
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
+              //width: 50,
+              height: 80,
+              padding: const EdgeInsets.all(10),
+              radius: 8,
+              color: Theme.of(context).primaryColorLight,
+              maxLines: 1,
+              label: 'Journal Transfer Number',
+              controller: _journalNumController,
+              onEditingComplete: () {
+              },
+              onSubmitted: (val) {},
+              onTap: () {
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a journal transfer number';
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
+              //width: 50,
+              height: 80,
+              padding: const EdgeInsets.all(10),
+              radius: 8,
+              color: Theme.of(context).primaryColorLight,
+              maxLines: 1,
+              label: 'Department',
+              controller: _departmentController,
+              onEditingComplete: () {
+              },
+              onSubmitted: (val) {},
+              onTap: () {
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a department!';
+                }
+                return null;
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -532,205 +381,151 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   }
 
   Widget _buildSelection() {
-  return Container
-  (
+  return Container(
     width: double.infinity,
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
       color: Theme.of(context).cardColor,
       borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).shadowColor,
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(1, 1,),
-              ),
-            ],
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor,
+          spreadRadius: 1,
+          blurRadius: 4,
+          offset: const Offset(1, 1),
+        ),
+      ],
     ),
-      child: 
-      Column
-      (
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [ //use dropDown and entertextformfield from savedWidgets -nlw
-          DropdownButtonFormField<String>(
-            value: _selectedProcess,
-            decoration: InputDecoration(
-              labelText: 'Select Process',
-              labelStyle: TextStyle(
-                fontSize: 16.0,
-                color: Theme.of(context).secondaryHeaderColor,
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 15.0,
-              color:
-                  widget.currentTheme == CSS.hallowTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.darkTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.mintTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.pinkTheme
-                  ? Theme.of(context).shadowColor
-                  : Theme.of(context).secondaryHeaderColor, //gonna simplify the themes -nlw
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
-            ),
-            items: ['Thermoforming', '3D Printing', 'Milling'].map(
-              (String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              },
-            ).toList(),
-            onChanged: (newValue) {
-              setState(() {
-                _selectedProcess = newValue!;
-                _calculateRate();
-              });
-            },
-          ),
-          DropdownButtonFormField<String>(
-            value: _selectedUnit,
-            decoration: InputDecoration(
-              labelText: 'Select Unit',
-              labelStyle: TextStyle(
-                fontSize: 16.0,
-                color: Theme.of(context).secondaryHeaderColor,
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 15.0,
-              color:
-                  widget.currentTheme == CSS.hallowTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.darkTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.mintTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.pinkTheme
-                  ? Theme.of(context).shadowColor
-                  : Theme.of(context).secondaryHeaderColor, //gonna simplify the themes -nlw
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
-            ),
-            items: ['mm', 'cm', 'inches'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newValue) {
-              setState(() {
-                _selectedUnit = newValue!;
-                _calculateRate();
-              });
-            },
-          ),
-          DropdownButtonFormField<String>( //have the dropdowns have default blak option -nlw
-            value: _selectedType,
-            decoration: InputDecoration(
-              labelText: 'Select Type',
-              labelStyle: TextStyle(
-                fontSize: 16.0,
-                color: Theme.of(context).secondaryHeaderColor,
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 15.0,
-              color:
-                  widget.currentTheme == CSS.hallowTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.darkTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.mintTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).shadowColor
-                  : widget.currentTheme == CSS.pinkTheme
-                  ? Theme.of(context).shadowColor
-                  : Theme.of(context).secondaryHeaderColor, //gonna simplify the themes -nlw
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
-            ),
-            items: ['Aluminum', 'Steel', 'Brass'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newValue) {
-              setState(() {
-                _selectedType = newValue!;
-                _calculateRate();
-              });
-            },
-          ),
-          TextFormField( //quantity default to 0 -nlw
-            decoration: InputDecoration(
-              labelText: 'Enter Quantity',
-              labelStyle: TextStyle(
-                fontSize: 16.0,
-                color: Theme.of(context).secondaryHeaderColor,
-                fontFamily: 'Klavika',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            keyboardType: TextInputType.number,
-            initialValue: '1',
-            style: TextStyle(
-              fontSize: 14.0,
-              color:
-                  widget.currentTheme == CSS.hallowTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.darkTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.mintTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.lsiTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : widget.currentTheme == CSS.pinkTheme
-                  ? Theme.of(context).secondaryHeaderColor
-                  : Theme.of(context).secondaryHeaderColor, //gonna simplify the themes -nlw
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a quantity';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              setState(() {
-                _quantity = int.tryParse(value) ?? 1;
-              });
-            },
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Rate: $_rate per cubic unit',
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Theme.of(context).secondaryHeaderColor,
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.bold,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Process Dropdown
+        LSIWidgets.dropDown(
+          itemVal: [
+            DropdownMenuItem(value: 'Thermoforming', child: Text('Thermoforming')),
+            DropdownMenuItem(value: '3D Printing', child: Text('3D Printing')),
+            DropdownMenuItem(value: 'Milling', child: Text('Milling')),
+          ],
+          value: _selectedProcess,
+          onchange: (newValue) {
+            setState(() {
+              _selectedProcess = newValue!;
+              _calculateRate();
+            });
+          },
+          width: double.infinity,
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          radius: 8.0,
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        if (_selectedProcess == 'Process')
+          const Padding(
+            padding: EdgeInsets.only(left: 10, top: 5),
+            child: Text(
+              'Please select a process!',
+              style: TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
-        ],
-      ),
-    );
-  }
+
+        // Unit Dropdown
+        LSIWidgets.dropDown(
+          itemVal: [
+            DropdownMenuItem(value: 'mm', child: Text('mm')),
+            DropdownMenuItem(value: 'cm', child: Text('cm')),
+            DropdownMenuItem(value: 'inches', child: Text('inches')),
+          ],
+          value: _selectedUnit,
+          onchange: (newValue) {
+            setState(() {
+              _selectedUnit = newValue!;
+              _calculateRate();
+            });
+          },
+          width: double.infinity,
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          radius: 8.0,
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        if (_selectedUnit == 'Unit')
+          const Padding(
+            padding: EdgeInsets.only(left: 10, top: 5),
+            child: Text(
+              'Please select a unit!',
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+
+        // Type Dropdown
+        LSIWidgets.dropDown(
+          itemVal: [
+            DropdownMenuItem(value: 'Aluminum', child: Text('Aluminum')),
+            DropdownMenuItem(value: 'Steel', child: Text('Steel')),
+            DropdownMenuItem(value: 'Brass', child: Text('Brass')),
+          ],
+          value: _selectedType,
+          onchange: (newValue) {
+            setState(() {
+              _selectedType = newValue!;
+              _calculateRate();
+            });
+          },
+          width: double.infinity,
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          radius: 8.0,
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        if (_selectedType == 'Type')
+          const Padding(
+            padding: EdgeInsets.only(left: 10, top: 5),
+            child: Text(
+              'Please select a type!',
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
+
+        // Quantity Field
+        EnterTextFormField(
+          height: 80,
+          padding: const EdgeInsets.all(10),
+          radius: 8,
+          color: Theme.of(context).canvasColor,
+          label: 'Enter Quantity',
+          controller: TextEditingController(text: _quantity.toString()),
+          onChanged: (value) {
+            setState(() {
+              _quantity = int.tryParse(value) ?? 0;
+            });
+          },
+          validator: (value) {
+            if (value == null || value.isEmpty || int.tryParse(value) == null || int.tryParse(value)! <= 0) {
+              return 'Please enter a valid quantity!';
+            }
+            return null;
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        Text(
+          'Rate: $_rate per cubic unit',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Theme.of(context).secondaryHeaderColor,
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildQuote() {
     return 

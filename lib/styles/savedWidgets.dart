@@ -275,7 +275,7 @@ class IndicatorBlocks extends StatelessWidget{
       );
     }
 
-    return Container(
+    return SizedBox(
       width: isDynamic?320:CSS.responsive(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -688,13 +688,13 @@ class LSIWidgets{
       required Size size
     }
   ){
-    QrCode? _qr = QrValidator.validate(
+    QrCode? qr0 = QrValidator.validate(
       data: data,
       version: QrVersions.auto,
     ).qrCode;
 
     final qr = QrPainter.withQr(
-      qr: _qr!,
+      qr: qr0!,
       gapless: true,
       emptyColor: Colors.white,
       embeddedImage: embeddedImage,
@@ -1218,7 +1218,7 @@ class TopInfo extends StatelessWidget{
           ),
         ):Container(),
         Text(
-          title+':  ',
+          '$title:  ',
           style: Theme.of(context).primaryTextTheme.headlineMedium
         ),
         (titleWidget != null)?titleWidget!:Container()
