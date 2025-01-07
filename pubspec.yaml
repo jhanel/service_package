@@ -18,6 +18,18 @@ dependencies:
   universal_html: ^2.2.4
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
+  #included some missing dependencies
+  flutter_svg: 2.0.0
+  multi_dropdown: ^2.1.4
+  printing: ^5.11.0
+  
+  #include css + qr_flutter git url -nlw 
+  qr_flutter:
+    git:
+      url: https://github.com/Knightro63/qr.flutter.git
+  css:
+    git:
+      url: https://github.com/LimbitlessSolutionsInc/css.git
   
 dev_dependencies:
   flutter_test:

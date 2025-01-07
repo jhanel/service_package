@@ -106,7 +106,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildOrderInputField() {
+  Widget _buildOrderInputField() { //maybe also be able to search by name, jornal transfer number and contact -nlw
     return TextField(
       controller: _orderIdController,
       decoration: InputDecoration(
@@ -149,7 +149,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     );
   }
 
-  Widget _buildOrderDetails() {
+  Widget _buildOrderDetails() { //might want to make the text inside a bit bigger -nlw
     return LayoutBuilder(
       builder: (context, constraints) {
         bool isMobile = constraints.maxWidth < 600.0;
@@ -526,8 +526,8 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               
               Align(
               alignment: Alignment.bottomLeft,
-              child: ElevatedButton(
-                onPressed: () {
+              child: ElevatedButton( //use the squarebutton from savedWidgets -nlw
+                onPressed: () { //will want to send john a notification -nlw 
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -658,7 +658,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Order not found. Please check the Order ID.")),
-      );
+      ); //i think the error message should maybe be more prominent -nlw
       setState(() {
         _isTracking = false;
       });
