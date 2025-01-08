@@ -18,6 +18,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   final OrderLogic orderLogic = OrderLogic();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
   final TextEditingController _journalNumController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
 
@@ -25,6 +26,11 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   String? _selectedProcess;
   String? _selectedUnit;
   String? _selectedType;
+  bool processFlag = false;
+  bool unitFlag = false;
+  bool typeFlag = false;
+  bool fileFlag = false;
+  bool quantityFlag = false;
   int _quantity = 0;
   double _rate = 0.0;
 
@@ -46,33 +52,29 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     if (fileName != null) {
       setState(() {
         _fileName = fileName;
+        fileFlag = false;
       });
     }
   }
 
   void _submitOrder(BuildContext context) {
+    setState(() {
+      processFlag = _selectedProcess == null;
+      unitFlag = _selectedUnit == null;
+      typeFlag = _selectedType == null;
+      fileFlag = _fileName == null;
+      quantityFlag = _quantity <= 0;
+    });
+
+    if (processFlag || unitFlag || typeFlag || quantityFlag) {
+      return;
+    }
+    
+    
+    
     if (_formKey.currentState?.validate() ?? false) {
       int orderNumber = 100 + Random().nextInt(900);
       double estimatedPrice = _quantity * _rate * volume;
-
-    if (_selectedProcess == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a process!')),
-      );
-      return;
-    }
-    if (_selectedUnit == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a unit!')),
-      );
-      return;
-    }
-    if (_selectedType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a type!')),
-      );
-      return;
-    }
 
       NewOrder newOrder = orderLogic.createOrder(
         process: _selectedProcess!,
@@ -86,6 +88,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         journalTransferNumber: _journalNumController.text,
         department: _departmentController.text,
         name: _nameController.text,
+        contact: _contactController.text,
         orderNumber: orderNumber.toString(),
       );
 
@@ -97,12 +100,15 @@ class CreateOrderPageState extends State<CreateOrderPage> {
 
       _formKey.currentState?.reset();
       _nameController.clear();
+      _contactController.clear();
       _journalNumController.clear();
       _departmentController.clear();
 
       setState(() {
+        fileFlag = false;
+        quantityFlag = false;
         _fileName = null;
-        _quantity = 1;
+        _quantity = 0;
         _rate = 0.0;
         _selectedProcess = null;
         _selectedUnit = null;
@@ -114,22 +120,18 @@ class CreateOrderPageState extends State<CreateOrderPage> {
 
   Widget _buildSubmitOrder() {
     return Center(
-      child: ElevatedButton( //use square Button for savedWidgets -nlw
-        onPressed: () => _submitOrder(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).secondaryHeaderColor,
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      child: LSIWidgets.squareButton( //use the squareButton for the elveated button -nlw
+          text: 'submit order',
+          onTap: () => _submitOrder(context),
+          textColor: Theme.of(context).primaryColorLight,
+          buttonColor: Theme.of(context).primaryColor,
+          borderColor: Colors.transparent,
+          height: 50,
+          radius: 8,
+          width: 150,
+          margin: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 12)
         ),
-        child: Text(
-          'SUBMIT ORDER',
-          style: TextStyle(
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColorLight,
-          ),
-        ),
-      ),
     );
   }
 
@@ -147,7 +149,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             radius: 8,
             color: Theme.of(context).canvasColor,
             maxLines: 1,
-            label: 'Name',
+            label: 'Full name',
             controller: _nameController,
             onEditingComplete: () {
             },
@@ -162,109 +164,74 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             },
           ),
           const SizedBox(height: 16.0),
-          Container(
-            height: 80.0,
-              padding: const EdgeInsets.all(5.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-              color:
-                widget.currentTheme == CSS.hallowTheme
-                ? Theme.of(context).cardColor
-                : widget.currentTheme == CSS.darkTheme
-                ? Theme.of(context).unselectedWidgetColor
-                : widget.currentTheme == CSS.mintTheme
-                ? Theme.of(context).indicatorColor
-                : widget.currentTheme == CSS.lsiTheme
-                ? Theme.of(context).splashColor
-                : widget.currentTheme == CSS.pinkTheme
-                ? Theme.of(context).indicatorColor
-                : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-              borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: TextFormField(
-              controller: _journalNumController,
-              decoration: InputDecoration(
-                labelText: 'Journal Transfer Number',
-                labelStyle: TextStyle(
-                  color:
-                        widget.currentTheme == CSS.hallowTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.darkTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.mintTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.lsiTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.pinkTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12.0,
-                ),
-              ),
-              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a journal transfer number!';
-                }
-                return null;
-              },
-            ),
+          EnterTextFormField(
+            height: 80,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            radius: 8,
+            color: Theme.of(context).canvasColor,
+            maxLines: 1,
+            label: 'Journal Transfer Number',
+            controller: _journalNumController,
+            onEditingComplete: () {
+            },
+            onSubmitted: (val) {},
+            onTap: () {
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a journal transfer number!';
+              }
+              return null;
+            },
           ),
 
           const SizedBox(height: 16.0),
-
-          Container(
-            height: 80.0,
-              padding: const EdgeInsets.all(5.0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-              color:
-                widget.currentTheme == CSS.hallowTheme
-                ? Theme.of(context).cardColor
-                : widget.currentTheme == CSS.darkTheme
-                ? Theme.of(context).unselectedWidgetColor
-                : widget.currentTheme == CSS.mintTheme
-                ? Theme.of(context).indicatorColor
-                : widget.currentTheme == CSS.lsiTheme
-                ? Theme.of(context).splashColor
-                : widget.currentTheme == CSS.pinkTheme
-                ? Theme.of(context).indicatorColor
-                : Theme.of(context).splashColor, //gonna simplify the themes -nlw
-              borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: TextFormField(
-              controller: _departmentController,
-              decoration: InputDecoration(
-                labelText: 'Department',
-                labelStyle: TextStyle(
-                  color:
-                        widget.currentTheme == CSS.hallowTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.darkTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.mintTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.lsiTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : widget.currentTheme == CSS.pinkTheme
-                        ? Theme.of(context).secondaryHeaderColor
-                        : Theme.of(context).highlightColor, //gonna simplify the themes -nlw
-                  fontFamily: 'Klavika',
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12.0,
-                ),
-              ),
-              style: TextStyle(color: Theme.of(context).secondaryHeaderColor),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a department!';
-                }
-                return null;
-              },
-            ),
+          EnterTextFormField(
+            height: 80,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            radius: 8,
+            color: Theme.of(context).canvasColor,
+            maxLines: 1,
+            label: 'Department',
+            controller: _departmentController,
+            onEditingComplete: () {
+            },
+            onSubmitted: (val) {},
+            onTap: () {
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your department!';
+              }
+              return null;
+            },
           ),
+
+          const SizedBox(height: 16.0),
+          EnterTextFormField(
+            height: 80,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            radius: 8,
+            color: Theme.of(context).canvasColor,
+            maxLines: 1,
+            label: 'Contact',
+            controller: _contactController,
+            onEditingComplete: () {
+            },
+            onSubmitted: (val) {},
+            onTap: () {
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a form of contact!';
+              }
+              return null;
+            },
+          ),
+
         ],
       )
     : Row(
@@ -277,7 +244,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               radius: 8,
               color: Theme.of(context).primaryColorLight,
               maxLines: 1,
-              label: 'Name',
+              label: 'Full Name',
               controller: _nameController,
               onEditingComplete: () {
               },
@@ -340,6 +307,30 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               },
             ),
           ),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: EnterTextFormField( //use entertextformfield rather than textformfield -nlw
+              //width: 50,
+              height: 80,
+              padding: const EdgeInsets.all(10),
+              radius: 8,
+              color: Theme.of(context).primaryColorLight,
+              maxLines: 1,
+              label: 'Contact',
+              controller: _contactController,
+              onEditingComplete: () {
+              },
+              onSubmitted: (val) {},
+              onTap: () {
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a form of contact!';
+                }
+                return null;
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -372,6 +363,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               overflow: TextOverflow.ellipsis, 
             ),
           ),
+        if (fileFlag) 
+        const Padding(
+          padding: EdgeInsets.only(left: 10, top: 5),
+          child: Text(
+            'Please select a file!',
+            style: TextStyle(color: Colors.red, fontSize: 12),
+          ),
+        ),
       ],
     );
   }
@@ -406,6 +405,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           onchange: (newValue) {
             setState(() {
               _selectedProcess = newValue!;
+              processFlag = false;
               _calculateRate();
             });
           },
@@ -416,7 +416,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           radius: 8.0,
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        if (_selectedProcess == 'Process')
+        if (processFlag)
           const Padding(
             padding: EdgeInsets.only(left: 10, top: 5),
             child: Text(
@@ -436,6 +436,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           onchange: (newValue) {
             setState(() {
               _selectedUnit = newValue!;
+              unitFlag = false;
               _calculateRate();
             });
           },
@@ -446,7 +447,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           radius: 8.0,
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        if (_selectedUnit == 'Unit')
+        if (unitFlag)
           const Padding(
             padding: EdgeInsets.only(left: 10, top: 5),
             child: Text(
@@ -467,6 +468,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           onchange: (newValue) {
             setState(() {
               _selectedType = newValue!;
+              typeFlag = false;
               _calculateRate();
             });
           },
@@ -477,7 +479,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           radius: 8.0,
           border: Border.all(color: Theme.of(context).dividerColor),
         ),
-        if (_selectedType == 'Type')
+        if (typeFlag)
           const Padding(
             padding: EdgeInsets.only(left: 10, top: 5),
             child: Text(
@@ -486,7 +488,6 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             ),
           ),
 
-        // Quantity Field
         EnterTextFormField(
           height: 80,
           padding: const EdgeInsets.all(10),
@@ -497,17 +498,20 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           onChanged: (value) {
             setState(() {
               _quantity = int.tryParse(value) ?? 0;
+              quantityFlag = _quantity <= 0;
             });
           },
-          validator: (value) {
-            if (value == null || value.isEmpty || int.tryParse(value) == null || int.tryParse(value)! <= 0) {
-              return 'Please enter a quantity!';
-            }
-            return null;
-          },
         ),
+        if(quantityFlag)
+            const Padding(
+            padding: EdgeInsets.only(left: 10, top: 5),
+            child: Text(
+              'Please enter a valid quantity!',
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ),
 
-        const SizedBox(height: 20),
+        //const SizedBox(height: 20),
       ],
     ),
   );

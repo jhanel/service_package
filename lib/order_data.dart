@@ -6,6 +6,7 @@ const List<String> statusHierarchy = ['Received', 'In Progress', 'Delivered', 'C
 class NewOrder {
   String orderNumber;
   String name;
+  String contact;
   String process;
   String unit;
   String type;
@@ -25,6 +26,7 @@ class NewOrder {
   NewOrder({
     required this.orderNumber,
     required this.name,
+    required this.contact,
     required this.process,
     required this.unit,
     required this.type,
@@ -46,6 +48,7 @@ class NewOrder {
     return {
       'orderNumber': orderNumber,
       'name': name,
+      'contact': contact,
       'process': process,
       'unit': unit,
       'type': type,
@@ -68,6 +71,7 @@ class NewOrder {
     return NewOrder(
       orderNumber: json['orderNumber'],
       name: json['name'],
+      contact: json['contact'],
       process: json['process'],
       unit: json['unit'],
       type: json['type'],
