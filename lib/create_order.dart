@@ -22,17 +22,24 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   final TextEditingController _departmentController = TextEditingController();
 
   String? _fileName;
-  String _selectedProcess = 'Process';
-  String _selectedUnit = 'Unit';
-  String _selectedType = 'Type';
+  String? _selectedProcess;
+  String? _selectedUnit;
+  String? _selectedType;
   int _quantity = 0;
   double _rate = 0.0;
 
   void _calculateRate() {
-    setState(() {
-      _rate = orderLogic.calculateRate(_selectedUnit, _selectedType);
-    });
+    if (_selectedUnit != null && _selectedType != null) {
+      setState(() {
+        _rate = orderLogic.calculateRate(_selectedUnit!, _selectedType!);
+      });
+    } else {
+      setState(() {
+        _rate = 0.0; 
+      });
+    }
   }
+
 
   Future<void> _pickFile() async {
     String? fileName = await orderLogic.pickFile();
@@ -44,14 +51,33 @@ class CreateOrderPageState extends State<CreateOrderPage> {
   }
 
   void _submitOrder(BuildContext context) {
-    if (_formKey.currentState?.validate() ?? false) { //include check that dropdowns was selected -nlw
+    if (_formKey.currentState?.validate() ?? false) {
       int orderNumber = 100 + Random().nextInt(900);
       double estimatedPrice = _quantity * _rate * volume;
 
+    if (_selectedProcess == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a process!')),
+      );
+      return;
+    }
+    if (_selectedUnit == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a unit!')),
+      );
+      return;
+    }
+    if (_selectedType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a type!')),
+      );
+      return;
+    }
+
       NewOrder newOrder = orderLogic.createOrder(
-        process: _selectedProcess,
-        unit: _selectedUnit,
-        type: _selectedType,
+        process: _selectedProcess!,
+        unit: _selectedUnit!,
+        type: _selectedType!,
         quantity: _quantity,
         rate: _rate,
         estimatedPrice: estimatedPrice,
@@ -63,8 +89,8 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         orderNumber: orderNumber.toString(),
       );
 
-        orders.add(newOrder);
-      
+      orders.add(newOrder);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted! Your Order ID is $orderNumber')),
       );
@@ -73,13 +99,18 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       _nameController.clear();
       _journalNumController.clear();
       _departmentController.clear();
+
       setState(() {
         _fileName = null;
         _quantity = 1;
         _rate = 0.0;
+        _selectedProcess = null;
+        _selectedUnit = null;
+        _selectedType = null;
       });
     }
   }
+
 
   Widget _buildSubmitOrder() {
     return Center(
@@ -110,7 +141,6 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           EnterTextFormField(
-            //width: 50,
             height: 80,
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.all(10),
@@ -256,7 +286,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
+                  return 'Please enter a name!';
                 }
                 return null;
               },
@@ -280,7 +310,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a journal transfer number';
+                  return 'Please enter a journal transfer number!';
                 }
                 return null;
               },
@@ -331,48 +361,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           margin: const EdgeInsets.only(bottom: 15),
           padding: const EdgeInsets.fromLTRB(8, 12, 8, 12)
         ),
-        // ElevatedButton(
-        //   onPressed: _pickFile,
-        //   style: ButtonStyle(
-        //     padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)),
-        //     backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-        //     side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-        //     minimumSize: WidgetStateProperty.all(const Size(100, 36)),
-        //     shape: WidgetStateProperty.all(
-        //       RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(8.0),
-        //       ),
-        //     ),
-        //   ),
-        //   child: Text(
-        //     'PICK A FILE',
-        //     style: TextStyle(
-        //       fontSize: 14.0,
-        //       fontFamily: 'Klavika',
-        //       fontWeight: FontWeight.bold,
-        //       color:
-        //           widget.currentTheme == CSS.hallowTheme
-        //           ? Theme.of(context).primaryColorLight
-        //           : widget.currentTheme == CSS.darkTheme
-        //           ? Theme.of(context).primaryColorLight
-        //           : widget.currentTheme == CSS.mintTheme
-        //           ? Theme.of(context).primaryColorLight
-        //           : widget.currentTheme == CSS.lsiTheme
-        //           ? Theme.of(context).primaryColorLight
-        //           : widget.currentTheme == CSS.pinkTheme
-        //           ? Theme.of(context).primaryColorLight
-        //           : Theme.of(context).primaryColorLight, //gonna simplify the themes -nlw
-        //     ),
-        //   ),
-        // ),
-
+      
         const SizedBox(width: 10), 
 
         if (_fileName != null)
           Expanded(
             child: Text(
               _fileName!, 
-              style: TextStyle(color: Theme.of(context).secondaryHeaderColor, fontSize: 12.0), //make the text here bigger -nlw
+              style: TextStyle(color: Theme.of(context).secondaryHeaderColor, fontSize: 20.0), //make the text here bigger -nlw
               overflow: TextOverflow.ellipsis, 
             ),
           ),
@@ -399,14 +395,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Process Dropdown
         LSIWidgets.dropDown(
           itemVal: [
-            DropdownMenuItem(value: 'Thermoforming', child: Text('Thermoforming')),
-            DropdownMenuItem(value: '3D Printing', child: Text('3D Printing')),
-            DropdownMenuItem(value: 'Milling', child: Text('Milling')),
+            const DropdownMenuItem(value: 'Thermoforming', child: Text('Thermoforming')),
+            const DropdownMenuItem(value: '3D Printing', child: Text('3D Printing')),
+            const DropdownMenuItem(value: 'Milling', child: Text('Milling')),
           ],
           value: _selectedProcess,
+          hint: const Text('Select Process'),
           onchange: (newValue) {
             setState(() {
               _selectedProcess = newValue!;
@@ -429,14 +425,14 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             ),
           ),
 
-        // Unit Dropdown
         LSIWidgets.dropDown(
           itemVal: [
-            DropdownMenuItem(value: 'mm', child: Text('mm')),
-            DropdownMenuItem(value: 'cm', child: Text('cm')),
-            DropdownMenuItem(value: 'inches', child: Text('inches')),
+            const DropdownMenuItem(value: 'mm', child: Text('mm')),
+            const DropdownMenuItem(value: 'cm', child: Text('cm')),
+            const DropdownMenuItem(value: 'inches', child: Text('inches')),
           ],
           value: _selectedUnit,
+          hint: const Text('Select Unit'),
           onchange: (newValue) {
             setState(() {
               _selectedUnit = newValue!;
@@ -462,11 +458,12 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         // Type Dropdown
         LSIWidgets.dropDown(
           itemVal: [
-            DropdownMenuItem(value: 'Aluminum', child: Text('Aluminum')),
-            DropdownMenuItem(value: 'Steel', child: Text('Steel')),
-            DropdownMenuItem(value: 'Brass', child: Text('Brass')),
+            const DropdownMenuItem(value: 'Aluminum', child: Text('Aluminum')),
+            const DropdownMenuItem(value: 'Steel', child: Text('Steel')),
+            const DropdownMenuItem(value: 'Brass', child: Text('Brass')),
           ],
           value: _selectedType,
+          hint: const Text('Select Type'),
           onchange: (newValue) {
             setState(() {
               _selectedType = newValue!;
@@ -504,23 +501,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
           },
           validator: (value) {
             if (value == null || value.isEmpty || int.tryParse(value) == null || int.tryParse(value)! <= 0) {
-              return 'Please enter a valid quantity!';
+              return 'Please enter a quantity!';
             }
             return null;
           },
         ),
 
         const SizedBox(height: 20),
-
-        Text(
-          'Rate: $_rate per cubic unit',
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Theme.of(context).secondaryHeaderColor,
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
       ],
     ),
   );
@@ -550,7 +537,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Process: $_selectedProcess',
+            'Process: ${_selectedProcess ?? 'Not selected'}',
             style: TextStyle(
               fontSize: 20.0,
               color:
@@ -570,7 +557,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             ),
           ),
           Text(
-            'Unit: $_selectedUnit',
+            'Unit: ${_selectedUnit ?? 'Not selected'}',
             style: TextStyle(
               fontSize: 20.0,
               color:
@@ -590,7 +577,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
             ),
           ),
           Text(
-            'Type: $_selectedType',
+            'Type: ${_selectedType ?? 'Not selected'}',
             style: TextStyle(
               fontSize: 20.0,
               color:

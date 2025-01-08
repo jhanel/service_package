@@ -9,7 +9,6 @@ import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'globals.dart';
 import 'package:css/css.dart' as lsi;
 import '../styles/circles.dart';
-import 'package:printing/printing.dart';
 
 class LSIFloatingActionButton extends StatelessWidget{
   LSIFloatingActionButton({
@@ -754,7 +753,7 @@ class LSIWidgets{
     Color color = Colors.transparent,
     double radius = 0,
     Alignment alignment = Alignment.center,
-    Border? border,
+    Border? border, required Text hint,
   }){
     return Container(
       key: key,
@@ -774,6 +773,7 @@ class LSIWidgets{
           isExpanded: true,
           items: itemVal,
           value: value,//ddInfo[i],
+          hint: hint,
           isDense: true,
           focusColor: lsi.lightBlue,
           style: style,
