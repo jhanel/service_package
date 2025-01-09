@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'order_data.dart'; 
+import 'package:collection/collection.dart';
 import 'package:css/css.dart';
+import 'styles/savedWidgets.dart';
+
 
 class TrackOrderPage extends StatefulWidget {
   final dynamic currentTheme; 
@@ -52,14 +55,14 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                     _buildTrackButton(),
                   ] else ...[
                     Text(
-                      'Hi, ${_currentOrder?.name ?? "Order not found"}',
+                      'Hello, ${_currentOrder?.name ?? "Order not found"}',
                       style: TextStyle(
                         color: widget.currentTheme == CSS.lsiTheme
                             ? Theme.of(context).cardColor
                             : Theme.of(context).secondaryHeaderColor,
                         fontFamily: 'Klavika',
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
+                        fontSize: 30.0,
                       ),
                     ),
                     const SizedBox(height: 16.0),
@@ -108,9 +111,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
   Widget _buildOrderInputField() { //maybe also be able to search by name, jornal transfer number and contact -nlw
     return TextField(
-      controller: _orderIdController,
+      //controller: _orderIdController,
       decoration: InputDecoration(
-        labelText: 'Enter Order ID',
+        labelText: 'Enter Order ID, Name, Journal Transfer, or Contact',
         border: const OutlineInputBorder(),
         labelStyle: TextStyle(
           color: widget.currentTheme == CSS.hallowTheme
@@ -180,7 +183,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   color: Theme.of(context).secondaryHeaderColor, 
                   fontFamily: 'Klavika',
                   fontWeight: FontWeight.normal,
-                  fontSize: 18.0,
+                  fontSize: 24.0,
                 ),
               ),
 
@@ -218,7 +221,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -229,7 +232,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -258,7 +261,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -271,7 +274,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -300,7 +303,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -311,7 +314,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -340,7 +343,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -351,7 +354,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -380,7 +383,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -391,7 +394,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -420,7 +423,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark, 
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -431,7 +434,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -460,7 +463,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -471,7 +474,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor, 
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -500,7 +503,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 : Theme.of(context).primaryColorDark,
                               fontFamily: 'Klavika',
                               fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                             ),
                           ),
                           Expanded(
@@ -511,7 +514,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                                 color: Theme.of(context).secondaryHeaderColor,
                                 fontFamily: 'Klavika',
                                 fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                               ),
                             ),
                           ),
@@ -521,60 +524,6 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                   ],
                 ),
               ),
-
-              const SizedBox( height: 18.0),
-              
-              Align(
-              alignment: Alignment.bottomLeft,
-              child: ElevatedButton( //use the squarebutton from savedWidgets -nlw
-                onPressed: () { //will want to send john a notification -nlw 
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Order Cancellation Request"),
-                        content: const Text("Are you sure you want to cancel your order?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); 
-                            },
-                            child: const Text("No"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); 
-                              _cancelOrder(context); 
-                            },
-                            child: const Text("Yes"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-                  side: WidgetStateProperty.all(
-                    BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor),
-                  ),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                child: Text(
-                  'REQUEST CANCELLATION',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorLight,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-
             ],
           ),
         );
@@ -651,6 +600,12 @@ class TrackOrderPageState extends State<TrackOrderPage> {
       ? null
       : orders.firstWhere((o) => o.orderNumber == orderId);
 
+    order ??= orders.firstWhereOrNull(
+      (o) =>
+          o.name.toLowerCase().contains(orderId.toLowerCase()) ||
+          o.journalTransferNumber == orderId ||
+          o.contact == orderId,
+    );
     if (order != null) {
       setState(() {
         _currentOrder = order;
@@ -667,36 +622,37 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
   Widget _buildOrderStatus() {
-    final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
+  final List<String> statuses = ['Received', 'In Progress', 'Delivered', 'Completed'];
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).splashColor,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor,
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(1, 1),
+  return Container(
+    padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Theme.of(context).splashColor,
+      borderRadius: BorderRadius.circular(10.0),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).shadowColor,
+          spreadRadius: 1,
+          blurRadius: 4,
+          offset: const Offset(1, 1),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ORDER STATUS',
+          style: TextStyle(
+            color: Theme.of(context).secondaryHeaderColor,
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.normal,
+            fontSize: 24.0,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'ORDER STATUS',
-            style: TextStyle(
-              color: Theme.of(context).secondaryHeaderColor,
-              fontFamily: 'Klavika',
-              fontWeight: FontWeight.normal,
-              fontSize: 18.0,
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          Container(
+        ),
+        const SizedBox(height: 16.0),
+        Flexible(
+          child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
@@ -716,10 +672,51 @@ class TrackOrderPageState extends State<TrackOrderPage> {
               }).toList(),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 18.0),
+
+        LSIWidgets.squareButton(
+          text: 'REQUEST CANCEL',
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Order Cancellation Request"),
+                  content: const Text("Are you sure you want to cancel your order?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("No"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _cancelOrder(context);
+                      },
+                      child: const Text("Yes"),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          textColor: Theme.of(context).primaryColorLight,
+          buttonColor: Theme.of(context).secondaryHeaderColor,
+          borderColor: Theme.of(context).secondaryHeaderColor,
+          height: 50,
+          radius: 8,
+          width: 200,
+          margin: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
     return Container(
@@ -745,7 +742,7 @@ class TrackOrderPageState extends State<TrackOrderPage> {
                         : widget.currentTheme == CSS.pinkTheme
                             ? Theme.of(context).canvasColor
                             : Theme.of(context).primaryColorLight), 
-            fontSize: 16.0,
+            fontSize: 20.0,
             fontFamily: 'Klavika',
             fontWeight: FontWeight.normal,
           ),
