@@ -128,27 +128,16 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   }
 
   Widget _buildTrackButton() {
-    return ElevatedButton(
-      onPressed: _trackOrder,
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-        side: WidgetStateProperty.all(
-          BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor),
-        ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-      ),
-      child: Text(
-        'TRACK',
-        style: TextStyle(
-          color: Theme.of(context).primaryColorLight,
-          fontFamily: 'Klavika',
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      return LSIWidgets.squareButton(
+      text: 'TRACK',
+      onTap: _trackOrder,
+      textColor: Theme.of(context).primaryColorLight,
+      buttonColor: Theme.of(context).secondaryHeaderColor,
+      borderColor: Theme.of(context).secondaryHeaderColor,
+      height: 50,
+      width: 140,
+      radius: 8,
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
     );
   }
 
@@ -590,35 +579,51 @@ class TrackOrderPageState extends State<TrackOrderPage> {
 
 
   void _trackOrder() {
-    String orderId = _orderIdController.text.trim();
+  String orderId = _orderIdController.text.trim();
 
+  setState(() {
+    _isTracking = true;
+  });
+
+  // Use firstWhereOrNull to safely find an order
+  NewOrder? order = orders.firstWhereOrNull((o) => o.orderNumber == orderId);
+
+  // If not found by orderNumber, search by other fields
+  order ??= orders.firstWhereOrNull(
+    (o) =>
+        o.name.toLowerCase().contains(orderId.toLowerCase()) ||
+        o.journalTransferNumber == orderId ||
+        o.contact == orderId,
+  );
+
+  if (order != null) {
+    // Order found, update the current order
     setState(() {
-      _isTracking = true;
+      _currentOrder = order;
     });
-
-    NewOrder? order = orders.where((o) => o.orderNumber == orderId).isEmpty
-      ? null
-      : orders.firstWhere((o) => o.orderNumber == orderId);
-
-    order ??= orders.firstWhereOrNull(
-      (o) =>
-          o.name.toLowerCase().contains(orderId.toLowerCase()) ||
-          o.journalTransferNumber == orderId ||
-          o.contact == orderId,
+  } else {
+    // Order not found, show a MaterialBanner
+    ScaffoldMessenger.of(context).clearMaterialBanners(); // Clear any existing banners
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("Order not found. Please check the order info."),
+        backgroundColor: Colors.red.shade700,
+        actions: [
+          TextButton(
+            child: const Text("DISMISS", style: TextStyle(color: Colors.white)),
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
+          ),
+        ],
+      ),
     );
-    if (order != null) {
-      setState(() {
-        _currentOrder = order;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Order not found. Please check the Order ID.")),
-      ); //i think the error message should maybe be more prominent -nlw
-      setState(() {
-        _isTracking = false;
-      });
-    }
+    setState(() {
+      _isTracking = false;
+    });
   }
+}
+
 
 
   Widget _buildOrderStatus() {
@@ -651,32 +656,31 @@ class TrackOrderPageState extends State<TrackOrderPage> {
           ),
         ),
         const SizedBox(height: 16.0),
-        Flexible(
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: statuses.map((status) {
-                final bool isCompleted = statuses.indexOf(status) <= statuses.indexOf(orders[0].status);
-                return Column(
-                  children: [
-                    _buildStatusContainer(status, isCompleted, isLarge: false),
-                    if (status != statuses.last) _buildStatusDivider(isCompleted),
-                  ],
-                );
-              }).toList(),
-            ),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: statuses.map((status) {
+              final bool isCompleted = statuses.indexOf(status) <= statuses.indexOf(orders[0].status);
+              return Column(
+                children: [
+                  _buildStatusContainer(status, isCompleted, isLarge: false),
+                  if (status != statuses.last) _buildStatusDivider(isCompleted),
+                ],
+              );
+            }).toList(),
           ),
         ),
+
         const SizedBox(height: 18.0),
 
         LSIWidgets.squareButton(
-          text: 'REQUEST CANCEL',
+          text: 'CANCEL ORDER',
           onTap: () {
             showDialog(
               context: context,
@@ -706,11 +710,10 @@ class TrackOrderPageState extends State<TrackOrderPage> {
           textColor: Theme.of(context).primaryColorLight,
           buttonColor: Theme.of(context).secondaryHeaderColor,
           borderColor: Theme.of(context).secondaryHeaderColor,
-          height: 50,
+          height: 36,
           radius: 8,
-          width: 200,
-          margin: const EdgeInsets.only(bottom: 15),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          width: 130,
+          margin: const EdgeInsets.only(top: 6),
         ),
       ],
     ),
@@ -721,9 +724,9 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-      constraints: const BoxConstraints(
-        maxWidth: 220,
-        minHeight: 50.0,
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.6,
+        //minHeight: 50.0,
       ),
       decoration: BoxDecoration(
         color: isCompleted ? Theme.of(context).secondaryHeaderColor : Theme.of(context).hoverColor,
