@@ -596,14 +596,11 @@ class TrackOrderPageState extends State<TrackOrderPage> {
         o.contact == orderId,
   );
 
-  if (order != null) {
-    // Order found, update the current order
-    setState(() {
+  if (order != null) {    setState(() {
       _currentOrder = order;
     });
   } else {
-    // Order not found, show a MaterialBanner
-    ScaffoldMessenger.of(context).clearMaterialBanners(); // Clear any existing banners
+    ScaffoldMessenger.of(context).clearMaterialBanners(); 
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("Order not found. Please check the order info."),
