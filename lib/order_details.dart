@@ -67,6 +67,7 @@ class OrderLogic {
     required String orderNumber,
     required String journalTransferNumber,
     required String department,
+    required OrderGroup orderGroup,
   }) {
     final newOrder = NewOrder(
       process: process,
@@ -84,7 +85,22 @@ class OrderLogic {
       orderNumber: orderNumber,
     );
 
+    orderGroup.orders.add(newOrder);
     return newOrder;
+  }
+
+  bool updateOrder(OrderGroup orderGroup, String orderNumber, NewOrder updatedOrder) {
+    for (int i = 0; i < orderGroup.orders.length; i++) {
+      if (orderGroup.orders[i].orderNumber == orderNumber) {
+        orderGroup.orders[i] = updatedOrder;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isAdmin(UserGroup user) {
+    return user.uid.startsWith("admin_");  
   }
 
 }

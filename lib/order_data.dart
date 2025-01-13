@@ -112,6 +112,94 @@ class NewOrder {
 
 }
 
+class OrderGroup {
+  OrderGroup({
+    required this.userGroups,
+    required this.fromDate,
+    required this.orders,
+    required this.toDate,
+  });
+
+  late List<NewOrder> orders;
+  late DateTime fromDate;
+  late DateTime toDate;
+  late List<UserGroup> userGroups;
+
+  OrderGroup.fromJson(dynamic json, dynamic usersProfile) {
+    DateTime? earliestDate;
+    DateTime? latestDate;
+    userGroups = [];
+    orders = [];
+
+    for (String userId in json.keys) {
+      UserGroup newUser = UserGroup(
+        uid: userId,
+        allowed: usersProfile[userId]['allowed'],
+        displayName: usersProfile[userId]['displayName'],
+      );
+      userGroups.add(newUser);
+
+      for (String orderId in json[userId].keys) {
+        orders.add(NewOrder.fromJson(json[userId][orderId]));
+        DateTime orderDate = DateTime.parse(orders.last.dateSubmitted);
+
+        if (earliestDate == null || orderDate.isBefore(earliestDate)) {
+          earliestDate = orderDate;
+        }
+
+        if (latestDate == null || orderDate.isAfter(latestDate)) {
+          latestDate = orderDate;
+        }
+      }
+    }
+
+    fromDate = earliestDate ?? DateTime.now();
+    toDate = latestDate ?? DateTime.now();
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    for (var user in userGroups) {
+      json[user.uid!] = {
+        'allowed': user.allowed,
+        'displayName': user.displayName,
+        'orders': orders.map((order) => order.toJson()).toList(),
+      };
+    }
+    return json;
+  }
+}
+
+
+class UserGroup {
+  UserGroup({
+    this.uid,
+    required this.allowed,
+    this.displayName,
+  });
+
+  String? uid;
+  bool allowed;
+  String? displayName;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'allowed': allowed,
+      'displayName': displayName,
+    };
+  }
+
+  factory UserGroup.fromJson(Map<String, dynamic> json) {
+    return UserGroup(
+      uid: json['uid'],
+      allowed: json['allowed'],
+      displayName: json['displayName'],
+    );
+  }
+}
+
+
 class Month {
   Month({
     required this.name,
