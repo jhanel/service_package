@@ -76,6 +76,13 @@ class CreateOrderPageState extends State<CreateOrderPage> {
       int orderNumber = 100 + Random().nextInt(900);
       double estimatedPrice = _quantity * _rate * volume;
 
+      OrderGroup orderGroup = OrderGroup(
+        userGroups: [],
+        fromDate: DateTime.now(),
+        orders: [],
+        toDate: DateTime.now(),
+      );
+
       NewOrder newOrder = orderLogic.createOrder(
         process: _selectedProcess!,
         unit: _selectedUnit!,
@@ -90,6 +97,7 @@ class CreateOrderPageState extends State<CreateOrderPage> {
         name: _nameController.text,
         contact: _contactController.text,
         orderNumber: orderNumber.toString(),
+        orderGroup: orderGroup,
       );
 
       orders.add(newOrder);

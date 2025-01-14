@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'create_order.dart';
 import 'track_order.dart';
 import 'package:css/css.dart';
+import 'styles/savedWidgets.dart';
 import 'admin.dart';
 
 
@@ -86,81 +87,76 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
+              LSIWidgets.squareButton(
+                text: 'CREATE ORDER',
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CreateOrderPage(currentTheme: Theme.of(context),)),
+                    MaterialPageRoute(
+                      builder: (context) => CreateOrderPage(
+                        currentTheme: Theme.of(context),
+                      ),
+                    ),
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                )),
-                ),
-                child: Text(
-                  'CREATE ORDER',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorLight,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold
-                  ),
-                ),
+                textColor: Theme.of(context).primaryColorLight,
+                buttonColor: Theme.of(context).secondaryHeaderColor,
+                borderColor: Theme.of(context).secondaryHeaderColor,
+                height: 50,
+                width: 200,
+                radius: 8,
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
+
 
               const SizedBox(height: 16.0), 
 
-              ElevatedButton(
-                onPressed: () {
+              LSIWidgets.squareButton(
+                text: 'TRACK ORDER',
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TrackOrderPage(currentTheme: Theme.of(context))),
+                    MaterialPageRoute(
+                      builder: (context) => TrackOrderPage(
+                        currentTheme: Theme.of(context),
+                      ),
+                    ),
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-                  side: WidgetStateProperty.all( BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  )),
-                ),
-                child: Text(
-                  'TRACK ORDER',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorLight,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                textColor: Theme.of(context).primaryColorLight,
+                buttonColor: Theme.of(context).secondaryHeaderColor,
+                borderColor: Theme.of(context).secondaryHeaderColor,
+                height: 50,
+                width: 200,
+                radius: 8,
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
+
 
               const SizedBox(height: 16.0),
               //need to include a check if they are admin or not -nlw
-              ElevatedButton(
-                onPressed: () {
+              LSIWidgets.squareButton(
+                text: 'GO TO ADMIN PAGE',
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AdminServices()), 
+                    MaterialPageRoute(
+                      builder: (context) => const AdminServices(),
+                    ),
                   );
                 },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Theme.of(context).secondaryHeaderColor),
-                  side: WidgetStateProperty.all(BorderSide(width: 2.0, color: Theme.of(context).secondaryHeaderColor)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  )),
-                ),
-                child: Text(
-                  'GO TO ADMIN PAGE', 
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColorLight,
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                textColor: Theme.of(context).primaryColorLight,
+                buttonColor: Theme.of(context).secondaryHeaderColor,
+                borderColor: Theme.of(context).secondaryHeaderColor,
+                height: 50,
+                width: 200,
+                radius: 8,
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
+
             ],
           ),
         ),

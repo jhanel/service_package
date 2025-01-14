@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:css/css.dart';
+import 'styles/savedWidgets.dart';
 import 'order_data.dart';
 import 'order_details.dart';
 
@@ -273,28 +274,38 @@ class AdminServicesState extends State<AdminServices> {
                   ),
                 ),
                 const SizedBox(width: 4.0),
-                DropdownButton<String>(
-                  value: sortBy,
-                  icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).secondaryHeaderColor),
-                  dropdownColor: Theme.of(context).cardColor,
-                  underline: Container(),
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                  items: <String>['Date', 'Status'].map<DropdownMenuItem<String>>((String value) {
+                LSIWidgets.dropDown(
+                  key: const Key('sortByDropdown'),
+                  itemVal: ['Date', 'Status'].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: (String? newValue) {
+                  value: sortBy,
+                  onchange: (dynamic newValue) {
                     setState(() {
-                      sortBy = newValue!;
-                      loadOrders(); 
+                      sortBy = newValue;
+                      loadOrders();
                     });
                   },
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).secondaryHeaderColor,
+                  ),
+                  width: 120,  // Adjust the width as needed
+                  height: 40,
+                  padding: const EdgeInsets.only(left: 10),
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  color: Theme.of(context).cardColor,
+                  radius: 8,
+                  hint: Text(
+                    'Sort By',
+                    style: TextStyle(
+                      color: Theme.of(context).secondaryHeaderColor,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -749,7 +760,7 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: 12.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -775,23 +786,16 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
                                 style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
                               ),
                               const SizedBox(width: 20.0),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),
-                                onPressed: () => deleteOrder(context),
-                                child: const Text(
-                                  'DELETE ORDER',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Klavika',
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              LSIWidgets.squareButton(
+                                text: 'DELETE ORDER',
+                                onTap: () => deleteOrder(context),
+                                textColor: Colors.white,
+                                buttonColor: Colors.red,
+                                borderColor: Colors.transparent,
+                                height: 50,
+                                width: 160,
+                                radius: 8,
+                                margin: const EdgeInsets.only(bottom: 16),
                               ),
                             ],
                           ),
@@ -843,23 +847,17 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
                           const SizedBox(height: 16.0),
                           Align(
                             alignment: Alignment.bottomRight,
-                            child: ElevatedButton( //use squarebutton from savedWidgets -nlw
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).secondaryHeaderColor,
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              onPressed: () => saveComment(context),
-                              child: Text(
-                                'SAVE',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColorLight,
-                                  fontFamily: 'Klavika',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                            child: LSIWidgets.squareButton(
+                              text: 'SAVE',
+                              onTap: () => saveComment(context),
+                              textColor: Theme.of(context).primaryColorLight,
+                              buttonColor: Theme.of(context).secondaryHeaderColor,
+                              borderColor: Colors.transparent,
+                              height: 50,
+                              width: 100,
+                              radius: 8,
+                              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                              margin: const EdgeInsets.only(bottom: 16),
                             ),
                           ),
                         ],
