@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'create_order.dart';
 import 'track_order.dart';
+import 'order_data.dart';
 import 'package:css/css.dart';
 import 'styles/savedWidgets.dart';
 import 'admin.dart';
@@ -10,6 +11,7 @@ import 'admin.dart';
 
 
 ThemeData currentTheme = CSS.lightTheme;
+//bool isAdmin = true;
 
 void main() {
   runApp(const MyApp());
@@ -140,12 +142,20 @@ class MyHomePage extends StatelessWidget {
               LSIWidgets.squareButton(
                 text: 'GO TO ADMIN PAGE',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdminServices(),
-                    ),
-                  );
+                  if (isAdmin()) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminServices(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Access Denied.'),
+                      ),
+                    );
+                  }
                 },
                 textColor: Theme.of(context).primaryColorLight,
                 buttonColor: Theme.of(context).secondaryHeaderColor,
@@ -156,7 +166,6 @@ class MyHomePage extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 16),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
-
             ],
           ),
         ),

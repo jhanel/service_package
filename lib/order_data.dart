@@ -199,6 +199,29 @@ class UserGroup {
   }
 }
 
+UserGroup adminUser = UserGroup(
+    uid: 'admin_123',
+    allowed: true,
+    displayName: 'Nadia W',
+  );
+
+  UserGroup studentUser = UserGroup(
+  uid: 'student_123',
+  allowed: true,
+  displayName: 'Jhanel F',
+);
+
+  // HARDCODE TEST
+  UserGroup currentUser = adminUser;
+
+  bool isAdmin() {
+    return currentUser.allowed && currentUser.uid?.startsWith("admin_") == true;
+  }
+
+  bool isStudent() {
+    return !isAdmin();
+  } 
+
 
 class Month {
   Month({

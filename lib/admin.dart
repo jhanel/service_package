@@ -764,26 +764,48 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              DropdownButton<String>(
-                                value: statuses.contains(selectedStatus) ? selectedStatus : statuses.first,
-                                items: statuses.map((status) {
+                              LSIWidgets.dropDown(
+                                key: Key('statusDropdown_${widget.order.orderNumber}'),
+                                itemVal: statuses.map<DropdownMenuItem<String>>((String status) {
                                   return DropdownMenuItem<String>(
                                     value: status,
-                                    child: Text(status),
+                                    child: Text(
+                                      status,
+                                      style: const TextStyle(
+                                        fontFamily: 'Klavika',
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
                                   );
                                 }).toList(),
-                                onChanged: (value) {
-                                  if (value != null) {
+                                value: selectedStatus,
+                                onchange: (dynamic newValue) {
+                                  if (newValue != null) {
                                     setState(() {
-                                      selectedStatus = value;
-                                      updatedStatusMessage = "Status updated successfully: $value";
+                                      selectedStatus = newValue;
+                                      updatedStatusMessage = "Status updated successfully: $newValue";
                                       final globalOrder = orders.firstWhere((o) => o.orderNumber == widget.order.orderNumber);
-                                      globalOrder.status = value;
+                                      globalOrder.status = newValue;
                                     });
                                   }
                                 },
-                                dropdownColor: Theme.of(context).cardColor,
-                                style: const TextStyle(fontFamily: 'Klavika', fontWeight: FontWeight.normal),
+                                style: TextStyle(
+                                  fontFamily: 'Klavika',
+                                  fontWeight: FontWeight.normal,
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                ),
+                                width: 150, 
+                                height: 40,
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                color: Theme.of(context).cardColor,
+                                radius: 8,
+                                hint: Text(
+                                  'Select Status',
+                                  style: TextStyle(
+                                    color: Theme.of(context).secondaryHeaderColor,
+                                  ),
+                                ),
                               ),
                               const SizedBox(width: 20.0),
                               LSIWidgets.squareButton(
