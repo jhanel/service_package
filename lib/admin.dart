@@ -240,8 +240,132 @@ class AdminServicesState extends State<AdminServices> {
     return (totalWeeks + 1) * weekWidth;
   }
 
+  Widget _toggleButton(String label, bool isSelected, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+        decoration: BoxDecoration(
+          color: isSelected ? Theme.of(context).highlightColor : Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(8.0),
+          border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.black : Theme.of(context).secondaryHeaderColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _showAllOrders() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Show All:',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
+        ),
+        Switch(
+          value: showAllOrders,
+          onChanged: (bool value) {
+            setState(() {
+              showAllOrders = value;
+            });
+          },
+          activeColor: Theme.of(context).secondaryHeaderColor,
+        ),
+      ],
+    );
+  }
+
+    Widget _hideCompletedOrders() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Hide Completed:',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
+        ),
+        Switch(
+          value: hideCompletedOrders,
+          onChanged: (bool value) {
+            setState(() {
+              hideCompletedOrders = value;
+            });
+          },
+          activeColor: Theme.of(context).secondaryHeaderColor,
+        ),
+      ],
+    );
+  }
+
+  Widget _sortByDropdown() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Sort By:',
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
+        ),
+        const SizedBox(width: 4.0),
+        LSIWidgets.dropDown(
+          key: const Key('sortByDropdown'),
+          itemVal: ['Date', 'Status'].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: sortBy,
+          onchange: (dynamic newValue) {
+            setState(() {
+              sortBy = newValue;
+              loadOrders();
+            });
+          },
+          style: TextStyle(
+            fontFamily: 'Klavika',
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).secondaryHeaderColor,
+          ),
+          width: 120, // Adjust width as needed
+          height: 40,
+          padding: const EdgeInsets.only(left: 10),
+          margin: const EdgeInsets.symmetric(vertical: 5),
+          color: Theme.of(context).cardColor,
+          radius: 8,
+          hint: Text(
+            'Sort By',
+            style: TextStyle(
+              color: Theme.of(context).secondaryHeaderColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     List<NewOrder> filteredOrders = orders.where((order) {
       if (hideCompletedOrders && order.status == "Completed") {
         return false;
@@ -249,116 +373,41 @@ class AdminServicesState extends State<AdminServices> {
       return true;
     }).toList();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Orders',
-          style: TextStyle(
-            fontFamily: 'Klavika',
-            fontWeight: FontWeight.bold,
-            fontSize: 22.0,
-            color: Theme.of(context).secondaryHeaderColor,
+      appBar: PreferredSize(
+      preferredSize: Size(screenWidth, 150), // Adjust height as needed
+      child: Container(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+        color: Theme.of(context).cardColor, // Set to original background color
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // AppBar Title
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Orders',
+                  style: TextStyle(
+                    fontFamily: 'Klavika',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.0,
+                    color: Theme.of(context).secondaryHeaderColor,
+                  ),
+                ),
+              ],
+            ),
+              Wrap(
+                spacing: 10,
+                runSpacing: 8,
+                children: [
+                  _sortByDropdown(), // Sort By Dropdown
+                  _hideCompletedOrders(), // Hide Completed Orders Switch
+                  _showAllOrders(), // Show All Orders Switch
+                ],
+              ),
+            ],
           ),
         ),
-        backgroundColor: Theme.of(context).cardColor,
-        actions: [ //will need a mobile version for the appbar -nlw
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Row(
-              children: [
-                Text(
-                  'Sort By:',
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                ),
-                const SizedBox(width: 4.0),
-                LSIWidgets.dropDown(
-                  key: const Key('sortByDropdown'),
-                  itemVal: ['Date', 'Status'].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  value: sortBy,
-                  onchange: (dynamic newValue) {
-                    setState(() {
-                      sortBy = newValue;
-                      loadOrders();
-                    });
-                  },
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                  width: 120,  // Adjust the width as needed
-                  height: 40,
-                  padding: const EdgeInsets.only(left: 10),
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  color: Theme.of(context).cardColor,
-                  radius: 8,
-                  hint: Text(
-                    'Sort By',
-                    style: TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding( 
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
-              children: [
-                Text(
-                  'Hide Completed Orders:',
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                ),
-                Switch(
-                  value: hideCompletedOrders,
-                  onChanged: (bool value) {
-                    setState(() {
-                      hideCompletedOrders = value;
-                    });
-                  },
-                  activeColor: Theme.of(context).secondaryHeaderColor,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Row( 
-              children: [
-                Text(
-                  'Show All Orders:',
-                  style: TextStyle(
-                    fontFamily: 'Klavika',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).secondaryHeaderColor,
-                  ),
-                ),
-                Switch(
-                  value: showAllOrders,
-                  onChanged: (bool value) {
-                    setState(() {
-                      showAllOrders = value;
-                    });
-                  },
-                  activeColor: Theme.of(context).secondaryHeaderColor,
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
       body: Container(
         color: Theme.of(context).canvasColor,
@@ -502,9 +551,12 @@ class AdminServicesState extends State<AdminServices> {
                     ),
                     Expanded(
                       child: Container(
-                        color: Theme.of(context).canvasColor, 
-                        child: Row(
-                          children: timelineBars(context), 
+                        color: Theme.of(context).canvasColor,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                          child: Row(
+                            children: timelineBars(context), // Provide the list of widgets here
+                          ),
                         ),
                       ),
                     ),
@@ -619,7 +671,6 @@ class OrderDetailsPageState extends State<OrderDetailsPage> {
         icon: const Icon(Icons.close), 
         onPressed: () => Navigator.pop(context, widget.order), //missing something; please refer to reprt-api line 1700 -nlw 
         ),
-        backgroundColor: Theme.of(context).cardColor,
       ),
       body: Center(
         child: Container(
