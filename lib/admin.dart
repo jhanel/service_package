@@ -4,9 +4,9 @@ import 'styles/savedWidgets.dart';
 import 'order_data.dart';
 import 'order_details.dart';
 
-// I usually scroll using my touchscreen, so let me know if scrolling doesn't work with mouse
-
 //scrolling does not seem to be working for the keyboard and mouse -nlw
+
+// scrolling w mouse works on mobile view but for some reason i can't get it to work on desktop 
 
 ThemeData currentTheme = CSS.lightTheme;
 
@@ -345,7 +345,7 @@ class AdminServicesState extends State<AdminServices> {
             fontWeight: FontWeight.bold,
             color: Theme.of(context).secondaryHeaderColor,
           ),
-          width: 120, // Adjust width as needed
+          width: 120, 
           height: 40,
           padding: const EdgeInsets.only(left: 10),
           margin: const EdgeInsets.symmetric(vertical: 5),
@@ -374,14 +374,13 @@ class AdminServicesState extends State<AdminServices> {
     }).toList();
     return Scaffold(
       appBar: PreferredSize(
-      preferredSize: Size(screenWidth, 150), // Adjust height as needed
+      preferredSize: Size(screenWidth, 150), 
       child: Container(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-        color: Theme.of(context).cardColor, // Set to original background color
+        color: Theme.of(context).cardColor, 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // AppBar Title
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -400,9 +399,9 @@ class AdminServicesState extends State<AdminServices> {
                 spacing: 10,
                 runSpacing: 8,
                 children: [
-                  _sortByDropdown(), // Sort By Dropdown
-                  _hideCompletedOrders(), // Hide Completed Orders Switch
-                  _showAllOrders(), // Show All Orders Switch
+                  _sortByDropdown(), 
+                  _hideCompletedOrders(), 
+                  _showAllOrders(),
                 ],
               ),
             ],
@@ -553,9 +552,9 @@ class AdminServicesState extends State<AdminServices> {
                       child: Container(
                         color: Theme.of(context).canvasColor,
                         child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                          scrollDirection: Axis.horizontal,
                           child: Row(
-                            children: timelineBars(context), // Provide the list of widgets here
+                            children: timelineBars(context), 
                           ),
                         ),
                       ),

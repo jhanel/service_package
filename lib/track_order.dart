@@ -717,6 +717,26 @@ class TrackOrderPageState extends State<TrackOrderPage> {
   );
 }
 
+/* 
+Messaging.sendPushMessage(
+                        [
+                          //uid of who you want to be notified
+                        ],
+                        'Notification title',
+                        'Notification message.'
+                      ).then((value){
+                        Database.push(
+                          'team', 
+                          children: 'schedule/notifications/$sem',
+                          data: {
+                            'date': DateTime.now().toString(),
+                            'title': 'Notification title',
+                            'message': 'Notification message.'
+                          }
+                        );
+                      });
+*/
+
 
   Widget _buildStatusContainer(String title, bool isCompleted, {bool isLarge = false}) {
     return Container(
