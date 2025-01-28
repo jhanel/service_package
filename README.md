@@ -1,43 +1,28 @@
 # Flutter Services Package
-Flutter services package for Limbitless Team Website
+Limbitless Team Services is a Flutter API package designed to facilitate order management, tracking, and administration. The app ensures access control based on user roles.
 
 ## Overview
 
-This Flutter application provides functionalities for creating and tracking orders. The app has two primary pages:
+This Flutter application provides functionalities for creating and tracking orders. The app has three primary pages: Create Order, Track Order, and Admin
 
 ## Features
 
-- **Home Page**: Features buttons to navigate to the Create Order and Track Order pages. The page uses a blueGrey background with white buttons.
-- **Create Order Page**: Allows users to input details such as process, unit, type, quantity, and rate, and submit the order with file attachment support.
-- **Track Order Page**: Users can track their order by entering an order ID, and view the order details and status updates.
+- **Order Management**:
+- Create new orders via the CREATE ORDER button.
+- Track existing orders using the TRACK ORDER button.
+  
+- **Admin Access**: 
+- An ADMIN PAGE is available for users with admin privileges, ensuring secure access and role-based functionality.
 
 ## Directory Structure
 
 *lib/*:
-- *main.dart*: Entry point of the app.
-- *home_page.dart*: Home page layout and functionality.
-- *create_order_page.dart*: Create order page layout and functionality.
-- *track_order_page.dart*: Track order page layout and functionality.
-- *order_details.dart*: Model for order details.
-- *new_order.dart*: Model for new orders.
-- *save_file.dart*: Service for saving files.
-- *submit_order.dart*: Service for submitting orders.
-- *global_order_details.dart*: Global variable for order details.
-
-## Styling and Design (in progress)
-
-**Color Palette**:
-- *Background*: Colors.blueGrey.shade100
-- *Buttons*: White background, blue border, dark blue text.
-- *AppBar*: blueGrey with white text.
-**Typography**:
-- *Font Color*: Dark blue for button text, black for general text.
-
-## Installation
-
-1. **Clone the Repository**
-
-   ```bash
+- main.dart: Entry point of the application. Manages navigation to core functionalities.
+- create_order.dart: Handles order creation functionality.
+- track_order.dart: Provides order tracking capabilities.
+- admin.dart: Manages admin-related features and services.
+- order_data.dart: Handles order-related data processing.
+- styles/savedWidgets.dart: Contains reusable styled widgets for the app.
    git clone https://github.com/your-username/service_package.git
    cd project
 
